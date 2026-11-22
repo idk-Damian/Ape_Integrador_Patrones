@@ -1,6 +1,6 @@
 # Matriz de aceptación P01–P38
 
-Ejecución de referencia: 22/11/2026, 15:07 (UTC-5), rama `feature/fase2-evidencias`, commit `fc7dfa6`.
+Ejecución de referencia: 22/11/2026, 15:07 (UTC-5), rama `feature/fase2-evidencias`, commit `1ff885f`.
 Comando: `dotnet test LogiMarket360.sln --logger "console;verbosity=normal" --logger "trx;LogFileName=pruebas.trx"`.
 Resultado global: **116 pruebas, 116 correctas, 0 con error** (`pruebas_consola.txt`, `pruebas.trx`).
 

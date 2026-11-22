@@ -31,10 +31,10 @@ dotnet test LogiMarket360.sln
 | Archivo | Contenido |
 |---|---|
 | `riesgos_actividad7.md` | Tabla de los riesgos R01–R10 (y R11–R13 sin prueba roja), con principio, refactorización, commits y prueba antes/después |
-| `riesgos/R01-R09_antes.txt` | Pruebas sobre el commit `22b2937`: 34 pruebas, 8 con error |
-| `riesgos/R01-R09_despues.txt` | Pruebas sobre el commit `2cbe5f1`: 46 de 46 |
-| `riesgos/R10_antes.txt` | Pruebas sobre el commit `8824d45`: 110 pruebas, 2 con error |
-| `riesgos/R10_despues.txt` | Pruebas después de `b702149`: 116 de 116 |
+| `riesgos/R01-R09_antes.txt` | Pruebas sobre el commit `5efa8ee`: 34 pruebas, 8 con error |
+| `riesgos/R01-R09_despues.txt` | Pruebas sobre el commit `2b7a824`: 46 de 46 |
+| `riesgos/R10_antes.txt` | Pruebas sobre el commit `b4bfbdb`: 110 pruebas, 2 con error |
+| `riesgos/R10_despues.txt` | Pruebas después de `c6a54ff`: 116 de 116 |
 
 ## Verificación operativa (Actividad 9)
 
@@ -44,3 +44,24 @@ dotnet test LogiMarket360.sln
 | `fase1/fase1_pruebas.txt` | Salida de las pruebas en el clon limpio (108 de 108 en ese momento) |
 | `fase1/fase1_persistencia.txt` | Cobro del pedido de Ana desde la interfaz, cierre total y reapertura con los mismos datos |
 | `fase1/fase1_fusion.txt` | Fusión `--no-ff` de la fase 1 en `develop` y `main`, y push |
+
+## Correspondencia de hashes
+
+El 22/11/2026 se normalizaron los mensajes de los commits posteriores a `ef51d35` para quitar líneas de metadatos que no describían el cambio. El contenido de cada commit no cambió: los árboles antes y después son idénticos en las cuatro ramas publicadas. Los logs crudos de `fase1/` y `riesgos/` se generaron antes de la normalización y muestran los hashes anteriores; esta tabla da su equivalencia.
+
+| Antes | Ahora | Commit |
+|---|---|---|
+| `22b2937` | `5efa8ee` | test: reproduce defectos detectados en la fase 1 |
+| `2cbe5f1` | `2b7a824` | refactor: corrige invariantes de la fase 1 y segrega puertos de persistencia |
+| `cff0688` | `f8d1a63` | feat(pagos): sesion por rol y cadena de cobro Proxy -> Decorator -> Adapter |
+| `8fb6df2` | `04a65f0` | feat(pedidos): cadena de validacion, fachada de confirmacion, logistica y comandos |
+| `7cce112` | `8e9edf6` | feat(eventos): outbox con observer, notificaciones, devoluciones, comprobantes y filtros |
+| `d360c53` | `fbd2094` | feat: interfaz WinForms con 12 pantallas, mediator y flyweight |
+| `dd6ef93` | `2f14bbc` | fix(ui): escalado por DPI, ventana maximizada y textos completos |
+| `7ac9be9` | `7719bcf` | merge: integra fase 1 en develop |
+| `ce0ed0b` | `c229471` | merge: publica en main la version de la fase 1 |
+| `8824d45` | `b4bfbdb` | test: reproduce R10, el pedido ignora el reloj inyectado |
+| `b702149` | `c6a54ff` | fix: el pedido recibe la fecha del reloj inyectado (R10) |
+| `fc7dfa6` | `1ff885f` | test: evidencias legibles para P19, P22, P37 y P21 |
+
+Los commits `d6a8f26`, `bd4f512`, `61abc67` (PR #1) y `ef51d35` no cambiaron.
