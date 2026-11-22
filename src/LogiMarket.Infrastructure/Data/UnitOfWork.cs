@@ -11,6 +11,8 @@ public sealed class UnitOfWork : IUnitOfWork
 {
     private const int SqliteRestriccionUnica = 2067;
     private const int SqliteLlavePrimaria = 1555;
+    private const int SqliteOcupada = 5;
+    private const int SqliteBloqueada = 6;
 
     private readonly LogiMarketDbContext _context;
 
@@ -32,10 +34,23 @@ public sealed class UnitOfWork : IUnitOfWork
         {
             throw new ConflictoDuplicadoException("Ya existe un registro con ese valor único.", ex);
         }
+        catch (DbUpdateException ex) when (ex.InnerException is SqliteException { SqliteErrorCode: SqliteOcupada or SqliteBloqueada })
+        {
+            throw new ConflictoConcurrenciaException("La base está ocupada por otra operación; intente de nuevo.", ex);
+        }
     }
 
     public async Task<ITransaccion> IniciarTransaccionAsync()
-        => new TransaccionEf(await _context.Database.BeginTransactionAsync());
+    {
+        try
+        {
+            return new TransaccionEf(await _context.Database.BeginTransactionAsync());
+        }
+        catch (SqliteException ex) when (ex.SqliteErrorCode is SqliteOcupada or SqliteBloqueada)
+        {
+            throw new ConflictoConcurrenciaException("La base está ocupada por otra operación; intente de nuevo.", ex);
+        }
+    }
 
     public void DescartarCambios() => _context.ChangeTracker.Clear();
 
