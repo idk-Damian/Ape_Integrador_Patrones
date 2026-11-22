@@ -11,8 +11,8 @@ public class MementoTests
     [Fact]
     public void HistorialPedido_SoportaUndoYRedo()
     {
-        var p01 = new ProductoSimple("P01", "Mouse USB", 20.00m, 8, 0.10m);
-        var p02 = new ProductoSimple("P02", "Teclado", 30.00m, 5, 0.60m);
+        var p01 = new ProductoSimple("P01", "Mouse USB", 20.00m, 8, 0.20m);
+        var p02 = new ProductoSimple("P02", "Teclado", 30.00m, 5, 0.70m);
 
         var pedido = new PedidoBuilder()
             .ConCliente(1, CategoriaCliente.Normal)
@@ -41,7 +41,7 @@ public class MementoTests
     [Fact]
     public void HistorialPedido_SeBloqueaAlConfirmarPago()
     {
-        var p01 = new ProductoSimple("P01", "Mouse USB", 20.00m, 8, 0.10m);
+        var p01 = new ProductoSimple("P01", "Mouse USB", 20.00m, 8, 0.20m);
         var pedido = new PedidoBuilder()
             .ConCliente(1, CategoriaCliente.Normal)
             .AgregarProducto(p01, 1)

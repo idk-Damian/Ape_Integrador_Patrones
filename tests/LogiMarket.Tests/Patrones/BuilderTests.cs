@@ -13,7 +13,7 @@ public class BuilderTests
     public void PedidoBuilder_ConstruyePedidoExitosamente()
     {
         var cliente = new Cliente("Ana López", "ana@example.com", CategoriaCliente.Vip);
-        var p01 = new ProductoSimple("P01", "Mouse USB", 20.00m, 8, 0.10m);
+        var p01 = new ProductoSimple("P01", "Mouse USB", 20.00m, 8, 0.20m);
 
         var pedido = new PedidoBuilder()
             .ConCliente(cliente)
@@ -32,7 +32,7 @@ public class BuilderTests
     [Fact]
     public void PedidoBuilder_BloqueaSinCliente()
     {
-        var p01 = new ProductoSimple("P01", "Mouse USB", 20.00m, 8, 0.10m);
+        var p01 = new ProductoSimple("P01", "Mouse USB", 20.00m, 8, 0.20m);
 
         var builder = new PedidoBuilder()
             .AgregarProducto(p01, 1);

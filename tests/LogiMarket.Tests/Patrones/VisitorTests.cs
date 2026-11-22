@@ -8,10 +8,10 @@ public class VisitorTests
     [Fact]
     public void VisitantePesoLogistico_KitTeletrabajo_SumaExactamenteUnKilogramo()
     {
-        // P01 (0.10) + P02 (0.60) + P03 (0.30) = exactamente 1.00 kg
-        var p01 = new ProductoSimple("P01", "Mouse USB", 20.00m, 8, 0.10m);
-        var p02 = new ProductoSimple("P02", "Teclado", 30.00m, 5, 0.60m);
-        var p03 = new ProductoSimple("P03", "Memoria USB", 10.00m, 20, 0.30m);
+        // P01 (0.20) + P02 (0.70) + P03 (0.10) = exactamente 1.00 kg
+        var p01 = new ProductoSimple("P01", "Mouse USB", 20.00m, 8, 0.20m);
+        var p02 = new ProductoSimple("P02", "Teclado", 30.00m, 5, 0.70m);
+        var p03 = new ProductoSimple("P03", "Memoria USB", 10.00m, 20, 0.10m);
 
         var kitOficina = new KitCompuesto("KIT_OFICINA", "Kit Oficina");
         kitOficina.AgregarComponente(p01, 1);
@@ -30,8 +30,8 @@ public class VisitorTests
     [Fact]
     public void VisitanteDesgloseFisico_AgrupaCantidadesPorSku()
     {
-        var p01 = new ProductoSimple("P01", "Mouse USB", 20.00m, 8, 0.10m);
-        var p02 = new ProductoSimple("P02", "Teclado", 30.00m, 5, 0.60m);
+        var p01 = new ProductoSimple("P01", "Mouse USB", 20.00m, 8, 0.20m);
+        var p02 = new ProductoSimple("P02", "Teclado", 30.00m, 5, 0.70m);
 
         var kitOficina = new KitCompuesto("KIT_OFICINA", "Kit Oficina");
         kitOficina.AgregarComponente(p01, 2);

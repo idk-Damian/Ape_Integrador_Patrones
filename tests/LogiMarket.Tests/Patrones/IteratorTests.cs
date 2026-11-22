@@ -8,9 +8,9 @@ public class IteratorTests
     [Fact]
     public void IteradorComponentesFisicos_RecorreKitsAnidadosPropagandoCantidades()
     {
-        var p01 = new ProductoSimple("P01", "Mouse USB", 20.00m, 8, 0.10m);
-        var p02 = new ProductoSimple("P02", "Teclado", 30.00m, 5, 0.60m);
-        var p03 = new ProductoSimple("P03", "Memoria USB", 10.00m, 20, 0.30m);
+        var p01 = new ProductoSimple("P01", "Mouse USB", 20.00m, 8, 0.20m);
+        var p02 = new ProductoSimple("P02", "Teclado", 30.00m, 5, 0.70m);
+        var p03 = new ProductoSimple("P03", "Memoria USB", 10.00m, 20, 0.10m);
 
         var kitOficina = new KitCompuesto("KIT_OFICINA", "Kit Oficina");
         kitOficina.AgregarComponente(p01, 1);

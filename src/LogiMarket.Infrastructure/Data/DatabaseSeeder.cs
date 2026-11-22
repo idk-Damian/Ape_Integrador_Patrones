@@ -19,35 +19,35 @@ public static class DatabaseSeeder
         var p01 = await context.Productos.FirstOrDefaultAsync(p => p.Codigo == "P01");
         if (p01 is null)
         {
-            p01 = new ProductoSimple("P01", "Mouse USB", 20.00m, 8, 0.10m);
+            p01 = new ProductoSimple("P01", "Mouse USB", 20.00m, 8, 0.20m);
             await context.Productos.AddAsync(p01);
         }
 
         var p02 = await context.Productos.FirstOrDefaultAsync(p => p.Codigo == "P02");
         if (p02 is null)
         {
-            p02 = new ProductoSimple("P02", "Teclado", 30.00m, 5, 0.60m);
+            p02 = new ProductoSimple("P02", "Teclado", 30.00m, 5, 0.70m);
             await context.Productos.AddAsync(p02);
         }
 
         var p03 = await context.Productos.FirstOrDefaultAsync(p => p.Codigo == "P03");
         if (p03 is null)
         {
-            p03 = new ProductoSimple("P03", "Memoria USB", 10.00m, 20, 0.30m);
+            p03 = new ProductoSimple("P03", "Memoria USB", 10.00m, 20, 0.10m);
             await context.Productos.AddAsync(p03);
         }
 
         var p04 = await context.Productos.FirstOrDefaultAsync(p => p.Codigo == "P04");
         if (p04 is null)
         {
-            p04 = new ProductoSimple("P04", "Webcam", 40.00m, 4, 0.25m);
+            p04 = new ProductoSimple("P04", "Webcam", 40.00m, 4, 0.35m);
             await context.Productos.AddAsync(p04);
         }
 
         var p05 = await context.Productos.FirstOrDefaultAsync(p => p.Codigo == "P05");
         if (p05 is null)
         {
-            p05 = new ProductoSimple("P05", "Alfombrilla", 5.00m, 30, 0.05m);
+            p05 = new ProductoSimple("P05", "Alfombrilla", 5.00m, 30, 0.10m);
             await context.Productos.AddAsync(p05);
         }
 
@@ -68,7 +68,7 @@ public static class DatabaseSeeder
             await context.SaveChangesAsync();
         }
 
-        // KIT_TELETRABAJO = KIT_OFICINA + P03 ($60.00, Peso exacto: 0.10 + 0.60 + 0.30 = 1.00 kg)
+        // KIT_TELETRABAJO = KIT_OFICINA + P03 ($60.00, Peso exacto: 0.20 + 0.70 + 0.10 = 1.00 kg)
         var kitTeletrabajo = await context.Kits
             .Include(k => k.Componentes)
             .FirstOrDefaultAsync(k => k.Codigo == "KIT_TELETRABAJO");

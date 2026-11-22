@@ -22,3 +22,6 @@ obj/
 ## OS
 Thumbs.db
 .DS_Store
+
+## Tools
+weppy-project-sync/

@@ -58,10 +58,20 @@ public class PersistenceAndSeederTests : IDisposable
             Assert.Equal(4, usuarios.Count);
             Assert.Equal(3, clientes.Count);
 
-            // Verificar suma exacta de 1.00 kg para P01 + P02 + P03
+            // Verificar pesos exactos del catálogo oficial
             var p01 = productos.First(p => p.Codigo == "P01");
             var p02 = productos.First(p => p.Codigo == "P02");
             var p03 = productos.First(p => p.Codigo == "P03");
+            var p04 = productos.First(p => p.Codigo == "P04");
+            var p05 = productos.First(p => p.Codigo == "P05");
+
+            Assert.Equal(0.20m, p01.PesoKg);
+            Assert.Equal(0.70m, p02.PesoKg);
+            Assert.Equal(0.10m, p03.PesoKg);
+            Assert.Equal(0.35m, p04.PesoKg);
+            Assert.Equal(0.10m, p05.PesoKg);
+
+            // Verificar suma exacta de 1.00 kg para P01 + P02 + P03 (KIT_TELETRABAJO)
             Assert.Equal(1.00m, p01.PesoKg + p02.PesoKg + p03.PesoKg);
 
             // Verificar contraseñas hasheadas (no texto plano)

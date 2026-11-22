@@ -10,7 +10,7 @@ public class StateTests
 {
     private Pedido CrearPedidoBorrador()
     {
-        var p01 = new ProductoSimple("P01", "Mouse USB", 20.00m, 8, 0.10m);
+        var p01 = new ProductoSimple("P01", "Mouse USB", 20.00m, 8, 0.20m);
         return new PedidoBuilder()
             .ConCliente(1, CategoriaCliente.Normal)
             .AgregarProducto(p01, 1)
@@ -61,7 +61,7 @@ public class StateTests
         Assert.Throws<DomainException>(() => pedido.Cancelar());
         Assert.False(pedido.PuedeEditar);
 
-        var p02 = new ProductoSimple("P02", "Teclado", 30.00m, 5, 0.60m);
+        var p02 = new ProductoSimple("P02", "Teclado", 30.00m, 5, 0.70m);
         Assert.Throws<DomainException>(() => pedido.AgregarLinea(new LineaPedido(p02, 1)));
     }
 
