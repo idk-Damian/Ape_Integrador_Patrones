@@ -20,8 +20,9 @@ internal sealed class FormAcceso : Form
         FormBorderStyle = FormBorderStyle.FixedDialog;
         StartPosition = FormStartPosition.CenterScreen;
         MaximizeBox = false;
+        AutoScaleDimensions = new SizeF(96F, 96F);
         AutoScaleMode = AutoScaleMode.Dpi;
-        ClientSize = new Size(430, 300);
+        ClientSize = new Size(480, 310);
         Padding = new Padding(24);
 
         _clave.UseSystemPasswordChar = true;
@@ -37,9 +38,9 @@ internal sealed class FormAcceso : Form
         var ayuda = new Label
         {
             Dock = DockStyle.Bottom,
-            Height = 40,
+            Height = 46,
             ForeColor = SystemColors.GrayText,
-            Text = "Usuarios de prueba: admin, ventas, bodega y consulta.\nContraseña: nombre del rol con mayúscula inicial y 123! (ej. Ventas123!)"
+            Text = "Usuarios de prueba: admin, ventas, bodega y consulta.\nContraseña: Rol123! (ej. Ventas123!, Bodega123!)"
         };
 
         Controls.Add(botones);

@@ -23,6 +23,7 @@ internal sealed class PanelGeneralView : VistaBase
 
         Controls.Add(tabla);
         Controls.Add(_indicadores);
+        Controls.Add(new Label { Text = "Indicadores de esta sesión", Dock = DockStyle.Top, Height = 24, ForeColor = SystemColors.GrayText });
     }
 
     public override string Nombre => "Panel general";
@@ -37,13 +38,13 @@ internal sealed class PanelGeneralView : VistaBase
         var metricas = Unico<MetricasSesion>();
 
         _indicadores.Controls.Clear();
-        Indicador("Pagos en la sesión", metricas.PedidosPagados.ToString());
-        Indicador("Despachos en la sesión", metricas.Despachos.ToString());
-        Indicador("Devoluciones en la sesión", metricas.Devoluciones.ToString());
+        Indicador("Pagos", metricas.PedidosPagados.ToString());
+        Indicador("Despachos", metricas.Despachos.ToString());
+        Indicador("Devoluciones", metricas.Devoluciones.ToString());
         Indicador("Avisos enviados", metricas.Notificaciones.ToString());
         Indicador("Eventos procesados", metricas.EventosProcesados.ToString());
         Indicador("Eventos pendientes", panel.EventosPendientes.ToString());
-        Indicador("Ventas cobradas (USD)", panel.VentasCobradas.ToString("N2"));
+        Indicador("Ventas cobradas USD", panel.VentasCobradas.ToString("N2"));
 
         Ui.Cargar(_estados, panel.PorEstado);
         Ui.Cargar(_alertas, panel.StockBajo);
@@ -51,9 +52,14 @@ internal sealed class PanelGeneralView : VistaBase
 
     private void Indicador(string titulo, string valor)
     {
-        var caja = new Panel { Width = 160, Height = 64, BorderStyle = BorderStyle.FixedSingle, Margin = new Padding(0, 0, 8, 0) };
+        // las cajas se crean despues del autoescalado del formulario, por eso se pasan a pixeles del monitor
+        var caja = new Panel
+        {
+            Width = LogicalToDeviceUnits(150), Height = LogicalToDeviceUnits(64), BorderStyle = BorderStyle.FixedSingle,
+            Margin = new Padding(0, 0, LogicalToDeviceUnits(8), LogicalToDeviceUnits(8))
+        };
         caja.Controls.Add(new Label { Text = valor, Font = Ui.FuenteTitulo, Dock = DockStyle.Fill, TextAlign = ContentAlignment.MiddleCenter });
-        caja.Controls.Add(new Label { Text = titulo, Dock = DockStyle.Top, Height = 22, TextAlign = ContentAlignment.MiddleCenter, ForeColor = SystemColors.GrayText });
+        caja.Controls.Add(new Label { Text = titulo, Dock = DockStyle.Top, Height = LogicalToDeviceUnits(22), TextAlign = ContentAlignment.MiddleCenter, ForeColor = SystemColors.GrayText });
         _indicadores.Controls.Add(caja);
     }
 }

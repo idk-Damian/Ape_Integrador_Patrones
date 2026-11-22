@@ -30,10 +30,12 @@ internal sealed class FormPrincipal : Form
 
         Text = $"LogiMarket 360 - {sesion.NombreUsuario} ({sesion.Rol})";
         Font = Ui.Fuente;
+        AutoScaleDimensions = new SizeF(96F, 96F);
         AutoScaleMode = AutoScaleMode.Dpi;
         StartPosition = FormStartPosition.CenterScreen;
         Size = new Size(1320, 820);
         MinimumSize = new Size(1080, 680);
+        WindowState = FormWindowState.Maximized;
 
         _vistas.AddRange(new VistaBase[]
         {
@@ -48,7 +50,7 @@ internal sealed class FormPrincipal : Form
             var vistaActual = vista;
             var boton = new Button
             {
-                Text = vista.Nombre, Width = 190, Height = 36, TextAlign = ContentAlignment.MiddleLeft,
+                Text = vista.Nombre, Width = 226, Height = 36, TextAlign = ContentAlignment.MiddleLeft,
                 Margin = new Padding(0, 0, 0, 4), UseVisualStyleBackColor = true
             };
             boton.Click += (_, _) => Mostrar(vistaActual, boton);
@@ -60,13 +62,13 @@ internal sealed class FormPrincipal : Form
 
         var usuario = new Label
         {
-            Dock = DockStyle.Bottom, Height = 44, Padding = new Padding(10, 4, 4, 4), ForeColor = SystemColors.GrayText,
+            Dock = DockStyle.Bottom, Height = 52, Padding = new Padding(10, 4, 4, 4), ForeColor = SystemColors.GrayText,
             Text = $"Sesión: {sesion.NombreUsuario}\nRol: {sesion.Rol}"
         };
         var cerrar = new Button { Text = "Cerrar sesión", Dock = DockStyle.Bottom, Height = 34, UseVisualStyleBackColor = true };
         cerrar.Click += (_, _) => CerrarSesion();
 
-        var lateral = new Panel { Dock = DockStyle.Left, Width = 214, BackColor = SystemColors.ControlLight };
+        var lateral = new Panel { Dock = DockStyle.Left, Width = 250, BackColor = SystemColors.ControlLight };
         lateral.Controls.Add(_menu);
         lateral.Controls.Add(usuario);
         lateral.Controls.Add(cerrar);

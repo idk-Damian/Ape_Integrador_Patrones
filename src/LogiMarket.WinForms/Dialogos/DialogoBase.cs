@@ -17,6 +17,7 @@ internal abstract class DialogoBase : Form
         MaximizeBox = false;
         MinimizeBox = false;
         Padding = new Padding(12);
+        AutoScaleDimensions = new SizeF(96F, 96F);
         AutoScaleMode = AutoScaleMode.Dpi;
 
         var aceptar = Ui.Boton("Aceptar", (_, _) => { if (Validar()) DialogResult = DialogResult.OK; }, 100);

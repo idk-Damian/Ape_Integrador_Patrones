@@ -13,7 +13,7 @@ internal sealed class CarritoView : VistaBase
 {
     private readonly ServicioCarrito _carrito;
     private readonly ComboBox _clientes = Ui.Combo(240);
-    private readonly ComboBox _entrega = Ui.Combo(120);
+    private readonly ComboBox _entrega = Ui.Combo(160);
     private readonly ComboBox _elementos = Ui.Combo(320);
     private readonly NumericUpDown _cantidad = Ui.Numero(1, 500, 0, 70);
     private readonly NumericUpDown _nuevaCantidad = Ui.Numero(1, 500, 0, 70);
