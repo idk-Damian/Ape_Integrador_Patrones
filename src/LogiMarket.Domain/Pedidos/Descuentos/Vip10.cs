@@ -3,15 +3,13 @@ using LogiMarket.Domain.Enums;
 
 namespace LogiMarket.Domain.Pedidos.Descuentos;
 
-/// <summary>VIP: 10% si cliente es VIP y NO aplica MAYORISTA. Prioridad media.</summary>
+// ya no repite la regla de mayorista: si ambas aplican gana la de mayor prioridad
 public sealed class Vip10 : IEstrategiaDescuento
 {
     public string Nombre => "VIP";
-    public int Prioridad => 5;
+    public int Prioridad => 50;
 
-    public bool Aplica(int totalUnidadesFisicas, CategoriaCliente categoriaCliente)
-        => categoriaCliente == CategoriaCliente.Vip && totalUnidadesFisicas < 10;
+    public bool Aplica(ContextoDescuento contexto) => contexto.Categoria == CategoriaCliente.Vip;
 
-    public decimal CalcularDescuento(decimal subtotal)
-        => Moneda.Redondear(subtotal * 0.10m);
+    public decimal CalcularDescuento(decimal subtotal) => Moneda.Redondear(subtotal * 0.10m);
 }

@@ -1,11 +1,5 @@
-using LogiMarket.Domain.Pedidos;
-
 namespace LogiMarket.Domain.Pedidos.Estados;
 
-/// <summary>
-/// Patrón STATE – Interfaz polimórfica para los estados del pedido.
-/// Cada estado decide qué transiciones son válidas.
-/// </summary>
 public interface IEstadoPedido
 {
     string Nombre { get; }

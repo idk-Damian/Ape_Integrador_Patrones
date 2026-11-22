@@ -1,101 +1,69 @@
+using LogiMarket.Application.Excepciones;
 using LogiMarket.Application.Interfaces;
-using LogiMarket.Infrastructure.Repositories;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace LogiMarket.Infrastructure.Data;
 
-public class UnitOfWork : IUnitOfWork
+// el contexto lo crea y lo libera el contenedor; esta clase no lo cierra
+public sealed class UnitOfWork : IUnitOfWork
 {
+    private const int SqliteRestriccionUnica = 2067;
+    private const int SqliteLlavePrimaria = 1555;
+
     private readonly LogiMarketDbContext _context;
-    private IDbContextTransaction? _transaccion;
 
-    public IProductoRepository Productos { get; }
-    public IClienteRepository Clientes { get; }
-    public IPedidoRepository Pedidos { get; }
-    public IUsuarioRepository Usuarios { get; }
-    public IKitRepository Kits { get; }
-    public IPagoRepository Pagos { get; }
-    public IDespachoRepository Despachos { get; }
-    public IDevolucionRepository Devoluciones { get; }
-    public IMovimientoInventarioRepository MovimientosInventario { get; }
-    public IEventoOutboxRepository EventosOutbox { get; }
-    public IAuditoriaRepository Auditorias { get; }
+    public UnitOfWork(LogiMarketDbContext context) => _context = context;
 
-    public UnitOfWork(LogiMarketDbContext context)
+    public async Task GuardarCambiosAsync()
     {
-        _context = context;
-        Productos = new ProductoRepository(context);
-        Clientes = new ClienteRepository(context);
-        Pedidos = new PedidoRepository(context);
-        Usuarios = new UsuarioRepository(context);
-        Kits = new KitRepository(context);
-        Pagos = new PagoRepository(context);
-        Despachos = new DespachoRepository(context);
-        Devoluciones = new DevolucionRepository(context);
-        MovimientosInventario = new MovimientoInventarioRepository(context);
-        EventosOutbox = new EventoOutboxRepository(context);
-        Auditorias = new AuditoriaRepository(context);
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException ex)
+        {
+            throw new ConflictoConcurrenciaException(
+                "Otro usuario modificó los mismos datos. Vuelva a cargar e intente de nuevo.", ex);
+        }
+        catch (DbUpdateException ex) when (ex.InnerException is SqliteException
+               { SqliteExtendedErrorCode: SqliteRestriccionUnica or SqliteLlavePrimaria })
+        {
+            throw new ConflictoDuplicadoException("Ya existe un registro con ese valor único.", ex);
+        }
     }
 
-    public UnitOfWork(
-        LogiMarketDbContext context,
-        IProductoRepository productos,
-        IClienteRepository clientes,
-        IPedidoRepository pedidos,
-        IUsuarioRepository usuarios,
-        IKitRepository kits,
-        IPagoRepository pagos,
-        IDespachoRepository despachos,
-        IDevolucionRepository devoluciones,
-        IMovimientoInventarioRepository movimientosInventario,
-        IEventoOutboxRepository eventosOutbox,
-        IAuditoriaRepository auditorias)
-    {
-        _context = context;
-        Productos = productos;
-        Clientes = clientes;
-        Pedidos = pedidos;
-        Usuarios = usuarios;
-        Kits = kits;
-        Pagos = pagos;
-        Despachos = despachos;
-        Devoluciones = devoluciones;
-        MovimientosInventario = movimientosInventario;
-        EventosOutbox = eventosOutbox;
-        Auditorias = auditorias;
-    }
+    public async Task<ITransaccion> IniciarTransaccionAsync()
+        => new TransaccionEf(await _context.Database.BeginTransactionAsync());
 
-    public async Task<int> GuardarCambiosAsync()
-        => await _context.SaveChangesAsync();
+    public void DescartarCambios() => _context.ChangeTracker.Clear();
 
-    public async Task IniciarTransaccionAsync()
+    private sealed class TransaccionEf : ITransaccion
     {
-        _transaccion = await _context.Database.BeginTransactionAsync();
-    }
+        private readonly IDbContextTransaction _transaccion;
+        private bool _cerrada;
 
-    public async Task ConfirmarTransaccionAsync()
-    {
-        if (_transaccion is not null)
+        public TransaccionEf(IDbContextTransaction transaccion) => _transaccion = transaccion;
+
+        public async Task ConfirmarAsync()
         {
             await _transaccion.CommitAsync();
-            await _transaccion.DisposeAsync();
-            _transaccion = null;
+            _cerrada = true;
         }
-    }
 
-    public async Task RevertirTransaccionAsync()
-    {
-        if (_transaccion is not null)
+        public async Task RevertirAsync()
         {
+            if (_cerrada) return;
             await _transaccion.RollbackAsync();
-            await _transaccion.DisposeAsync();
-            _transaccion = null;
+            _cerrada = true;
         }
-    }
 
-    public void Dispose()
-    {
-        _transaccion?.Dispose();
-        _context.Dispose();
+        public async ValueTask DisposeAsync()
+        {
+            // si nadie confirmo, se revierte al salir del using
+            if (!_cerrada) await _transaccion.RollbackAsync();
+            await _transaccion.DisposeAsync();
+        }
     }
 }

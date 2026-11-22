@@ -26,24 +26,36 @@ namespace LogiMarket.Infrastructure.Migrations
                     b.Property<int>("Cantidad")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("CodigoComponente")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("TEXT");
-
                     b.Property<int>("KitPadreId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("TipoComponente")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Orden")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("ProductoId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("SubKitId")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("KitPadreId");
+                    b.HasIndex("ProductoId");
 
-                    b.ToTable("KitComponentes", (string)null);
+                    b.HasIndex("SubKitId");
+
+                    b.HasIndex("KitPadreId", "ProductoId")
+                        .IsUnique();
+
+                    b.HasIndex("KitPadreId", "SubKitId")
+                        .IsUnique();
+
+                    b.ToTable("KitComponentes", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_KitComponentes_Cantidad", "\"Cantidad\" > 0");
+
+                            t.HasCheckConstraint("CK_KitComponentes_Destino", "(\"ProductoId\" IS NULL AND \"SubKitId\" IS NOT NULL) OR (\"ProductoId\" IS NOT NULL AND \"SubKitId\" IS NULL)");
+                        });
                 });
 
             modelBuilder.Entity("LogiMarket.Domain.Catalogo.KitCompuesto", b =>
@@ -76,9 +88,19 @@ namespace LogiMarket.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Categoria")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Codigo")
                         .IsRequired()
-                        .HasMaxLength(10)
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasMaxLength(300)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Nombre")
@@ -87,7 +109,7 @@ namespace LogiMarket.Infrastructure.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("PesoKg")
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal(18,3)");
 
                     b.Property<decimal>("PrecioUnitario")
                         .HasColumnType("decimal(18,2)");
@@ -95,7 +117,7 @@ namespace LogiMarket.Infrastructure.Migrations
                     b.Property<int>("Stock")
                         .HasColumnType("INTEGER");
 
-                    b.Property<uint>("Version")
+                    b.Property<int>("Version")
                         .IsConcurrencyToken()
                         .HasColumnType("INTEGER");
 
@@ -104,7 +126,16 @@ namespace LogiMarket.Infrastructure.Migrations
                     b.HasIndex("Codigo")
                         .IsUnique();
 
-                    b.ToTable("Productos", (string)null);
+                    b.HasIndex("Nombre");
+
+                    b.ToTable("Productos", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_Productos_Peso", "\"PesoKg\" >= 0");
+
+                            t.HasCheckConstraint("CK_Productos_Precio", "\"PrecioUnitario\" > 0");
+
+                            t.HasCheckConstraint("CK_Productos_Stock", "\"Stock\" >= 0");
+                        });
                 });
 
             modelBuilder.Entity("LogiMarket.Domain.Clientes.Cliente", b =>
@@ -113,8 +144,13 @@ namespace LogiMarket.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Categoria")
+                    b.Property<bool>("Activo")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Categoria")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -126,10 +162,17 @@ namespace LogiMarket.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Telefono")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Email")
                         .IsUnique();
+
+                    b.HasIndex("Nombre");
 
                     b.ToTable("Clientes", (string)null);
                 });
@@ -140,23 +183,35 @@ namespace LogiMarket.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Direccion")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("Fecha")
+                    b.Property<DateTime>("FechaDespacho")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("FechaEntrega")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime>("FechaEstimada")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NumeroGuia")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("PedidoId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("TipoEntrega")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("PedidoId");
+                    b.HasIndex("NumeroGuia")
+                        .IsUnique();
+
+                    b.HasIndex("PedidoId")
+                        .IsUnique();
 
                     b.ToTable("Despachos", (string)null);
                 });
@@ -167,26 +222,43 @@ namespace LogiMarket.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("DiasDesdeEntrega")
+                        .HasColumnType("INTEGER");
+
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("Monto")
+                    b.Property<decimal>("MontoReembolso")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Motivo")
                         .IsRequired()
-                        .HasMaxLength(500)
+                        .HasMaxLength(20)
                         .HasColumnType("TEXT");
 
                     b.Property<int>("PedidoId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<bool>("ProductoSinUso")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ReferenciaReembolso")
+                        .IsRequired()
+                        .HasMaxLength(60)
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PedidoId")
                         .IsUnique();
 
-                    b.ToTable("Devoluciones", (string)null);
+                    b.HasIndex("ReferenciaReembolso")
+                        .IsUnique();
+
+                    b.ToTable("Devoluciones", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_Devoluciones_Monto", "\"MontoReembolso\" > 0");
+                        });
                 });
 
             modelBuilder.Entity("LogiMarket.Domain.Inventario.MovimientoInventario", b =>
@@ -201,14 +273,29 @@ namespace LogiMarket.Infrastructure.Migrations
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Motivo")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("TEXT");
+
                     b.Property<int?>("PedidoId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("ProductoId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Tipo")
+                    b.Property<string>("Referencia")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("StockResultante")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Tipo")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -216,7 +303,15 @@ namespace LogiMarket.Infrastructure.Migrations
 
                     b.HasIndex("ProductoId");
 
-                    b.ToTable("MovimientosInventario", (string)null);
+                    b.HasIndex("PedidoId", "ProductoId", "Tipo")
+                        .IsUnique();
+
+                    b.ToTable("MovimientosInventario", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_Movimientos_Cantidad", "\"Cantidad\" <> 0");
+
+                            t.HasCheckConstraint("CK_Movimientos_StockResultante", "\"StockResultante\" >= 0");
+                        });
                 });
 
             modelBuilder.Entity("LogiMarket.Domain.Outbox.Auditoria", b =>
@@ -227,32 +322,40 @@ namespace LogiMarket.Infrastructure.Migrations
 
                     b.Property<string>("Accion")
                         .IsRequired()
-                        .HasMaxLength(50)
+                        .HasMaxLength(60)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Categoria")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Correlacion")
+                        .HasMaxLength(40)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Detalle")
                         .HasMaxLength(1000)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Entidad")
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Referencia")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Usuario")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("EntidadId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("Fecha")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("UsuarioId")
-                        .HasColumnType("INTEGER");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UsuarioId");
+                    b.HasIndex("Categoria");
 
-                    b.HasIndex("Entidad", "EntidadId");
+                    b.HasIndex("Fecha");
 
                     b.ToTable("Auditorias", (string)null);
                 });
@@ -266,21 +369,34 @@ namespace LogiMarket.Infrastructure.Migrations
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("TEXT");
 
+                    b.Property<DateTime?>("FechaProcesado")
+                        .HasColumnType("TEXT");
+
+                    b.Property<Guid>("IdEvento")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Intentos")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Payload")
                         .IsRequired()
                         .HasColumnType("TEXT");
-
-                    b.Property<bool>("Procesado")
-                        .HasColumnType("INTEGER");
 
                     b.Property<string>("TipoEvento")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("UltimoError")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("Procesado");
+                    b.HasIndex("FechaProcesado");
+
+                    b.HasIndex("IdEvento")
+                        .IsUnique();
 
                     b.ToTable("EventosOutbox", (string)null);
                 });
@@ -293,7 +409,7 @@ namespace LogiMarket.Infrastructure.Migrations
 
                     b.Property<string>("ClaveIdempotencia")
                         .IsRequired()
-                        .HasMaxLength(50)
+                        .HasMaxLength(80)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("Fecha")
@@ -305,9 +421,14 @@ namespace LogiMarket.Infrastructure.Migrations
                     b.Property<int>("PedidoId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("ReferenciaCobro")
+                    b.Property<string>("Proveedor")
                         .IsRequired()
                         .HasMaxLength(50)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ReferenciaCobro")
+                        .IsRequired()
+                        .HasMaxLength(60)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -315,12 +436,48 @@ namespace LogiMarket.Infrastructure.Migrations
                     b.HasIndex("ClaveIdempotencia")
                         .IsUnique();
 
-                    b.HasIndex("PedidoId");
+                    b.HasIndex("PedidoId")
+                        .IsUnique();
 
                     b.HasIndex("ReferenciaCobro")
                         .IsUnique();
 
-                    b.ToTable("Pagos", (string)null);
+                    b.ToTable("Pagos", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_Pagos_Monto", "\"Monto\" > 0");
+                        });
+                });
+
+            modelBuilder.Entity("LogiMarket.Domain.Pedidos.Historial.CambioEstadoPedido", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("EstadoAnterior")
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("EstadoNuevo")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("Fecha")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PedidoId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Secuencia")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PedidoId", "Secuencia")
+                        .IsUnique();
+
+                    b.ToTable("PedidoHistorialEstados", (string)null);
                 });
 
             modelBuilder.Entity("LogiMarket.Domain.Pedidos.LineaComponenteSnapshot", b =>
@@ -335,15 +492,18 @@ namespace LogiMarket.Infrastructure.Migrations
                     b.Property<int>("LineaPedidoId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("Orden")
+                        .HasColumnType("INTEGER");
+
                     b.Property<decimal>("PesoKg")
-                        .HasColumnType("decimal(18,4)");
+                        .HasColumnType("decimal(18,3)");
 
                     b.Property<decimal>("PrecioUnitario")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("ProductoCodigo")
                         .IsRequired()
-                        .HasMaxLength(10)
+                        .HasMaxLength(20)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ProductoNombre")
@@ -380,6 +540,9 @@ namespace LogiMarket.Infrastructure.Migrations
                     b.Property<bool>("EsKit")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("Orden")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("PedidoId")
                         .HasColumnType("INTEGER");
 
@@ -388,9 +551,13 @@ namespace LogiMarket.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PedidoId");
+                    b.HasIndex("PedidoId", "ElementoCodigo")
+                        .IsUnique();
 
-                    b.ToTable("PedidoDetalles", (string)null);
+                    b.ToTable("PedidoDetalles", null, t =>
+                        {
+                            t.HasCheckConstraint("CK_PedidoDetalles_Cantidad", "\"Cantidad\" > 0");
+                        });
                 });
 
             modelBuilder.Entity("LogiMarket.Domain.Pedidos.Pedido", b =>
@@ -399,8 +566,10 @@ namespace LogiMarket.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CategoriaCliente")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("CategoriaCliente")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("ClienteId")
                         .HasColumnType("INTEGER");
@@ -415,6 +584,9 @@ namespace LogiMarket.Infrastructure.Migrations
                         .HasColumnName("Estado");
 
                     b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("FechaEntrega")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("FechaModificacion")
@@ -439,9 +611,15 @@ namespace LogiMarket.Infrastructure.Migrations
                     b.Property<decimal>("Total")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<int>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("ClienteId");
+
+                    b.HasIndex("EstadoNombre");
 
                     b.ToTable("Pedidos", (string)null);
                 });
@@ -465,8 +643,10 @@ namespace LogiMarket.Infrastructure.Migrations
                         .HasMaxLength(64)
                         .HasColumnType("BLOB");
 
-                    b.Property<int>("Rol")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Rol")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT");
 
                     b.Property<byte[]>("Salt")
                         .IsRequired()
@@ -488,6 +668,20 @@ namespace LogiMarket.Infrastructure.Migrations
                         .HasForeignKey("KitPadreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("LogiMarket.Domain.Catalogo.ProductoSimple", "Producto")
+                        .WithMany()
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("LogiMarket.Domain.Catalogo.KitCompuesto", "SubKit")
+                        .WithMany()
+                        .HasForeignKey("SubKitId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Producto");
+
+                    b.Navigation("SubKit");
                 });
 
             modelBuilder.Entity("LogiMarket.Domain.Despachos.Despacho", b =>
@@ -513,7 +707,7 @@ namespace LogiMarket.Infrastructure.Migrations
                     b.HasOne("LogiMarket.Domain.Pedidos.Pedido", null)
                         .WithMany()
                         .HasForeignKey("PedidoId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("LogiMarket.Domain.Catalogo.ProductoSimple", null)
                         .WithMany()
@@ -522,20 +716,21 @@ namespace LogiMarket.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("LogiMarket.Domain.Outbox.Auditoria", b =>
-                {
-                    b.HasOne("LogiMarket.Domain.Usuarios.Usuario", null)
-                        .WithMany()
-                        .HasForeignKey("UsuarioId")
-                        .OnDelete(DeleteBehavior.SetNull);
-                });
-
             modelBuilder.Entity("LogiMarket.Domain.Pagos.Pago", b =>
                 {
                     b.HasOne("LogiMarket.Domain.Pedidos.Pedido", null)
                         .WithMany()
                         .HasForeignKey("PedidoId")
                         .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("LogiMarket.Domain.Pedidos.Historial.CambioEstadoPedido", b =>
+                {
+                    b.HasOne("LogiMarket.Domain.Pedidos.Pedido", null)
+                        .WithMany("CambiosEstado")
+                        .HasForeignKey("PedidoId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -578,6 +773,8 @@ namespace LogiMarket.Infrastructure.Migrations
 
             modelBuilder.Entity("LogiMarket.Domain.Pedidos.Pedido", b =>
                 {
+                    b.Navigation("CambiosEstado");
+
                     b.Navigation("Lineas");
                 });
 #pragma warning restore 612, 618

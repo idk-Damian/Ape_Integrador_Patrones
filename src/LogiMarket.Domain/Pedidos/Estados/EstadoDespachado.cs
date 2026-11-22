@@ -1,6 +1,5 @@
 namespace LogiMarket.Domain.Pedidos.Estados;
 
-/// <summary>DESPACHADO → puede Entregar. No permite edición ni retroceso.</summary>
 public sealed class EstadoDespachado : EstadoBase
 {
     public static readonly EstadoDespachado Instancia = new();

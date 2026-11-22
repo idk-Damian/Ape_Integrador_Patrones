@@ -2,7 +2,9 @@ using LogiMarket.Domain.Outbox;
 
 namespace LogiMarket.Application.Interfaces;
 
-public interface IAuditoriaRepository : IRepository<Auditoria>
+// bitacora de solo escritura y lectura
+public interface IAuditoriaRepository
 {
-    Task<IReadOnlyList<Auditoria>> ObtenerPorEntidadAsync(string entidad, int entidadId);
+    Task RegistrarAsync(Auditoria registro);
+    Task<IReadOnlyList<Auditoria>> ListarAsync(string? categoria = null);
 }

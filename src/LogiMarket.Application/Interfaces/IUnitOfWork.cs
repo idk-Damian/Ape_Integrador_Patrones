@@ -1,24 +1,15 @@
 namespace LogiMarket.Application.Interfaces;
 
-/// <summary>
-/// Unit of Work respaldado por transacción real de DbContext.
-/// </summary>
-public interface IUnitOfWork : IDisposable
+// unidad de trabajo: guarda los cambios del contexto y abre transacciones reales
+public interface IUnitOfWork
 {
-    IProductoRepository Productos { get; }
-    IClienteRepository Clientes { get; }
-    IPedidoRepository Pedidos { get; }
-    IUsuarioRepository Usuarios { get; }
-    IKitRepository Kits { get; }
-    IPagoRepository Pagos { get; }
-    IDespachoRepository Despachos { get; }
-    IDevolucionRepository Devoluciones { get; }
-    IMovimientoInventarioRepository MovimientosInventario { get; }
-    IEventoOutboxRepository EventosOutbox { get; }
-    IAuditoriaRepository Auditorias { get; }
+    Task GuardarCambiosAsync();
+    Task<ITransaccion> IniciarTransaccionAsync();
+    void DescartarCambios();
+}
 
-    Task<int> GuardarCambiosAsync();
-    Task IniciarTransaccionAsync();
-    Task ConfirmarTransaccionAsync();
-    Task RevertirTransaccionAsync();
+public interface ITransaccion : IAsyncDisposable
+{
+    Task ConfirmarAsync();
+    Task RevertirAsync();
 }

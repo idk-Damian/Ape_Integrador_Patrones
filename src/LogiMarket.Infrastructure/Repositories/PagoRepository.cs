@@ -1,17 +1,21 @@
 using LogiMarket.Application.Interfaces;
-using LogiMarket.Domain.Pagos;
 using LogiMarket.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using LogiMarket.Domain.Pagos;
 
 namespace LogiMarket.Infrastructure.Repositories;
 
-public class PagoRepository : Repository<Pago>, IPagoRepository
+public sealed class PagoRepository : IPagoRepository
 {
-    public PagoRepository(LogiMarketDbContext context) : base(context) { }
+    private readonly LogiMarketDbContext _context;
 
-    public async Task<Pago?> ObtenerPorPedidoAsync(int pedidoId)
-        => await DbSet.FirstOrDefaultAsync(p => p.PedidoId == pedidoId);
+    public PagoRepository(LogiMarketDbContext context) => _context = context;
 
-    public async Task<bool> ExisteClaveIdempotenciaAsync(string claveIdempotencia)
-        => await DbSet.AnyAsync(p => p.ClaveIdempotencia == claveIdempotencia);
+    public Task<Pago?> ObtenerPorClaveIdempotenciaAsync(string clave)
+        => _context.Pagos.FirstOrDefaultAsync(p => p.ClaveIdempotencia == clave.Trim());
+
+    public Task<Pago?> ObtenerPorPedidoAsync(int pedidoId)
+        => _context.Pagos.FirstOrDefaultAsync(p => p.PedidoId == pedidoId);
+
+    public async Task AgregarAsync(Pago pago) => await _context.Pagos.AddAsync(pago);
 }

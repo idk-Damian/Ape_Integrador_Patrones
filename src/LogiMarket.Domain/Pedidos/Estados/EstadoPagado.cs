@@ -1,6 +1,5 @@
 namespace LogiMarket.Domain.Pedidos.Estados;
 
-/// <summary>PAGADO → puede Despachar. Prohibido cancelar, editar o retroceder.</summary>
 public sealed class EstadoPagado : EstadoBase
 {
     public static readonly EstadoPagado Instancia = new();

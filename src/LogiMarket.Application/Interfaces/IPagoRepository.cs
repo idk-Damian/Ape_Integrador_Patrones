@@ -2,8 +2,10 @@ using LogiMarket.Domain.Pagos;
 
 namespace LogiMarket.Application.Interfaces;
 
-public interface IPagoRepository : IRepository<Pago>
+// sin eliminar ni actualizar: un cobro registrado no se toca
+public interface IPagoRepository
 {
+    Task<Pago?> ObtenerPorClaveIdempotenciaAsync(string clave);
     Task<Pago?> ObtenerPorPedidoAsync(int pedidoId);
-    Task<bool> ExisteClaveIdempotenciaAsync(string claveIdempotencia);
+    Task AgregarAsync(Pago pago);
 }

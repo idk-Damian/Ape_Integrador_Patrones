@@ -2,8 +2,8 @@ using LogiMarket.Domain.Devoluciones;
 
 namespace LogiMarket.Application.Interfaces;
 
-public interface IDevolucionRepository : IRepository<Devolucion>
+public interface IDevolucionRepository
 {
     Task<Devolucion?> ObtenerPorPedidoAsync(int pedidoId);
-    Task<bool> ExisteDevolucionParaPedidoAsync(int pedidoId);
+    Task AgregarAsync(Devolucion devolucion);
 }

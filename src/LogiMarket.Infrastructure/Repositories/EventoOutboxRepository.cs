@@ -1,14 +1,25 @@
 using LogiMarket.Application.Interfaces;
-using LogiMarket.Domain.Outbox;
 using LogiMarket.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using LogiMarket.Domain.Outbox;
 
 namespace LogiMarket.Infrastructure.Repositories;
 
-public class EventoOutboxRepository : Repository<EventoOutbox>, IEventoOutboxRepository
+public sealed class EventoOutboxRepository : IEventoOutboxRepository
 {
-    public EventoOutboxRepository(LogiMarketDbContext context) : base(context) { }
+    private readonly LogiMarketDbContext _context;
 
-    public async Task<IReadOnlyList<EventoOutbox>> ObtenerPendientesAsync()
-        => await DbSet.Where(e => !e.Procesado).OrderBy(e => e.FechaCreacion).ToListAsync();
+    public EventoOutboxRepository(LogiMarketDbContext context) => _context = context;
+
+    public async Task AgregarAsync(EventoOutbox evento) => await _context.EventosOutbox.AddAsync(evento);
+
+    public async Task<IReadOnlyList<EventoOutbox>> ObtenerPendientesAsync(int maximo = 50)
+        => await _context.EventosOutbox
+            .Where(e => e.FechaProcesado == null)
+            .OrderBy(e => e.Id)
+            .Take(maximo)
+            .ToListAsync();
+
+    public async Task<IReadOnlyList<EventoOutbox>> ListarAsync()
+        => await _context.EventosOutbox.OrderByDescending(e => e.Id).ToListAsync();
 }

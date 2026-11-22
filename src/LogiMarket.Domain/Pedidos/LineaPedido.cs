@@ -1,11 +1,10 @@
 using LogiMarket.Domain.Catalogo;
 using LogiMarket.Domain.Common;
+using LogiMarket.Domain.Exceptions;
 
 namespace LogiMarket.Domain.Pedidos;
 
-/// <summary>
-/// Línea de un pedido. Almacena snapshot de precio/composición al momento de agregar.
-/// </summary>
+// guarda una foto del precio y de la composicion al momento de agregar la linea
 public class LineaPedido
 {
     private readonly List<LineaComponenteSnapshot> _componentes = new();
@@ -17,40 +16,19 @@ public class LineaPedido
     public decimal PrecioUnitario { get; private set; }
     public int Cantidad { get; private set; }
     public bool EsKit { get; private set; }
-    public decimal Subtotal => Moneda.Redondear(PrecioUnitario * Cantidad);
+    public int Orden { get; private set; }
 
+    public decimal Subtotal => Moneda.Redondear(PrecioUnitario * Cantidad);
     public IReadOnlyList<LineaComponenteSnapshot> Componentes => _componentes.AsReadOnly();
 
-    /// <summary>Total de unidades físicas finales (expandidas) en esta línea.</summary>
-    public int TotalUnidadesFisicas
-    {
-        get
-        {
-            if (!EsKit) return Cantidad;
-            int total = 0;
-            foreach (var c in _componentes) total += c.Cantidad * Cantidad;
-            return total;
-        }
-    }
+    public int TotalUnidadesFisicas => _componentes.Sum(c => c.Cantidad) * Cantidad;
 
     private LineaPedido() { }
 
-    /// <summary>Constructor interno para restaurar desde memento sin reflexión.</summary>
-    internal LineaPedido(string elementoCodigo, string elementoNombre, decimal precioUnitario,
-        int cantidad, bool esKit, IEnumerable<LineaComponenteSnapshot> componentes)
+    internal LineaPedido(IElementoCatalogo elemento, int cantidad)
     {
-        ElementoCodigo = elementoCodigo;
-        ElementoNombre = elementoNombre;
-        PrecioUnitario = precioUnitario;
-        Cantidad = cantidad;
-        EsKit = esKit;
-        _componentes.AddRange(componentes);
-    }
-
-    public LineaPedido(IElementoCatalogo elemento, int cantidad)
-    {
-        if (elemento is null) throw new Exceptions.DomainException("El elemento no puede ser nulo.");
-        if (cantidad <= 0) throw new Exceptions.DomainException("La cantidad debe ser mayor a cero.");
+        if (elemento is null) throw new DomainException("El elemento no puede ser nulo.");
+        ValidarCantidad(cantidad);
 
         ElementoCodigo = elemento.Codigo;
         ElementoNombre = elemento.Nombre;
@@ -58,28 +36,37 @@ public class LineaPedido
         Cantidad = cantidad;
         EsKit = elemento.EsKit;
 
-        foreach (var componente in elemento.ObtenerComponentesFisicos(1))
-        {
-            _componentes.Add(new LineaComponenteSnapshot(
-                componente.Codigo, componente.Nombre,
-                componente.PrecioUnitario, componente.Cantidad, componente.PesoKg));
-        }
+        foreach (var c in elemento.ObtenerComponentesFisicos(1))
+            _componentes.Add(new LineaComponenteSnapshot(c.Codigo, c.Nombre, c.PrecioUnitario, c.Cantidad, c.PesoKg,
+                _componentes.Count + 1));
     }
 
-    internal LineaPedido ClonarProfundo()
+    private LineaPedido(string codigo, string nombre, decimal precio, int cantidad, bool esKit, int orden,
+        IEnumerable<LineaComponenteSnapshot> componentes)
     {
-        return new LineaPedido(
-            ElementoCodigo,
-            ElementoNombre,
-            PrecioUnitario,
-            Cantidad,
-            EsKit,
-            _componentes.Select(c => c.ClonarProfundo()));
-    }
-
-    internal void CargarComponentes(IEnumerable<LineaComponenteSnapshot> componentes)
-    {
-        _componentes.Clear();
+        Orden = orden;
+        ElementoCodigo = codigo;
+        ElementoNombre = nombre;
+        PrecioUnitario = precio;
+        Cantidad = cantidad;
+        EsKit = esKit;
         _componentes.AddRange(componentes);
+    }
+
+    internal void CambiarCantidad(int cantidad)
+    {
+        ValidarCantidad(cantidad);
+        Cantidad = cantidad;
+    }
+
+    internal void AsignarOrden(int orden) => Orden = orden;
+
+    // copia profunda: nuevas instancias de la linea y de cada componente
+    internal LineaPedido Clonar()
+        => new(ElementoCodigo, ElementoNombre, PrecioUnitario, Cantidad, EsKit, Orden, _componentes.Select(c => c.Clonar()));
+
+    private static void ValidarCantidad(int cantidad)
+    {
+        if (cantidad <= 0) throw new DomainException("La cantidad debe ser mayor a cero.");
     }
 }
