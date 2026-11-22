@@ -3,6 +3,7 @@ using LogiMarket.Application.Comun;
 using LogiMarket.Application.Consultas;
 using LogiMarket.Application.Notificaciones;
 using LogiMarket.Application.Interfaces;
+using LogiMarket.Application.Mantenimiento;
 using LogiMarket.Application.Pagos;
 using LogiMarket.Application.Seguridad;
 using LogiMarket.Infrastructure.Comprobantes;
@@ -14,6 +15,7 @@ using LogiMarket.Infrastructure.Pagos;
 using LogiMarket.Infrastructure.Pagos.Legado;
 using LogiMarket.Infrastructure.Repositories;
 using LogiMarket.Infrastructure.Seguridad;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -72,6 +74,9 @@ public static class DependencyInjection
         services.AddSingleton<CreadorNotificador, CreadorNotificadorSms>();
         services.AddSingleton<ISalidaDocumento>(_ => new SalidaArchivoTxt(Path.Combine(carpetaSalidas, "comprobantes")));
         services.AddScoped<IConsultasPedidos, ConsultasPedidos>();
+        var archivo = new SqliteConnectionStringBuilder(cadenaConexion).DataSource;
+        services.AddSingleton<IMantenimientoBaseDatos>(sp =>
+            new MantenimientoBaseDatos(sp.GetRequiredService<IServiceScopeFactory>(), archivo));
 
         return services;
     }

@@ -1,3 +1,5 @@
+using LogiMarket.Application.Catalogo;
+using LogiMarket.Application.Clientes;
 using LogiMarket.Application.Comandos;
 using LogiMarket.Application.Comprobantes;
 using LogiMarket.Application.Consultas;
@@ -9,7 +11,9 @@ using LogiMarket.Application.Comun;
 using LogiMarket.Application.Entregas;
 using LogiMarket.Application.Inventario;
 using LogiMarket.Application.Logistica;
+using LogiMarket.Application.Mantenimiento;
 using LogiMarket.Application.Pedidos;
+using LogiMarket.Application.Presentacion;
 using LogiMarket.Application.Pedidos.Confirmacion;
 using LogiMarket.Application.Pedidos.Validacion;
 using LogiMarket.Application.Seguridad;
@@ -65,6 +69,17 @@ public static class DependencyInjection
         services.AddSingleton<ISalidaDocumento, SalidaVistaPrevia>();
         services.AddScoped<ServicioComprobantes>();
         services.AddScoped<ServicioConsultasPedidos>();
+
+        // servicios que usan las pantallas
+        services.AddScoped<ServicioCatalogo>();
+        services.AddScoped<ServicioClientes>();
+        services.AddScoped<ServicioConsultas>();
+        services.AddScoped<ServicioMantenimiento>();
+        services.AddSingleton<ServicioCarrito>();
+        services.AddSingleton<IDisparadorOutbox, DisparadorOutbox>();
+        services.AddSingleton<FormularioPrincipalMediator>();
+        services.AddSingleton<IMediadorPantallas>(sp => sp.GetRequiredService<FormularioPrincipalMediator>());
+        services.AddSingleton<CatalogoVisualFlyweightFactory>();
         return services;
     }
 }
