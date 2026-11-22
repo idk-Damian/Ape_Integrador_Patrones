@@ -1,0 +1,16 @@
+﻿P22 - Proxy de proteccion delante del cobro (cadena real resuelta por DI)
+
+Rol CONSULTA: AccesoDenegadoException - Solo VENTAS o ADMIN pueden cobrar pedidos.
+  diferencia de eventos -> PAGO +0 (INICIO/PASARELA/FIN), SEGURIDAD +1
+  2026-11-02 10:00:00 [SEGURIDAD] Cobro denegado a 'consulta' (Consulta) por 59,00, clave P22-Consulta.
+Rol BODEGA: AccesoDenegadoException - Solo VENTAS o ADMIN pueden cobrar pedidos.
+  diferencia de eventos -> PAGO +0 (INICIO/PASARELA/FIN), SEGURIDAD +1
+  2026-11-02 10:00:00 [SEGURIDAD] Cobro denegado a 'bodega' (Bodega) por 59,00, clave P22-Bodega.
+
+Confirmacion por la fachada con CONSULTA: El usuario 'consulta' no tiene permiso para CobrarPedido.
+  pagos en base 0, stock P02 5 -> 5, estado BORRADOR, eventos outbox 0
+
+Contraste con VENTAS (autorizado): PAGO +3
+  2026-11-02 10:00:00 [PAGO] <e10df0e9722f> INICIO cobro 59,00 USD clave P22-VENTAS via LEGADO
+  2026-11-02 10:00:00 [PAGO] PASARELA LEGADO CobrarCentavos(5900, P22-VENTAS) -> OK;LEG-5FABF81320
+  2026-11-02 10:00:00 [PAGO] <e10df0e9722f> FIN APROBADO ref LEG-5FABF81320
