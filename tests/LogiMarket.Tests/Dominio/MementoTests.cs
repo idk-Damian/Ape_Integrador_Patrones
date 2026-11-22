@@ -35,8 +35,8 @@ public class MementoTests
         var calc = Datos.Calculadora();
         var pedido = d.Borrador();
         pedido.AgregarLinea(d.P02, 1, calc);
-        pedido.Validar();
-        pedido.Pagar();
+        pedido.Validar(Datos.Hoy);
+        pedido.Pagar(Datos.Hoy);
 
         Assert.False(pedido.PuedeDeshacer);
         Assert.Throws<DomainException>(() => pedido.Deshacer(calc));

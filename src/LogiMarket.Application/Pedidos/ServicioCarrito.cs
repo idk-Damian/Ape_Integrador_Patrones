@@ -1,3 +1,4 @@
+using LogiMarket.Application.Comun;
 using LogiMarket.Application.Entregas;
 using LogiMarket.Application.Excepciones;
 using LogiMarket.Application.Interfaces;
@@ -25,6 +26,7 @@ public sealed class ServicioCarrito
     private readonly CalculadoraDescuento _calculadora;
     private readonly CatalogoFabricasEntrega _entregas;
     private readonly IContextoUsuario _usuario;
+    private readonly IReloj _reloj;
 
     private Pedido? _borrador;
     private int? _clienteId;
@@ -34,12 +36,13 @@ public sealed class ServicioCarrito
     private string? _origen;
 
     public ServicioCarrito(IServiceScopeFactory alcances, CalculadoraDescuento calculadora, CatalogoFabricasEntrega entregas,
-        IContextoUsuario usuario)
+        IContextoUsuario usuario, IReloj reloj)
     {
         _alcances = alcances;
         _calculadora = calculadora;
         _entregas = entregas;
         _usuario = usuario;
+        _reloj = reloj;
     }
 
     public EstadoCarrito Estado => new(_clienteId, _cliente,
@@ -75,7 +78,7 @@ public sealed class ServicioCarrito
 
         if (_borrador is null)
             _borrador = new PedidoBuilder(_calculadora).ParaCliente(_clienteId.Value, _categoria)
-                .ConLinea(elemento, cantidad).ConEntrega(_entregas.Obtener(_entrega)).Construir();
+                .ConLinea(elemento, cantidad).ConEntrega(_entregas.Obtener(_entrega)).EnFecha(_reloj.Ahora).Construir();
         else
             _borrador.AgregarLinea(elemento, cantidad, _calculadora);
     }
@@ -96,7 +99,7 @@ public sealed class ServicioCarrito
     // prototype: la copia queda como nuevo carrito y el original no se toca
     public void ClonarActual()
     {
-        _borrador = Borrador().ClonarComoBorrador();
+        _borrador = Borrador().ClonarComoBorrador(_reloj.Ahora);
         _origen = "copia del carrito anterior";
     }
 
@@ -109,7 +112,7 @@ public sealed class ServicioCarrito
             ?? throw new RecursoNoEncontradoException($"No existe el pedido #{pedidoId}.");
         var cliente = await sp.GetRequiredService<IClienteRepository>().ObtenerPorIdAsync(pedido.ClienteId);
 
-        _borrador = pedido.ClonarComoBorrador();
+        _borrador = pedido.ClonarComoBorrador(_reloj.Ahora);
         _clienteId = pedido.ClienteId;
         _cliente = cliente?.Nombre ?? "";
         _categoria = pedido.CategoriaCliente;

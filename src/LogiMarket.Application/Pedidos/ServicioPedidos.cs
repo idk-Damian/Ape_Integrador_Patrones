@@ -67,7 +67,7 @@ public sealed class ServicioPedidos
         var resultado = await _validacion.ValidarAsync(pedido, Operacion.ValidarPedido);
         if (!resultado.Valido) return resultado;
 
-        pedido.Validar();
+        pedido.Validar(_reloj.Ahora);
         await _uow.GuardarCambiosAsync();
         return resultado;
     }
@@ -77,7 +77,7 @@ public sealed class ServicioPedidos
         {
             PoliticaPermisos.Exigir(_usuario, Operacion.CancelarPedido);
             var pedido = await ObtenerAsync(pedidoId);
-            pedido.Cancelar();
+            pedido.Cancelar(_reloj.Ahora);
             await _uow.GuardarCambiosAsync();
             return $"Pedido #{pedidoId} cancelado.";
         });

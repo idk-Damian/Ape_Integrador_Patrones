@@ -10,11 +10,9 @@ public sealed class PedidoMemento
         TipoEntrega = tipoEntrega;
         TarifaEnvio = tarifaEnvio;
         Lineas = lineas;
-        Fecha = DateTime.UtcNow;
     }
 
     internal TipoEntrega TipoEntrega { get; }
     internal decimal TarifaEnvio { get; }
     internal IReadOnlyList<LineaPedido> Lineas { get; }
-    public DateTime Fecha { get; }
 }

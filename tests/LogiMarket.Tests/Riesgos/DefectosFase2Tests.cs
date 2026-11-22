@@ -2,7 +2,10 @@ using LogiMarket.Application.Consultas;
 using LogiMarket.Application.Logistica;
 using LogiMarket.Application.Pedidos;
 using LogiMarket.Application.Pedidos.Confirmacion;
+using LogiMarket.Domain.Entregas;
 using LogiMarket.Domain.Enums;
+using LogiMarket.Domain.Exceptions;
+using LogiMarket.Domain.Pedidos;
 using LogiMarket.Tests.Soporte;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -59,6 +62,32 @@ public class DefectosFase2Tests : IDisposable
         Assert.Equal(horaDespacho, historial[3].Fecha);
         Assert.Equal("ENTREGADO", historial[4].Hacia);
         Assert.Equal(horaEntrega, historial[4].Fecha);
+    }
+
+    [Fact]
+    public void R10_ElBuilderNoInventaLaFecha()
+    {
+        var builder = new PedidoBuilder(Datos.Calculadora())
+            .ParaCliente(1, CategoriaCliente.Normal)
+            .ConLinea(new Datos().P01, 1)
+            .ConEntrega(new FabricaEntregaEstandar());
+
+        Assert.Throws<DomainException>(() => builder.Construir());
+    }
+
+    [Fact]
+    public void R10_CadaTransicionGuardaLaFechaRecibida()
+    {
+        var pedido = new Datos().Borrador();
+        var pago = Datos.Hoy.AddHours(1);
+        var despacho = Datos.Hoy.AddDays(1);
+
+        pedido.Validar(Datos.Hoy);
+        pedido.Pagar(pago);
+        pedido.Despachar(despacho);
+
+        Assert.Equal(new[] { Datos.Hoy, Datos.Hoy, pago, despacho }, pedido.CambiosEstado.Select(c => c.Fecha));
+        Assert.Equal(despacho, pedido.FechaModificacion);
     }
 
     private async Task<DetallePedido> DetalleAsync(int id)

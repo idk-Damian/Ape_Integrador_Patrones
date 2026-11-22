@@ -47,7 +47,7 @@ public class PersistenciaTests : IDisposable
             var kit = await new KitRepository(ctx).ObtenerPorCodigoAsync("KIT_TELETRABAJO");
             var ana = await ctx.Clientes.SingleAsync(c => c.Email == "ana@demo.local");
             var pedido = Datos.Builder().ParaCliente(ana).ConLinea(kit!, 1).ConEntrega(new FabricaEntregaEstandar()).Construir();
-            pedido.Validar();
+            pedido.Validar(Datos.Hoy);
 
             await new PedidoRepository(ctx).AgregarAsync(pedido);
             await new UnitOfWork(ctx).GuardarCambiosAsync();
