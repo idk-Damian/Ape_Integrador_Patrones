@@ -1,14 +1,24 @@
 using LogiMarket.Application.Interfaces;
-using LogiMarket.Domain.Outbox;
 using LogiMarket.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using LogiMarket.Domain.Outbox;
 
 namespace LogiMarket.Infrastructure.Repositories;
 
-public class AuditoriaRepository : Repository<Auditoria>, IAuditoriaRepository
+public sealed class AuditoriaRepository : IAuditoriaRepository
 {
-    public AuditoriaRepository(LogiMarketDbContext context) : base(context) { }
+    private readonly LogiMarketDbContext _context;
 
-    public async Task<IReadOnlyList<Auditoria>> ObtenerPorEntidadAsync(string entidad, int entidadId)
-        => await DbSet.Where(a => a.Entidad == entidad && a.EntidadId == entidadId).OrderByDescending(a => a.Fecha).ToListAsync();
+    public AuditoriaRepository(LogiMarketDbContext context) => _context = context;
+
+    public async Task RegistrarAsync(Auditoria registro) => await _context.Auditorias.AddAsync(registro);
+
+    public Task<bool> ExisteAsync(string categoria, string referencia)
+        => _context.Auditorias.AnyAsync(a => a.Categoria == categoria && a.Referencia == referencia);
+
+    public async Task<IReadOnlyList<Auditoria>> ListarAsync(string? categoria = null)
+        => await _context.Auditorias
+            .Where(a => categoria == null || a.Categoria == categoria)
+            .OrderByDescending(a => a.Id)
+            .ToListAsync();
 }

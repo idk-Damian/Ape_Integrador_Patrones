@@ -2,7 +2,9 @@ using LogiMarket.Domain.Inventario;
 
 namespace LogiMarket.Application.Interfaces;
 
-public interface IMovimientoInventarioRepository : IRepository<MovimientoInventario>
+public interface IMovimientoInventarioRepository
 {
-    Task<IReadOnlyList<MovimientoInventario>> ObtenerPorProductoAsync(int productoId);
+    Task AgregarAsync(MovimientoInventario movimiento);
+    Task<IReadOnlyList<MovimientoInventario>> ListarPorPedidoAsync(int pedidoId);
+    Task<IReadOnlyList<MovimientoInventario>> ListarAsync(int? productoId = null);
 }

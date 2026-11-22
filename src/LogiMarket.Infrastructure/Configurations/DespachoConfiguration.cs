@@ -12,15 +12,14 @@ public class DespachoConfiguration : IEntityTypeConfiguration<Despacho>
         builder.ToTable("Despachos");
         builder.HasKey(d => d.Id);
 
-        builder.Property(d => d.PedidoId).IsRequired();
-        builder.Property(d => d.Direccion).IsRequired().HasMaxLength(300);
-        builder.Property(d => d.Fecha).IsRequired();
+        builder.Property(d => d.NumeroGuia).IsRequired().HasMaxLength(40);
+        builder.Property(d => d.TipoEntrega).HasConversion<string>().HasMaxLength(20);
+        builder.Property(d => d.FechaDespacho).IsRequired();
+        builder.Property(d => d.FechaEstimada).IsRequired();
 
-        builder.HasIndex(d => d.PedidoId);
+        builder.HasIndex(d => d.PedidoId).IsUnique();
+        builder.HasIndex(d => d.NumeroGuia).IsUnique();
 
-        builder.HasOne<Pedido>()
-            .WithMany()
-            .HasForeignKey(d => d.PedidoId)
-            .OnDelete(DeleteBehavior.Restrict);
+        builder.HasOne<Pedido>().WithMany().HasForeignKey(d => d.PedidoId).OnDelete(DeleteBehavior.Restrict);
     }
 }

@@ -1,24 +1,28 @@
 namespace LogiMarket.Domain.Outbox;
 
+// registro de solo escritura para negocio, seguridad y pagos
 public class Auditoria
 {
     public int Id { get; private set; }
-    public string Entidad { get; private set; } = null!;
-    public int EntidadId { get; private set; }
+    public string Categoria { get; private set; } = null!;
     public string Accion { get; private set; } = null!;
-    public int? UsuarioId { get; private set; }
-    public DateTime Fecha { get; private set; }
+    public string Referencia { get; private set; } = null!;
+    public string Usuario { get; private set; } = null!;
     public string? Detalle { get; private set; }
+    public string? Correlacion { get; private set; }
+    public DateTime Fecha { get; private set; }
 
     private Auditoria() { }
 
-    public Auditoria(string entidad, int entidadId, string accion, int? usuarioId, string? detalle = null)
+    public Auditoria(string categoria, string accion, string referencia, string usuario, DateTime fecha,
+        string? detalle = null, string? correlacion = null)
     {
-        Entidad = entidad;
-        EntidadId = entidadId;
+        Categoria = categoria;
         Accion = accion;
-        UsuarioId = usuarioId;
+        Referencia = referencia;
+        Usuario = usuario;
+        Fecha = fecha;
         Detalle = detalle;
-        Fecha = DateTime.UtcNow;
+        Correlacion = correlacion;
     }
 }

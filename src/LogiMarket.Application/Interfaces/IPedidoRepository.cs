@@ -2,8 +2,9 @@ using LogiMarket.Domain.Pedidos;
 
 namespace LogiMarket.Application.Interfaces;
 
-public interface IPedidoRepository : IRepository<Pedido>
+public interface IPedidoRepository
 {
-    Task<Pedido?> ObtenerConLineasAsync(int id);
-    Task<IReadOnlyList<Pedido>> ObtenerPorClienteAsync(int clienteId);
+    Task<Pedido?> ObtenerPorIdAsync(int id);
+    Task<IReadOnlyList<Pedido>> ListarAsync();
+    Task AgregarAsync(Pedido pedido);
 }

@@ -1,6 +1,6 @@
 namespace LogiMarket.Domain.Pedidos;
 
-/// <summary>Snapshot de un componente físico dentro de una línea de pedido (kit expandido).</summary>
+// SKU final que forma parte de una linea, con el precio que tenia al venderse
 public class LineaComponenteSnapshot
 {
     public int Id { get; private set; }
@@ -10,19 +10,21 @@ public class LineaComponenteSnapshot
     public decimal PrecioUnitario { get; private set; }
     public int Cantidad { get; private set; }
     public decimal PesoKg { get; private set; }
+    public int Orden { get; private set; }
 
     private LineaComponenteSnapshot() { }
 
-    public LineaComponenteSnapshot(string productoCodigo, string productoNombre,
-        decimal precioUnitario, int cantidad, decimal pesoKg)
+    internal LineaComponenteSnapshot(string productoCodigo, string productoNombre,
+        decimal precioUnitario, int cantidad, decimal pesoKg, int orden)
     {
         ProductoCodigo = productoCodigo;
         ProductoNombre = productoNombre;
         PrecioUnitario = precioUnitario;
         Cantidad = cantidad;
         PesoKg = pesoKg;
+        Orden = orden;
     }
 
-    internal LineaComponenteSnapshot ClonarProfundo()
-        => new(ProductoCodigo, ProductoNombre, PrecioUnitario, Cantidad, PesoKg);
+    internal LineaComponenteSnapshot Clonar()
+        => new(ProductoCodigo, ProductoNombre, PrecioUnitario, Cantidad, PesoKg, Orden);
 }

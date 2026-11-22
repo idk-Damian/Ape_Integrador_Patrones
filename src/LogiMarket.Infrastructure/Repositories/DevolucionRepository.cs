@@ -1,17 +1,18 @@
 using LogiMarket.Application.Interfaces;
-using LogiMarket.Domain.Devoluciones;
 using LogiMarket.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using LogiMarket.Domain.Devoluciones;
 
 namespace LogiMarket.Infrastructure.Repositories;
 
-public class DevolucionRepository : Repository<Devolucion>, IDevolucionRepository
+public sealed class DevolucionRepository : IDevolucionRepository
 {
-    public DevolucionRepository(LogiMarketDbContext context) : base(context) { }
+    private readonly LogiMarketDbContext _context;
 
-    public async Task<Devolucion?> ObtenerPorPedidoAsync(int pedidoId)
-        => await DbSet.FirstOrDefaultAsync(d => d.PedidoId == pedidoId);
+    public DevolucionRepository(LogiMarketDbContext context) => _context = context;
 
-    public async Task<bool> ExisteDevolucionParaPedidoAsync(int pedidoId)
-        => await DbSet.AnyAsync(d => d.PedidoId == pedidoId);
+    public Task<Devolucion?> ObtenerPorPedidoAsync(int pedidoId)
+        => _context.Devoluciones.FirstOrDefaultAsync(d => d.PedidoId == pedidoId);
+
+    public async Task AgregarAsync(Devolucion devolucion) => await _context.Devoluciones.AddAsync(devolucion);
 }

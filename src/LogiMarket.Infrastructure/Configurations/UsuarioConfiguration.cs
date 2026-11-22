@@ -16,7 +16,7 @@ public class UsuarioConfiguration : IEntityTypeConfiguration<Usuario>
 
         builder.Property(u => u.PasswordHash).IsRequired().HasMaxLength(64);
         builder.Property(u => u.Salt).IsRequired().HasMaxLength(32);
-        builder.Property(u => u.Rol).IsRequired();
+        builder.Property(u => u.Rol).HasConversion<string>().HasMaxLength(20);
         builder.Property(u => u.Activo).IsRequired();
     }
 }

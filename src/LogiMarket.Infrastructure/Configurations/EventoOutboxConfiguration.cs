@@ -14,8 +14,11 @@ public class EventoOutboxConfiguration : IEntityTypeConfiguration<EventoOutbox>
         builder.Property(e => e.TipoEvento).IsRequired().HasMaxLength(100);
         builder.Property(e => e.Payload).IsRequired();
         builder.Property(e => e.FechaCreacion).IsRequired();
-        builder.Property(e => e.Procesado).IsRequired();
+        builder.Property(e => e.UltimoError).HasMaxLength(500);
 
-        builder.HasIndex(e => e.Procesado);
+        builder.HasIndex(e => e.IdEvento).IsUnique();
+        builder.HasIndex(e => e.FechaProcesado);
+
+        builder.Ignore(e => e.Procesado);
     }
 }

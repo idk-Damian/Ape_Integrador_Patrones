@@ -1,242 +1,236 @@
-using LogiMarket.Domain.Clientes;
+using LogiMarket.Domain.Catalogo;
 using LogiMarket.Domain.Common;
+using LogiMarket.Domain.Entregas;
 using LogiMarket.Domain.Enums;
 using LogiMarket.Domain.Exceptions;
 using LogiMarket.Domain.Pedidos.Descuentos;
 using LogiMarket.Domain.Pedidos.Estados;
+using LogiMarket.Domain.Pedidos.Historial;
 using LogiMarket.Domain.Pedidos.Memento;
 
 namespace LogiMarket.Domain.Pedidos;
 
-/// <summary>
-/// Agregado raíz de Pedido. Integra State, Prototype, Memento, Strategy.
-/// </summary>
+// agregado raiz del pedido: estados, totales, historial de ediciones y clonado
 public class Pedido
 {
     private readonly List<LineaPedido> _lineas = new();
-    private IEstadoPedido _estado = EstadoBorrador.Instancia;
+    private readonly List<CambioEstadoPedido> _cambiosEstado = new();
     private readonly HistorialPedido _historial = new();
+    private IEstadoPedido _estado = EstadoBorrador.Instancia;
 
     public int Id { get; private set; }
     public int ClienteId { get; private set; }
     public CategoriaCliente CategoriaCliente { get; private set; }
 
-    // --- Estado (State pattern) ---
     public string EstadoNombre
     {
         get => _estado.Nombre;
         private set => _estado = EstadoPedidoFactory.Crear(value);
     }
 
-    public bool PuedeEditar => _estado.PuedeEditar;
-
-    // --- Líneas ---
-    public IReadOnlyList<LineaPedido> Lineas => _lineas.AsReadOnly();
-
-    // --- Totales ---
+    public TipoEntrega TipoEntrega { get; private set; }
     public decimal Subtotal { get; private set; }
     public decimal Descuento { get; private set; }
     public string NombreDescuento { get; private set; } = "NORMAL";
     public decimal TarifaEnvio { get; private set; }
     public decimal Total { get; private set; }
 
-    // --- Entrega ---
-    public string TipoEntrega { get; private set; } = Enums.TipoEntrega.RecogerEnTienda.ToString();
-
-    // --- Fechas ---
     public DateTime FechaCreacion { get; private set; }
     public DateTime? FechaModificacion { get; private set; }
+    public DateTime? FechaEntrega { get; private set; }
+    public int Version { get; private set; }
 
-    // --- EF Core ---
+    public IReadOnlyList<LineaPedido> Lineas => _lineas.AsReadOnly();
+    public IReadOnlyList<CambioEstadoPedido> CambiosEstado => _cambiosEstado.AsReadOnly();
+
+    public bool PuedeEditar => _estado.PuedeEditar;
+    public bool PuedeDeshacer => PuedeEditar && _historial.PuedeDeshacer;
+    public bool PuedeRehacer => PuedeEditar && _historial.PuedeRehacer;
+    public int TotalUnidadesFisicas => _lineas.Sum(l => l.TotalUnidadesFisicas);
+
+    // lo que se devuelve en una devolucion total: productos con descuento, sin flete
+    public decimal ImporteProductos => Moneda.Redondear(Subtotal - Descuento);
+
     private Pedido() { }
 
-    internal Pedido(int clienteId, CategoriaCliente categoriaCliente,
-        List<LineaPedido> lineas, TipoEntrega tipoEntrega,
-        IEstrategiaDescuento estrategia)
+    internal Pedido(int clienteId, CategoriaCliente categoria, IEnumerable<LineaPedido> lineas,
+        IFabricaEntrega entrega, CalculadoraDescuento calculadora, DateTime fecha)
     {
-        if (lineas.Count == 0) throw new DomainException("El pedido debe tener al menos una línea.");
-
         ClienteId = clienteId;
-        CategoriaCliente = categoriaCliente;
-        TipoEntrega = tipoEntrega.ToString();
-        FechaCreacion = DateTime.UtcNow;
+        CategoriaCliente = categoria;
+        FechaCreacion = fecha;
         _lineas.AddRange(lineas);
+        if (_lineas.Count == 0) throw new DomainException("El pedido debe tener al menos una línea.");
 
-        RecalcularTotales(estrategia);
-        GuardarSnapshot();
+        Numerar();
+        AplicarEntrega(entrega);
+        Recalcular(calculadora);
+        _cambiosEstado.Add(new CambioEstadoPedido(1, null, _estado.Nombre, fecha));
+        GuardarFoto();
     }
 
-    // ===== TRANSICIONES DE ESTADO (State) =====
+    // ---- transiciones (State) ----
+
     public void Validar() => _estado.Validar(this);
-    public void Pagar() => _estado.Pagar(this);
     public void Despachar() => _estado.Despachar(this);
-    public void Entregar() => _estado.Entregar(this);
     public void Cancelar() => _estado.Cancelar(this);
 
-    internal void CambiarEstado(IEstadoPedido nuevoEstado)
+    public void Pagar()
     {
-        _estado = nuevoEstado;
-        FechaModificacion = DateTime.UtcNow;
+        _estado.Pagar(this);
+        _historial.LimpiarYBloquear();
     }
 
-    // ===== EDICIÓN (solo en BORRADOR) =====
-    public void AgregarLinea(LineaPedido linea, IEstrategiaDescuento? estrategia = null)
+    public void Entregar(DateTime fechaEntrega)
     {
-        if (!PuedeEditar)
-            throw new DomainException($"No se puede editar un pedido en estado '{EstadoNombre}'.");
-
-        _lineas.Add(linea);
-        RecalcularTotales(estrategia);
-        GuardarSnapshot();
+        _estado.Entregar(this);
+        FechaEntrega = fechaEntrega;
     }
 
-    public void EliminarLinea(string elementoCodigo, IEstrategiaDescuento? estrategia = null)
+    internal void CambiarEstado(IEstadoPedido nuevo)
     {
-        if (!PuedeEditar)
-            throw new DomainException($"No se puede editar un pedido en estado '{EstadoNombre}'.");
-
-        var linea = _lineas.Find(l => l.ElementoCodigo == elementoCodigo)
-            ?? throw new DomainException($"No se encontró la línea con código '{elementoCodigo}'.");
-
-        _lineas.Remove(linea);
-        RecalcularTotales(estrategia);
-        GuardarSnapshot();
+        var ahora = DateTime.UtcNow;
+        _cambiosEstado.Add(new CambioEstadoPedido(_cambiosEstado.Count + 1, _estado.Nombre, nuevo.Nombre, ahora));
+        _estado = nuevo;
+        FechaModificacion = ahora;
+        Version++;
     }
 
-    // ===== CÁLCULOS =====
-    public int TotalUnidadesFisicas
+    // ---- edicion del borrador ----
+
+    public void AgregarLinea(IElementoCatalogo elemento, int cantidad, CalculadoraDescuento calculadora)
     {
-        get
+        Editar(calculadora, () =>
         {
-            int total = 0;
-            foreach (var l in _lineas) total += l.TotalUnidadesFisicas;
-            return total;
-        }
+            var existente = BuscarLinea(elemento.Codigo);
+            if (existente is null)
+                _lineas.Add(new LineaPedido(elemento, cantidad));
+            else
+                existente.CambiarCantidad(existente.Cantidad + cantidad);
+        });
     }
 
-    private void RecalcularTotales(IEstrategiaDescuento? estrategia = null)
+    public void ModificarCantidad(string codigo, int cantidad, CalculadoraDescuento calculadora)
     {
-        Subtotal = 0m;
-        foreach (var l in _lineas)
-            Subtotal += l.Subtotal;
-        Subtotal = Moneda.Redondear(Subtotal);
+        Editar(calculadora, () => ObtenerLinea(codigo).CambiarCantidad(cantidad));
+    }
 
-        estrategia ??= SelectorDescuento.CrearEstandar()
-            .Seleccionar(TotalUnidadesFisicas, CategoriaCliente);
+    public void EliminarLinea(string codigo, CalculadoraDescuento calculadora)
+    {
+        Editar(calculadora, () =>
+        {
+            if (_lineas.Count == 1)
+                throw new DomainException("El pedido debe conservar al menos una línea; si no lo necesita, cancélelo.");
+            _lineas.Remove(ObtenerLinea(codigo));
+        });
+    }
 
-        NombreDescuento = estrategia.Nombre;
-        Descuento = estrategia.CalcularDescuento(Subtotal);
+    public void CambiarEntrega(IFabricaEntrega entrega, CalculadoraDescuento calculadora)
+    {
+        Editar(calculadora, () => AplicarEntrega(entrega));
+    }
+
+    private void Editar(CalculadoraDescuento calculadora, Action cambio)
+    {
+        if (!PuedeEditar)
+            throw new DomainException($"No se puede editar un pedido en estado '{EstadoNombre}'.");
+        if (calculadora is null) throw new DomainException("Falta la calculadora de descuentos.");
+
+        // un pedido recien leido de la base no tiene fotos; se guarda la actual antes de cambiar
+        if (_historial.Cantidad == 0) GuardarFoto();
+
+        cambio();
+        Numerar();
+        Recalcular(calculadora);
+        FechaModificacion = DateTime.UtcNow;
+        GuardarFoto();
+    }
+
+    private void Numerar()
+    {
+        for (int i = 0; i < _lineas.Count; i++) _lineas[i].AsignarOrden(i + 1);
+    }
+
+    private LineaPedido? BuscarLinea(string codigo)
+        => _lineas.Find(l => l.ElementoCodigo == codigo?.Trim().ToUpperInvariant());
+
+    private LineaPedido ObtenerLinea(string codigo)
+        => BuscarLinea(codigo) ?? throw new DomainException($"No existe una línea con el código '{codigo}'.");
+
+    private void AplicarEntrega(IFabricaEntrega entrega)
+    {
+        if (entrega is null) throw new DomainException("Debe elegir una forma de entrega.");
+        var tarifa = entrega.CrearTarifa();
+        if (tarifa.Familia != entrega.Tipo)
+            throw new DomainException("La tarifa no pertenece a la familia de entrega elegida.");
+
+        TipoEntrega = entrega.Tipo;
+        TarifaEnvio = Moneda.Redondear(tarifa.Calcular());
+    }
+
+    private void Recalcular(CalculadoraDescuento calculadora)
+    {
+        Subtotal = Moneda.Redondear(_lineas.Sum(l => l.Subtotal));
+        var resultado = calculadora.Calcular(new ContextoDescuento(TotalUnidadesFisicas, CategoriaCliente, Subtotal));
+        NombreDescuento = resultado.Politica;
+        Descuento = resultado.Monto;
         Total = Moneda.Redondear(Subtotal - Descuento + TarifaEnvio);
     }
 
-    public void EstablecerTarifaEnvio(decimal tarifa)
+    // requerimiento total por SKU final, usado para validar y descontar stock
+    public IReadOnlyDictionary<string, int> RequerimientoPorSku()
+        => _lineas
+            .SelectMany(l => l.Componentes.Select(c => (c.ProductoCodigo, Cantidad: c.Cantidad * l.Cantidad)))
+            .GroupBy(x => x.ProductoCodigo)
+            .ToDictionary(g => g.Key, g => g.Sum(x => x.Cantidad));
+
+    // ---- Memento ----
+
+    private void GuardarFoto()
+        => _historial.Guardar(new PedidoMemento(TipoEntrega, TarifaEnvio, _lineas.Select(l => l.Clonar()).ToList()));
+
+    public bool Deshacer(CalculadoraDescuento calculadora) => Restaurar(_historial.Deshacer, calculadora);
+
+    public bool Rehacer(CalculadoraDescuento calculadora) => Restaurar(_historial.Rehacer, calculadora);
+
+    private bool Restaurar(Func<PedidoMemento?> mover, CalculadoraDescuento calculadora)
     {
-        if (tarifa < 0) throw new DomainException("La tarifa de envío no puede ser negativa.");
-        TarifaEnvio = Moneda.Redondear(tarifa);
-        Total = Moneda.Redondear(Subtotal - Descuento + TarifaEnvio);
+        if (!PuedeEditar) throw new DomainException("Solo se puede deshacer o rehacer un borrador.");
+        var foto = mover();
+        if (foto is null) return false;
+
+        TipoEntrega = foto.TipoEntrega;
+        TarifaEnvio = foto.TarifaEnvio;
+        _lineas.Clear();
+        _lineas.AddRange(foto.Lineas.Select(l => l.Clonar()));
+        Recalcular(calculadora);
+        FechaModificacion = DateTime.UtcNow;
+        return true;
     }
 
-    // ===== PROTOTYPE =====
-    /// <summary>
-    /// Patrón PROTOTYPE – Clon profundo en BORRADOR. No copia ID ni estado de pago.
-    /// Modificar la copia no altera la plantilla.
-    /// </summary>
+    // ---- Prototype ----
+
     public Pedido ClonarComoBorrador()
     {
-        if (EstadoNombre != "BORRADOR")
-            throw new DomainException("Solo se puede clonar un pedido en estado BORRADOR.");
+        if (EstadoNombre != EstadoBorrador.Instancia.Nombre)
+            throw new DomainException("Solo se puede usar como plantilla un pedido en BORRADOR.");
 
-        var clon = new Pedido
+        var ahora = DateTime.UtcNow;
+        var copia = new Pedido
         {
             ClienteId = ClienteId,
             CategoriaCliente = CategoriaCliente,
             TipoEntrega = TipoEntrega,
+            TarifaEnvio = TarifaEnvio,
             Subtotal = Subtotal,
             Descuento = Descuento,
             NombreDescuento = NombreDescuento,
-            TarifaEnvio = TarifaEnvio,
             Total = Total,
-            FechaCreacion = DateTime.UtcNow,
-            _estado = EstadoBorrador.Instancia
+            FechaCreacion = ahora
         };
-
-        foreach (var linea in _lineas)
-            clon._lineas.Add(linea.ClonarProfundo());
-
-        return clon;
-    }
-
-    // ===== MEMENTO =====
-    private void GuardarSnapshot()
-    {
-        var lineasSnap = _lineas.Select(l =>
-            new PedidoMemento.LineaSnapshot(
-                l.ElementoCodigo, l.ElementoNombre, l.PrecioUnitario,
-                l.Cantidad, l.EsKit,
-                l.Componentes.Select(c =>
-                    new PedidoMemento.ComponenteSnap(
-                        c.ProductoCodigo, c.ProductoNombre,
-                        c.PrecioUnitario, c.Cantidad, c.PesoKg))
-                    .ToList().AsReadOnly()))
-            .ToList().AsReadOnly();
-
-        var memento = new PedidoMemento(
-            ClienteId, TipoEntrega,
-            Subtotal, Descuento, NombreDescuento,
-            TarifaEnvio, Total, lineasSnap);
-
-        _historial.Guardar(memento);
-    }
-
-    public bool Deshacer()
-    {
-        if (!PuedeEditar) throw new DomainException("No se puede deshacer en este estado.");
-        var memento = _historial.Deshacer();
-        if (memento is null) return false;
-        RestaurarDesdeMemento(memento);
-        return true;
-    }
-
-    public bool Rehacer()
-    {
-        if (!PuedeEditar) throw new DomainException("No se puede rehacer en este estado.");
-        var memento = _historial.Rehacer();
-        if (memento is null) return false;
-        RestaurarDesdeMemento(memento);
-        return true;
-    }
-
-    private void RestaurarDesdeMemento(PedidoMemento m)
-    {
-        TipoEntrega = m.TipoEntrega;
-        Subtotal = m.Subtotal;
-        Descuento = m.Descuento;
-        NombreDescuento = m.NombreDescuento;
-        TarifaEnvio = m.TarifaEnvio;
-        Total = m.Total;
-        FechaModificacion = DateTime.UtcNow;
-
-        _lineas.Clear();
-        foreach (var ls in m.Lineas)
-        {
-            var componentes = ls.Componentes.Select(c =>
-                new LineaComponenteSnapshot(c.Codigo, c.Nombre, c.PrecioUnitario, c.Cantidad, c.PesoKg));
-            var linea = new LineaPedido(
-                ls.ElementoCodigo, ls.ElementoNombre, ls.PrecioUnitario,
-                ls.Cantidad, ls.EsKit, componentes);
-            _lineas.Add(linea);
-        }
-    }
-
-    internal void BloquearHistorial() => _historial.Bloquear();
-
-    public bool PuedeDeshacer => _historial.PuedeDeshacer;
-    public bool PuedeRehacer => _historial.PuedeRehacer;
-
-    // ===== Carga desde persistencia =====
-    internal void CargarLineas(IEnumerable<LineaPedido> lineas)
-    {
-        _lineas.Clear();
-        _lineas.AddRange(lineas);
+        copia._lineas.AddRange(_lineas.Select(l => l.Clonar()));
+        copia._cambiosEstado.Add(new CambioEstadoPedido(1, null, copia.EstadoNombre, ahora));
+        copia.GuardarFoto();
+        return copia;
     }
 }

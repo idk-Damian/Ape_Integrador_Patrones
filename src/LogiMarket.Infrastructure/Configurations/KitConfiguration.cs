@@ -13,14 +13,11 @@ public class KitConfiguration : IEntityTypeConfiguration<KitCompuesto>
 
         builder.Property(k => k.Codigo).IsRequired().HasMaxLength(20);
         builder.HasIndex(k => k.Codigo).IsUnique();
-
         builder.Property(k => k.Nombre).IsRequired().HasMaxLength(100);
 
-        // Propiedades computadas – no persisten
         builder.Ignore(k => k.PrecioUnitario);
         builder.Ignore(k => k.EsKit);
 
-        // Navegación con backing field
         builder.HasMany(k => k.Componentes)
             .WithOne()
             .HasForeignKey(c => c.KitPadreId)

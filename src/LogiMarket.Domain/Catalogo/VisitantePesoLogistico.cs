@@ -1,32 +1,14 @@
-using LogiMarket.Domain.Common;
-
 namespace LogiMarket.Domain.Catalogo;
 
-/// <summary>
-/// Patrón VISITOR – Calcula el peso logístico total de un elemento del catálogo.
-/// Para KIT_TELETRABAJO (P01 0.10 + P02 0.60 + P03 0.30) debe dar exactamente 1.00 kg.
-/// </summary>
-public sealed class VisitantePesoLogistico : IVisitanteCatalogo
+// suma el peso de cada SKU final por su cantidad
+public sealed class VisitantePesoLogistico : VisitanteCatalogoRecursivo
 {
-    private readonly int _cantidadRaiz;
+    private decimal _acumulado;
 
-    public decimal PesoTotal { get; private set; }
+    public VisitantePesoLogistico(int cantidadRaiz = 1) : base(cantidadRaiz) { }
 
-    public VisitantePesoLogistico(int cantidadRaiz = 1)
-    {
-        _cantidadRaiz = cantidadRaiz;
-    }
+    public decimal PesoTotalKg => Math.Round(_acumulado, 2, MidpointRounding.AwayFromZero);
 
-    public void VisitarProducto(ProductoSimple producto)
-    {
-        PesoTotal += Moneda.Redondear(producto.PesoKg * _cantidadRaiz);
-    }
-
-    public void VisitarKit(KitCompuesto kit)
-    {
-        foreach (var componente in kit.ObtenerComponentesFisicos(_cantidadRaiz))
-        {
-            PesoTotal += Moneda.Redondear(componente.PesoKg * componente.Cantidad);
-        }
-    }
+    protected override void Acumular(ProductoSimple producto, int cantidad)
+        => _acumulado += producto.PesoKg * cantidad;
 }
