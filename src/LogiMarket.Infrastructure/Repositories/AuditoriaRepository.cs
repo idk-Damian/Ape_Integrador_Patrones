@@ -13,6 +13,9 @@ public sealed class AuditoriaRepository : IAuditoriaRepository
 
     public async Task RegistrarAsync(Auditoria registro) => await _context.Auditorias.AddAsync(registro);
 
+    public Task<bool> ExisteAsync(string categoria, string referencia)
+        => _context.Auditorias.AnyAsync(a => a.Categoria == categoria && a.Referencia == referencia);
+
     public async Task<IReadOnlyList<Auditoria>> ListarAsync(string? categoria = null)
         => await _context.Auditorias
             .Where(a => categoria == null || a.Categoria == categoria)

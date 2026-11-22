@@ -1,4 +1,10 @@
 using LogiMarket.Application.Comandos;
+using LogiMarket.Application.Comprobantes;
+using LogiMarket.Application.Consultas;
+using LogiMarket.Application.Devoluciones;
+using LogiMarket.Application.Eventos;
+using LogiMarket.Application.Metricas;
+using LogiMarket.Application.Notificaciones;
 using LogiMarket.Application.Comun;
 using LogiMarket.Application.Entregas;
 using LogiMarket.Application.Inventario;
@@ -39,6 +45,26 @@ public static class DependencyInjection
         services.AddScoped<ServicioLogistica>();
 
         services.AddSingleton<InvocadorComandos>();
+        services.AddSingleton<MetricasSesion>();
+        services.AddSingleton<ConfiguracionNotificaciones>();
+
+        // observer + outbox: el orden de registro es el orden de aviso
+        services.AddScoped<SelectorCanalNotificacion>();
+        services.AddScoped<IObservadorEventos, ObservadorNotificaciones>();
+        services.AddScoped<IObservadorEventos, ObservadorAuditoria>();
+        services.AddScoped<IObservadorEventos, ObservadorMetricas>();
+        services.AddScoped<PublicadorEventos>();
+        services.AddScoped<ProcesadorOutbox>();
+
+        // template method: una variante por motivo de devolucion
+        services.AddScoped<RecursosDevolucion>();
+        services.AddScoped<ProcesadorDevolucionBase, DevolucionPorDefecto>();
+        services.AddScoped<ProcesadorDevolucionBase, DevolucionPorArrepentimiento>();
+        services.AddScoped<ServicioDevoluciones>();
+
+        services.AddSingleton<ISalidaDocumento, SalidaVistaPrevia>();
+        services.AddScoped<ServicioComprobantes>();
+        services.AddScoped<ServicioConsultasPedidos>();
         return services;
     }
 }

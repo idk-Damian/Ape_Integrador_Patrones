@@ -1,6 +1,7 @@
 using System.Text.Json;
 using LogiMarket.Application.Comun;
 using LogiMarket.Application.Entregas;
+using LogiMarket.Application.Eventos;
 using LogiMarket.Application.Excepciones;
 using LogiMarket.Application.Interfaces;
 using LogiMarket.Application.Seguridad;
@@ -11,7 +12,7 @@ namespace LogiMarket.Application.Logistica;
 
 public sealed class ServicioLogistica
 {
-    public const string EventoDespachoRegistrado = "DespachoRegistrado";
+    public const string EventoDespachoRegistrado = TiposEvento.DespachoRegistrado;
 
     private readonly IPedidoRepository _pedidos;
     private readonly IDespachoRepository _despachos;

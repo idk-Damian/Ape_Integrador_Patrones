@@ -1,9 +1,15 @@
+using LogiMarket.Application.Comprobantes;
 using LogiMarket.Application.Comun;
+using LogiMarket.Application.Consultas;
+using LogiMarket.Application.Notificaciones;
 using LogiMarket.Application.Interfaces;
 using LogiMarket.Application.Pagos;
 using LogiMarket.Application.Seguridad;
+using LogiMarket.Infrastructure.Comprobantes;
 using LogiMarket.Infrastructure.Comun;
+using LogiMarket.Infrastructure.Consultas;
 using LogiMarket.Infrastructure.Data;
+using LogiMarket.Infrastructure.Notificaciones;
 using LogiMarket.Infrastructure.Pagos;
 using LogiMarket.Infrastructure.Pagos.Legado;
 using LogiMarket.Infrastructure.Repositories;
@@ -60,6 +66,12 @@ public static class DependencyInjection
                 sp.GetRequiredService<IContextoUsuario>(),
                 bitacora);
         });
+
+        services.AddSingleton<IPasarelaReembolso, ReembolsoSimulado>();
+        services.AddSingleton<CreadorNotificador, CreadorNotificadorEmail>();
+        services.AddSingleton<CreadorNotificador, CreadorNotificadorSms>();
+        services.AddSingleton<ISalidaDocumento>(_ => new SalidaArchivoTxt(Path.Combine(carpetaSalidas, "comprobantes")));
+        services.AddScoped<IConsultasPedidos, ConsultasPedidos>();
 
         return services;
     }

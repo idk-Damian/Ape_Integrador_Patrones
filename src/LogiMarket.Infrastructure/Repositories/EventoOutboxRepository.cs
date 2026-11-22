@@ -13,6 +13,8 @@ public sealed class EventoOutboxRepository : IEventoOutboxRepository
 
     public async Task AgregarAsync(EventoOutbox evento) => await _context.EventosOutbox.AddAsync(evento);
 
+    public Task<EventoOutbox?> ObtenerPorIdAsync(int id) => _context.EventosOutbox.FirstOrDefaultAsync(e => e.Id == id);
+
     public async Task<IReadOnlyList<EventoOutbox>> ObtenerPendientesAsync(int maximo = 50)
         => await _context.EventosOutbox
             .Where(e => e.FechaProcesado == null)

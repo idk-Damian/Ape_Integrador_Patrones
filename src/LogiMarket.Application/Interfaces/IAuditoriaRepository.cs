@@ -6,5 +6,6 @@ namespace LogiMarket.Application.Interfaces;
 public interface IAuditoriaRepository
 {
     Task RegistrarAsync(Auditoria registro);
+    Task<bool> ExisteAsync(string categoria, string referencia);
     Task<IReadOnlyList<Auditoria>> ListarAsync(string? categoria = null);
 }

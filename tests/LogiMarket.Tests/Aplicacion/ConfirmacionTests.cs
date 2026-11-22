@@ -169,6 +169,7 @@ public class ConfirmacionTests : IDisposable
     private sealed class OutboxQueFalla : IEventoOutboxRepository
     {
         public Task AgregarAsync(EventoOutbox evento) => throw new IOException("No se pudo escribir el evento (simulado).");
+        public Task<EventoOutbox?> ObtenerPorIdAsync(int id) => Task.FromResult<EventoOutbox?>(null);
         public Task<IReadOnlyList<EventoOutbox>> ObtenerPendientesAsync(int maximo = 50) => Task.FromResult<IReadOnlyList<EventoOutbox>>(new List<EventoOutbox>());
         public Task<IReadOnlyList<EventoOutbox>> ListarAsync() => ObtenerPendientesAsync();
     }

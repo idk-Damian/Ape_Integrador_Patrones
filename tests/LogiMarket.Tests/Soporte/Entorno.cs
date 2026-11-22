@@ -1,5 +1,8 @@
 using LogiMarket.Application;
 using LogiMarket.Application.Comun;
+using LogiMarket.Application.Eventos;
+using LogiMarket.Application.Logistica;
+using LogiMarket.Application.Pedidos.Confirmacion;
 using LogiMarket.Application.Pedidos;
 using LogiMarket.Application.Seguridad;
 using LogiMarket.Domain.Enums;
@@ -75,6 +78,43 @@ internal sealed class Entorno : IDisposable
         if (rolPrevio is null) Sesion.Cerrar(); else Sesion.Iniciar(nombrePrevio, rolPrevio.Value);
         return id;
     }
+
+    // borrador + cobro con VENTAS; deja la sesion como estaba
+    public async Task<int> PagadoAsync(string cliente, TipoEntrega entrega, params (string Codigo, int Cantidad)[] lineas)
+    {
+        var id = await BorradorAsync(cliente, entrega, lineas);
+        await ComoAsync(RolUsuario.Ventas, async () =>
+        {
+            var r = await EnAlcanceAsync(sp => sp.GetRequiredService<ConfirmacionPedidoFacade>().ConfirmarAsync(id, $"CLAVE-{id}"));
+            if (!r.Exito) throw new InvalidOperationException(r.Mensaje);
+        });
+        return id;
+    }
+
+    // pagado, despachado y entregado en la fecha actual del reloj
+    public async Task<int> EntregadoAsync(string cliente, TipoEntrega entrega, params (string Codigo, int Cantidad)[] lineas)
+    {
+        var id = await PagadoAsync(cliente, entrega, lineas);
+        await ComoAsync(RolUsuario.Bodega, async () =>
+        {
+            var despacho = await EnAlcanceAsync(sp => sp.GetRequiredService<ServicioLogistica>().DespacharAsync(id));
+            var entregado = await EnAlcanceAsync(sp => sp.GetRequiredService<ServicioLogistica>().EntregarAsync(id));
+            if (!despacho.Exito || !entregado.Exito) throw new InvalidOperationException(despacho.Mensaje + entregado.Mensaje);
+        });
+        return id;
+    }
+
+    public async Task ComoAsync(RolUsuario rol, Func<Task> accion)
+    {
+        var rolPrevio = Sesion.Rol;
+        var nombrePrevio = Sesion.NombreUsuario;
+        ComoRol(rol);
+        try { await accion(); }
+        finally { if (rolPrevio is null) Sesion.Cerrar(); else Sesion.Iniciar(nombrePrevio, rolPrevio.Value); }
+    }
+
+    public Task<ResultadoOutbox> ProcesarOutboxAsync()
+        => EnAlcanceAsync(sp => sp.GetRequiredService<ProcesadorOutbox>().ProcesarPendientesAsync());
 
     public Task<int> StockAsync(string sku)
         => ConContextoAsync(ctx => ctx.Productos.Where(p => p.Codigo == sku).Select(p => p.Stock).SingleAsync());

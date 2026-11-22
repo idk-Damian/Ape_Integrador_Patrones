@@ -1,4 +1,5 @@
 using LogiMarket.Application.Comun;
+using LogiMarket.Application.Devoluciones;
 using LogiMarket.Application.Logistica;
 using LogiMarket.Application.Pedidos;
 using LogiMarket.Application.Pedidos.Confirmacion;
@@ -83,4 +84,26 @@ public sealed class EntregarPedidoCommand : IComando
     public string Nombre => "EntregarPedido";
     public string Entrada => $"pedido={_pedidoId}";
     public Task<ResultadoOperacion> EjecutarAsync() => _logistica.EntregarAsync(_pedidoId);
+}
+
+public sealed class ProcesarDevolucionCommand : IComando
+{
+    private readonly ServicioDevoluciones _devoluciones;
+    private readonly SolicitudDevolucion _solicitud;
+
+    public ProcesarDevolucionCommand(ServicioDevoluciones devoluciones, SolicitudDevolucion solicitud)
+    {
+        _devoluciones = devoluciones;
+        _solicitud = solicitud;
+    }
+
+    public string Nombre => "ProcesarDevolucion";
+    public string Entrada => $"pedido={_solicitud.PedidoId}; motivo={_solicitud.Motivo}; sinUso={_solicitud.ProductoSinUso}";
+    public ResultadoDevolucion? Resultado { get; private set; }
+
+    public async Task<ResultadoOperacion> EjecutarAsync()
+    {
+        Resultado = await _devoluciones.ProcesarAsync(_solicitud);
+        return new ResultadoOperacion(Resultado.Aceptada, Resultado.Mensaje);
+    }
 }

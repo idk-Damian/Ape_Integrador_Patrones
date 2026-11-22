@@ -1,5 +1,6 @@
 using System.Text.Json;
 using LogiMarket.Application.Comun;
+using LogiMarket.Application.Eventos;
 using LogiMarket.Application.Excepciones;
 using LogiMarket.Application.Interfaces;
 using LogiMarket.Application.Inventario;
@@ -16,7 +17,7 @@ namespace LogiMarket.Application.Pedidos.Confirmacion;
 // fachada: una sola operacion para confirmar; coordina y delega, no calcula ni escribe SQL
 public sealed class ConfirmacionPedidoFacade
 {
-    public const string EventoPedidoPagado = "PedidoPagado";
+    public const string EventoPedidoPagado = TiposEvento.PedidoPagado;
 
     private readonly IPedidoRepository _pedidos;
     private readonly IPagoRepository _pagos;
