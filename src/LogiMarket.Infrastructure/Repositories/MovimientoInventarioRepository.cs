@@ -1,14 +1,25 @@
 using LogiMarket.Application.Interfaces;
-using LogiMarket.Domain.Inventario;
 using LogiMarket.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using LogiMarket.Domain.Inventario;
 
 namespace LogiMarket.Infrastructure.Repositories;
 
-public class MovimientoInventarioRepository : Repository<MovimientoInventario>, IMovimientoInventarioRepository
+public sealed class MovimientoInventarioRepository : IMovimientoInventarioRepository
 {
-    public MovimientoInventarioRepository(LogiMarketDbContext context) : base(context) { }
+    private readonly LogiMarketDbContext _context;
 
-    public async Task<IReadOnlyList<MovimientoInventario>> ObtenerPorProductoAsync(int productoId)
-        => await DbSet.Where(m => m.ProductoId == productoId).OrderByDescending(m => m.Fecha).ToListAsync();
+    public MovimientoInventarioRepository(LogiMarketDbContext context) => _context = context;
+
+    public async Task AgregarAsync(MovimientoInventario movimiento)
+        => await _context.MovimientosInventario.AddAsync(movimiento);
+
+    public async Task<IReadOnlyList<MovimientoInventario>> ListarPorPedidoAsync(int pedidoId)
+        => await _context.MovimientosInventario.Where(m => m.PedidoId == pedidoId).OrderBy(m => m.Id).ToListAsync();
+
+    public async Task<IReadOnlyList<MovimientoInventario>> ListarAsync(int? productoId = null)
+        => await _context.MovimientosInventario
+            .Where(m => productoId == null || m.ProductoId == productoId)
+            .OrderByDescending(m => m.Id)
+            .ToListAsync();
 }

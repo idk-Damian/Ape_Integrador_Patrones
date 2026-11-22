@@ -2,20 +2,18 @@ using LogiMarket.Domain.Exceptions;
 
 namespace LogiMarket.Domain.Pedidos.Estados;
 
-/// <summary>
-/// Fábrica de estados usando diccionario (evita switch gigante).
-/// </summary>
+// convierte el texto guardado en la base al objeto de estado correspondiente
 public static class EstadoPedidoFactory
 {
-    private static readonly Dictionary<string, IEstadoPedido> Estados = new()
+    private static readonly Dictionary<string, IEstadoPedido> Estados = new IEstadoPedido[]
     {
-        ["BORRADOR"] = EstadoBorrador.Instancia,
-        ["VALIDADO"] = EstadoValidado.Instancia,
-        ["PAGADO"] = EstadoPagado.Instancia,
-        ["DESPACHADO"] = EstadoDespachado.Instancia,
-        ["ENTREGADO"] = EstadoEntregado.Instancia,
-        ["CANCELADO"] = EstadoCancelado.Instancia,
-    };
+        EstadoBorrador.Instancia,
+        EstadoValidado.Instancia,
+        EstadoPagado.Instancia,
+        EstadoDespachado.Instancia,
+        EstadoEntregado.Instancia,
+        EstadoCancelado.Instancia
+    }.ToDictionary(e => e.Nombre);
 
     public static IEstadoPedido Crear(string nombre)
         => Estados.TryGetValue(nombre, out var estado)

@@ -2,63 +2,52 @@ using LogiMarket.Domain.Exceptions;
 
 namespace LogiMarket.Domain.Catalogo;
 
-/// <summary>
-/// Patrón ITERATOR – Iterador propio que recorre los componentes físicos de un kit anidado,
-/// propagando cantidades y evitando ciclos infinitos mediante un conjunto de visitados.
-/// No expone la colección interna del kit.
-/// </summary>
-public sealed class IteradorComponentesFisicos : IEnumerable<ComponenteFisico>, IEnumerator<ComponenteFisico>
+// recorre en profundidad los SKU finales de un kit multiplicando cantidades
+// solo se marca la ruta actual, asi un mismo subkit puede aparecer en dos ramas sin ser ciclo
+public sealed class IteradorComponentesFisicos : IEnumerator<ComponenteFisico>
 {
-    private readonly Stack<FrameIteracion> _pila = new();
-    private readonly HashSet<string> _visitados = new();
+    private readonly KitCompuesto _raiz;
+    private readonly int _cantidadInicial;
+    private readonly Stack<Marco> _pila = new();
+    private readonly HashSet<string> _rutaActual = new();
     private ComponenteFisico? _actual;
 
-    public IteradorComponentesFisicos(KitCompuesto kit, int cantidadInicial = 1)
+    internal IteradorComponentesFisicos(KitCompuesto raiz, int cantidadInicial)
     {
-        if (kit is null) throw new DomainException("El kit no puede ser nulo.");
-        _visitados.Add(kit.Codigo);
-        _pila.Push(new FrameIteracion(kit.Componentes, 0, cantidadInicial));
+        if (raiz is null) throw new DomainException("El kit no puede ser nulo.");
+        if (cantidadInicial <= 0) throw new DomainException("La cantidad debe ser mayor a cero.");
+        _raiz = raiz;
+        _cantidadInicial = cantidadInicial;
+        Reset();
     }
 
-    public ComponenteFisico Current
-        => _actual ?? throw new InvalidOperationException("No hay elemento actual.");
-
+    public ComponenteFisico Current => _actual ?? throw new InvalidOperationException("No hay elemento actual.");
     object System.Collections.IEnumerator.Current => Current;
 
     public bool MoveNext()
     {
         while (_pila.Count > 0)
         {
-            var frame = _pila.Peek();
-
-            if (frame.Indice >= frame.Componentes.Count)
+            var marco = _pila.Peek();
+            if (marco.Indice >= marco.Kit.Componentes.Count)
             {
                 _pila.Pop();
+                _rutaActual.Remove(marco.Kit.Codigo);
                 continue;
             }
 
-            var componente = frame.Componentes[frame.Indice];
-            frame.Indice++;
-
-            int cantidadTotal = frame.CantidadPadre * componente.Cantidad;
+            var componente = marco.Kit.Componentes[marco.Indice++];
+            int cantidad = marco.Multiplicador * componente.Cantidad;
 
             if (componente.Elemento is KitCompuesto subKit)
             {
-                if (!_visitados.Add(subKit.Codigo))
-                    throw new DomainException($"Ciclo infinito detectado al iterar el kit '{subKit.Codigo}'.");
+                Entrar(subKit, cantidad);
+                continue;
+            }
 
-                _pila.Push(new FrameIteracion(subKit.Componentes, 0, cantidadTotal));
-            }
-            else if (componente.Elemento is ProductoSimple producto)
-            {
-                _actual = new ComponenteFisico(
-                    producto.Codigo,
-                    producto.Nombre,
-                    cantidadTotal,
-                    producto.PrecioUnitario,
-                    producto.PesoKg);
-                return true;
-            }
+            var producto = (ProductoSimple)componente.Elemento;
+            _actual = new ComponenteFisico(producto.Codigo, producto.Nombre, cantidad, producto.PrecioUnitario, producto.PesoKg);
+            return true;
         }
 
         _actual = null;
@@ -67,25 +56,31 @@ public sealed class IteradorComponentesFisicos : IEnumerable<ComponenteFisico>, 
 
     public void Reset()
     {
-        throw new NotSupportedException("El iterador no soporta Reset.");
+        _pila.Clear();
+        _rutaActual.Clear();
+        _actual = null;
+        Entrar(_raiz, _cantidadInicial);
     }
 
     public void Dispose() { }
 
-    public IEnumerator<ComponenteFisico> GetEnumerator() => this;
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => this;
-
-    private sealed class FrameIteracion
+    private void Entrar(KitCompuesto kit, int multiplicador)
     {
-        public IReadOnlyList<ComponenteKit> Componentes { get; }
-        public int Indice { get; set; }
-        public int CantidadPadre { get; }
+        if (!_rutaActual.Add(kit.Codigo))
+            throw new DomainException($"Ciclo detectado al recorrer el kit '{kit.Codigo}'.");
+        _pila.Push(new Marco(kit, multiplicador));
+    }
 
-        public FrameIteracion(IReadOnlyList<ComponenteKit> componentes, int indice, int cantidadPadre)
+    private sealed class Marco
+    {
+        public Marco(KitCompuesto kit, int multiplicador)
         {
-            Componentes = componentes;
-            Indice = indice;
-            CantidadPadre = cantidadPadre;
+            Kit = kit;
+            Multiplicador = multiplicador;
         }
+
+        public KitCompuesto Kit { get; }
+        public int Multiplicador { get; }
+        public int Indice { get; set; }
     }
 }

@@ -1,124 +1,95 @@
+using LogiMarket.Application.Interfaces;
 using LogiMarket.Domain.Catalogo;
 using LogiMarket.Domain.Clientes;
 using LogiMarket.Domain.Enums;
+using LogiMarket.Domain.Inventario;
 using LogiMarket.Domain.Usuarios;
 using Microsoft.EntityFrameworkCore;
 
 namespace LogiMarket.Infrastructure.Data;
 
-/// <summary>
-/// Seeder idempotente de base de datos para LogiMarket 360.
-/// Garantiza la creación de productos, kits, clientes y usuarios semilla
-/// sin duplicar registros al ejecutarse múltiples veces.
-/// </summary>
-public static class DatabaseSeeder
+// datos iniciales del caso; se puede correr varias veces sin duplicar nada
+public sealed class DatabaseSeeder
 {
-    public static async Task SeedAsync(LogiMarketDbContext context)
+    private readonly LogiMarketDbContext _context;
+    private readonly IPasswordHasher _hasher;
+
+    public DatabaseSeeder(LogiMarketDbContext context, IPasswordHasher hasher)
     {
-        // 1. Semilla de Productos
-        var p01 = await context.Productos.FirstOrDefaultAsync(p => p.Codigo == "P01");
-        if (p01 is null)
+        _context = context;
+        _hasher = hasher;
+    }
+
+    public async Task SembrarAsync()
+    {
+        var ahora = DateTime.UtcNow;
+
+        var p01 = await AsegurarProductoAsync("P01", "Mouse USB", 20.00m, 8, 0.20m, "Periféricos", "Mouse óptico con cable USB", ahora);
+        var p02 = await AsegurarProductoAsync("P02", "Teclado", 30.00m, 5, 0.70m, "Periféricos", "Teclado estándar en español", ahora);
+        var p03 = await AsegurarProductoAsync("P03", "Memoria USB", 10.00m, 20, 0.10m, "Almacenamiento", "Memoria flash USB", ahora);
+        await AsegurarProductoAsync("P04", "Webcam", 40.00m, 4, 0.35m, "Video", "Cámara web HD", ahora);
+        await AsegurarProductoAsync("P05", "Alfombrilla", 5.00m, 30, 0.10m, "Accesorios", "Alfombrilla para mouse", ahora);
+
+        var oficina = await _context.Kits.FirstOrDefaultAsync(k => k.Codigo == "KIT_OFICINA");
+        if (oficina is null)
         {
-            p01 = new ProductoSimple("P01", "Mouse USB", 20.00m, 8, 0.10m);
-            await context.Productos.AddAsync(p01);
+            oficina = new KitCompuesto("KIT_OFICINA", "Kit Oficina");
+            oficina.AgregarComponente(p01, 1);
+            oficina.AgregarComponente(p02, 1);
+            await _context.Kits.AddAsync(oficina);
+            await _context.SaveChangesAsync();
         }
 
-        var p02 = await context.Productos.FirstOrDefaultAsync(p => p.Codigo == "P02");
-        if (p02 is null)
+        if (!await _context.Kits.AnyAsync(k => k.Codigo == "KIT_TELETRABAJO"))
         {
-            p02 = new ProductoSimple("P02", "Teclado", 30.00m, 5, 0.60m);
-            await context.Productos.AddAsync(p02);
+            // si el kit oficina venia de la base, se recarga su arbol antes de anidarlo
+            await _context.Entry(oficina).Collection(k => k.Componentes).LoadAsync();
+            await _context.Productos.Where(p => p.Codigo == "P01" || p.Codigo == "P02").LoadAsync();
+
+            var teletrabajo = new KitCompuesto("KIT_TELETRABAJO", "Kit Teletrabajo");
+            teletrabajo.AgregarComponente(oficina, 1);
+            teletrabajo.AgregarComponente(p03, 1);
+            await _context.Kits.AddAsync(teletrabajo);
         }
 
-        var p03 = await context.Productos.FirstOrDefaultAsync(p => p.Codigo == "P03");
-        if (p03 is null)
-        {
-            p03 = new ProductoSimple("P03", "Memoria USB", 10.00m, 20, 0.30m);
-            await context.Productos.AddAsync(p03);
-        }
+        await AsegurarUsuarioAsync("admin", "Admin123!", RolUsuario.Admin);
+        await AsegurarUsuarioAsync("ventas", "Ventas123!", RolUsuario.Ventas);
+        await AsegurarUsuarioAsync("bodega", "Bodega123!", RolUsuario.Bodega);
+        await AsegurarUsuarioAsync("consulta", "Consulta123!", RolUsuario.Consulta);
 
-        var p04 = await context.Productos.FirstOrDefaultAsync(p => p.Codigo == "P04");
-        if (p04 is null)
-        {
-            p04 = new ProductoSimple("P04", "Webcam", 40.00m, 4, 0.25m);
-            await context.Productos.AddAsync(p04);
-        }
+        // datos ficticios; Carmen es normal para mostrar que MAYORISTA no depende de la categoria
+        await AsegurarClienteAsync("Ana Torres", "ana@demo.local", "0990000001", CategoriaCliente.Vip);
+        await AsegurarClienteAsync("Luis Mena", "luis@demo.local", "0990000002", CategoriaCliente.Normal);
+        await AsegurarClienteAsync("Carmen Ruiz", "carmen@demo.local", "0990000003", CategoriaCliente.Normal);
 
-        var p05 = await context.Productos.FirstOrDefaultAsync(p => p.Codigo == "P05");
-        if (p05 is null)
-        {
-            p05 = new ProductoSimple("P05", "Alfombrilla", 5.00m, 30, 0.05m);
-            await context.Productos.AddAsync(p05);
-        }
+        await _context.SaveChangesAsync();
+    }
 
-        await context.SaveChangesAsync();
+    private async Task<ProductoSimple> AsegurarProductoAsync(string sku, string nombre, decimal precio, int stock,
+        decimal peso, string categoria, string descripcion, DateTime ahora)
+    {
+        var producto = await _context.Productos.FirstOrDefaultAsync(p => p.Codigo == sku);
+        if (producto is not null) return producto;
 
-        // 2. Semilla de Kits
-        // KIT_OFICINA = P01 + P02 ($50.00)
-        var kitOficina = await context.Kits
-            .Include(k => k.Componentes)
-            .FirstOrDefaultAsync(k => k.Codigo == "KIT_OFICINA");
+        producto = new ProductoSimple(sku, nombre, precio, stock, peso, categoria, descripcion);
+        await _context.Productos.AddAsync(producto);
+        await _context.SaveChangesAsync();
 
-        if (kitOficina is null)
-        {
-            kitOficina = new KitCompuesto("KIT_OFICINA", "Kit Oficina");
-            kitOficina.AgregarComponente(p01, 1);
-            kitOficina.AgregarComponente(p02, 1);
-            await context.Kits.AddAsync(kitOficina);
-            await context.SaveChangesAsync();
-        }
+        await _context.MovimientosInventario.AddAsync(new MovimientoInventario(
+            producto.Id, stock, stock, TipoMovimiento.InventarioInicial, "Carga inicial del catálogo", "SEED", ahora));
+        return producto;
+    }
 
-        // KIT_TELETRABAJO = KIT_OFICINA + P03 ($60.00, Peso exacto: 0.10 + 0.60 + 0.30 = 1.00 kg)
-        var kitTeletrabajo = await context.Kits
-            .Include(k => k.Componentes)
-            .FirstOrDefaultAsync(k => k.Codigo == "KIT_TELETRABAJO");
+    private async Task AsegurarUsuarioAsync(string nombre, string password, RolUsuario rol)
+    {
+        if (await _context.Usuarios.AnyAsync(u => u.NombreUsuario == nombre)) return;
+        var (hash, sal) = _hasher.Generar(password);
+        await _context.Usuarios.AddAsync(new Usuario(nombre, hash, sal, rol));
+    }
 
-        if (kitTeletrabajo is null)
-        {
-            kitTeletrabajo = new KitCompuesto("KIT_TELETRABAJO", "Kit Teletrabajo");
-            kitTeletrabajo.AgregarComponente(kitOficina, 1);
-            kitTeletrabajo.AgregarComponente(p03, 1);
-            await context.Kits.AddAsync(kitTeletrabajo);
-            await context.SaveChangesAsync();
-        }
-
-        // 3. Semilla de Usuarios con contraseña hasheada (PBKDF2)
-        if (!await context.Usuarios.AnyAsync(u => u.NombreUsuario == "admin"))
-        {
-            await context.Usuarios.AddAsync(new Usuario("admin", "Admin123!", RolUsuario.Admin));
-        }
-
-        if (!await context.Usuarios.AnyAsync(u => u.NombreUsuario == "ventas"))
-        {
-            await context.Usuarios.AddAsync(new Usuario("ventas", "Ventas123!", RolUsuario.Ventas));
-        }
-
-        if (!await context.Usuarios.AnyAsync(u => u.NombreUsuario == "bodega"))
-        {
-            await context.Usuarios.AddAsync(new Usuario("bodega", "Bodega123!", RolUsuario.Bodega));
-        }
-
-        if (!await context.Usuarios.AnyAsync(u => u.NombreUsuario == "consulta"))
-        {
-            await context.Usuarios.AddAsync(new Usuario("consulta", "Consulta123!", RolUsuario.Consulta));
-        }
-
-        // 4. Clientes demo
-        if (!await context.Clientes.AnyAsync(c => c.Email == "ana@logimarket.com"))
-        {
-            await context.Clientes.AddAsync(new Cliente("Ana López", "ana@logimarket.com", CategoriaCliente.Vip));
-        }
-
-        if (!await context.Clientes.AnyAsync(c => c.Email == "luis@logimarket.com"))
-        {
-            await context.Clientes.AddAsync(new Cliente("Luis Pérez", "luis@logimarket.com", CategoriaCliente.Normal));
-        }
-
-        if (!await context.Clientes.AnyAsync(c => c.Email == "carmen@logimarket.com"))
-        {
-            await context.Clientes.AddAsync(new Cliente("Carmen Gómez", "carmen@logimarket.com", CategoriaCliente.Vip));
-        }
-
-        await context.SaveChangesAsync();
+    private async Task AsegurarClienteAsync(string nombre, string email, string telefono, CategoriaCliente categoria)
+    {
+        if (await _context.Clientes.AnyAsync(c => c.Email == email)) return;
+        await _context.Clientes.AddAsync(new Cliente(nombre, email, telefono, categoria));
     }
 }

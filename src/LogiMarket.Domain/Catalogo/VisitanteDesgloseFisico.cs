@@ -1,47 +1,22 @@
 namespace LogiMarket.Domain.Catalogo;
 
-/// <summary>
-/// Patrón VISITOR – Genera un desglose físico por SKU agregando cantidades.
-/// </summary>
-public sealed class VisitanteDesgloseFisico : IVisitanteCatalogo
+// arma el desglose por SKU sumando cantidades repetidas
+public sealed class VisitanteDesgloseFisico : VisitanteCatalogoRecursivo
 {
-    private readonly Dictionary<string, ComponenteFisico> _desglose = new();
-    private readonly int _cantidadRaiz;
+    private readonly List<ComponenteFisico> _lineas = new();
 
-    public IReadOnlyDictionary<string, ComponenteFisico> Desglose => _desglose;
+    public VisitanteDesgloseFisico(int cantidadRaiz = 1) : base(cantidadRaiz) { }
 
-    public VisitanteDesgloseFisico(int cantidadRaiz = 1)
+    public IReadOnlyList<ComponenteFisico> Lineas => _lineas;
+
+    protected override void Acumular(ProductoSimple producto, int cantidad)
     {
-        _cantidadRaiz = cantidadRaiz;
-    }
-
-    public void VisitarProducto(ProductoSimple producto)
-    {
-        AgregarComponente(new ComponenteFisico(
-            producto.Codigo, producto.Nombre, _cantidadRaiz,
-            producto.PrecioUnitario, producto.PesoKg));
-    }
-
-    public void VisitarKit(KitCompuesto kit)
-    {
-        foreach (var componente in kit.ObtenerComponentesFisicos(_cantidadRaiz))
+        int indice = _lineas.FindIndex(l => l.Codigo == producto.Codigo);
+        if (indice >= 0)
         {
-            AgregarComponente(componente);
+            _lineas[indice] = _lineas[indice] with { Cantidad = _lineas[indice].Cantidad + cantidad };
+            return;
         }
-    }
-
-    private void AgregarComponente(ComponenteFisico componente)
-    {
-        if (_desglose.TryGetValue(componente.Codigo, out var existente))
-        {
-            _desglose[componente.Codigo] = existente with
-            {
-                Cantidad = existente.Cantidad + componente.Cantidad
-            };
-        }
-        else
-        {
-            _desglose[componente.Codigo] = componente;
-        }
+        _lineas.Add(new ComponenteFisico(producto.Codigo, producto.Nombre, cantidad, producto.PrecioUnitario, producto.PesoKg));
     }
 }

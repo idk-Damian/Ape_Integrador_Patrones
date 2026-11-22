@@ -2,7 +2,8 @@ using LogiMarket.Domain.Despachos;
 
 namespace LogiMarket.Application.Interfaces;
 
-public interface IDespachoRepository : IRepository<Despacho>
+public interface IDespachoRepository
 {
     Task<Despacho?> ObtenerPorPedidoAsync(int pedidoId);
+    Task AgregarAsync(Despacho despacho);
 }

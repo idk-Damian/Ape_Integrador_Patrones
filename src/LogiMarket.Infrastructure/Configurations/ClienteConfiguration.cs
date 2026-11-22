@@ -13,7 +13,11 @@ public class ClienteConfiguration : IEntityTypeConfiguration<Cliente>
 
         builder.Property(c => c.Nombre).IsRequired().HasMaxLength(100);
         builder.Property(c => c.Email).IsRequired().HasMaxLength(150);
+        builder.Property(c => c.Telefono).IsRequired().HasMaxLength(20);
+        builder.Property(c => c.Categoria).HasConversion<string>().HasMaxLength(20);
+        builder.Property(c => c.Activo).IsRequired();
+
         builder.HasIndex(c => c.Email).IsUnique();
-        builder.Property(c => c.Categoria).IsRequired();
+        builder.HasIndex(c => c.Nombre);
     }
 }

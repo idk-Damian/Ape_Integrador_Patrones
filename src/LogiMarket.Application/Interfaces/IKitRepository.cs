@@ -2,8 +2,11 @@ using LogiMarket.Domain.Catalogo;
 
 namespace LogiMarket.Application.Interfaces;
 
-public interface IKitRepository : IRepository<KitCompuesto>
+// los kits se devuelven con todo su arbol cargado para poder calcular precio y expandir SKU
+public interface IKitRepository
 {
     Task<KitCompuesto?> ObtenerPorCodigoAsync(string codigo);
-    Task<KitCompuesto?> ObtenerConComponentesAsync(int id);
+    Task<IReadOnlyList<KitCompuesto>> ListarAsync();
+    Task<bool> ExisteCodigoAsync(string codigo);
+    Task AgregarAsync(KitCompuesto kit);
 }

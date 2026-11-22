@@ -1,24 +1,27 @@
 using LogiMarket.Application.Interfaces;
-using LogiMarket.Domain.Pedidos;
 using LogiMarket.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using LogiMarket.Domain.Pedidos;
 
 namespace LogiMarket.Infrastructure.Repositories;
 
-public class PedidoRepository : Repository<Pedido>, IPedidoRepository
+public sealed class PedidoRepository : IPedidoRepository
 {
-    public PedidoRepository(LogiMarketDbContext context) : base(context) { }
+    private readonly LogiMarketDbContext _context;
 
-    public async Task<Pedido?> ObtenerConLineasAsync(int id)
-        => await DbSet
-            .Include(p => p.Lineas)
-            .ThenInclude(l => l.Componentes)
-            .FirstOrDefaultAsync(p => p.Id == id);
+    public PedidoRepository(LogiMarketDbContext context) => _context = context;
 
-    public async Task<IReadOnlyList<Pedido>> ObtenerPorClienteAsync(int clienteId)
-        => await DbSet
-            .Include(p => p.Lineas)
-            .ThenInclude(l => l.Componentes)
-            .Where(p => p.ClienteId == clienteId)
-            .ToListAsync();
+    public Task<Pedido?> ObtenerPorIdAsync(int id)
+        => ConDetalle().FirstOrDefaultAsync(p => p.Id == id);
+
+    public async Task<IReadOnlyList<Pedido>> ListarAsync()
+        => await ConDetalle().OrderByDescending(p => p.Id).ToListAsync();
+
+    public async Task AgregarAsync(Pedido pedido) => await _context.Pedidos.AddAsync(pedido);
+
+    private IQueryable<Pedido> ConDetalle()
+        => _context.Pedidos
+            .Include(p => p.Lineas.OrderBy(l => l.Orden)).ThenInclude(l => l.Componentes.OrderBy(c => c.Orden))
+            .Include(p => p.CambiosEstado.OrderBy(c => c.Secuencia))
+            .AsSplitQuery();
 }

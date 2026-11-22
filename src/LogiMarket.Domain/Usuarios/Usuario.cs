@@ -3,6 +3,7 @@ using LogiMarket.Domain.Exceptions;
 
 namespace LogiMarket.Domain.Usuarios;
 
+// el hash lo calcula un servicio de infraestructura; aqui solo se guarda
 public class Usuario
 {
     public int Id { get; private set; }
@@ -14,24 +15,21 @@ public class Usuario
 
     private Usuario() { }
 
-    public Usuario(string nombreUsuario, string password, RolUsuario rol)
+    public Usuario(string nombreUsuario, byte[] passwordHash, byte[] salt, RolUsuario rol)
     {
         if (string.IsNullOrWhiteSpace(nombreUsuario))
             throw new DomainException("El nombre de usuario es obligatorio.");
-        if (string.IsNullOrWhiteSpace(password))
-            throw new DomainException("La contraseña es obligatoria.");
+        if (passwordHash is null || passwordHash.Length == 0)
+            throw new DomainException("El hash de la contraseña es obligatorio.");
+        if (salt is null || salt.Length == 0)
+            throw new DomainException("La sal de la contraseña es obligatoria.");
 
-        NombreUsuario = nombreUsuario;
+        NombreUsuario = nombreUsuario.Trim().ToLowerInvariant();
+        PasswordHash = passwordHash;
+        Salt = salt;
         Rol = rol;
         Activo = true;
-
-        var (hash, salt) = PasswordHasher.HashPassword(password);
-        PasswordHash = hash;
-        Salt = salt;
     }
-
-    public bool ValidarPassword(string password)
-        => PasswordHasher.VerifyPassword(password, PasswordHash, Salt);
 
     public void Desactivar() => Activo = false;
     public void Activar() => Activo = true;

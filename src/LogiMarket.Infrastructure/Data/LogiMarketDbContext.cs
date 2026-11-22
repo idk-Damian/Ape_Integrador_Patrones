@@ -6,6 +6,7 @@ using LogiMarket.Domain.Inventario;
 using LogiMarket.Domain.Outbox;
 using LogiMarket.Domain.Pagos;
 using LogiMarket.Domain.Pedidos;
+using LogiMarket.Domain.Pedidos.Historial;
 using LogiMarket.Domain.Usuarios;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +22,7 @@ public class LogiMarketDbContext : DbContext
     public DbSet<Pedido> Pedidos => Set<Pedido>();
     public DbSet<LineaPedido> PedidoDetalles => Set<LineaPedido>();
     public DbSet<LineaComponenteSnapshot> PedidoDetalleComponentes => Set<LineaComponenteSnapshot>();
+    public DbSet<CambioEstadoPedido> PedidoHistorialEstados => Set<CambioEstadoPedido>();
     public DbSet<Pago> Pagos => Set<Pago>();
     public DbSet<MovimientoInventario> MovimientosInventario => Set<MovimientoInventario>();
     public DbSet<Despacho> Despachos => Set<Despacho>();
@@ -31,7 +33,5 @@ public class LogiMarketDbContext : DbContext
     public LogiMarketDbContext(DbContextOptions<LogiMarketDbContext> options) : base(options) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-    {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(LogiMarketDbContext).Assembly);
-    }
+        => modelBuilder.ApplyConfigurationsFromAssembly(typeof(LogiMarketDbContext).Assembly);
 }

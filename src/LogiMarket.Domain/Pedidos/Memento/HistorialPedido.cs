@@ -2,65 +2,49 @@ using LogiMarket.Domain.Exceptions;
 
 namespace LogiMarket.Domain.Pedidos.Memento;
 
-/// <summary>
-/// Patrón MEMENTO – Historial de ediciones con Undo/Redo.
-/// Máximo 5 estados. Se bloquea al confirmar pago.
-/// </summary>
+// cuidador: guarda hasta cinco fotos del borrador con deshacer y rehacer
 public sealed class HistorialPedido
 {
-    private readonly List<PedidoMemento> _estados = new();
-    private int _posicionActual = -1;
-    private bool _bloqueado;
-    private const int MaxEstados = 5;
+    public const int MaxEstados = 5;
 
-    public bool EstaBloqueado => _bloqueado;
-    public bool PuedeDeshacer => !_bloqueado && _posicionActual > 0;
-    public bool PuedeRehacer => !_bloqueado && _posicionActual < _estados.Count - 1;
+    private readonly List<PedidoMemento> _estados = new();
+    private int _posicion = -1;
+
+    public bool EstaBloqueado { get; private set; }
+    public int Cantidad => _estados.Count;
+    public bool PuedeDeshacer => !EstaBloqueado && _posicion > 0;
+    public bool PuedeRehacer => !EstaBloqueado && _posicion < _estados.Count - 1;
 
     public void Guardar(PedidoMemento memento)
     {
-        if (_bloqueado) throw new DomainException("El historial está bloqueado tras confirmar pago.");
+        if (EstaBloqueado) throw new DomainException("El historial está bloqueado: el pedido ya fue confirmado.");
 
-        // Eliminar estados de redo
-        if (_posicionActual < _estados.Count - 1)
-            _estados.RemoveRange(_posicionActual + 1, _estados.Count - _posicionActual - 1);
+        if (_posicion < _estados.Count - 1)
+            _estados.RemoveRange(_posicion + 1, _estados.Count - _posicion - 1);
 
         _estados.Add(memento);
-
-        // Mantener máximo 5
         if (_estados.Count > MaxEstados)
-        {
             _estados.RemoveAt(0);
-        }
-        else
-        {
-            _posicionActual++;
-        }
+
+        _posicion = _estados.Count - 1;
     }
 
     public PedidoMemento? Deshacer()
     {
         if (!PuedeDeshacer) return null;
-        _posicionActual--;
-        return _estados[_posicionActual];
+        return _estados[--_posicion];
     }
 
     public PedidoMemento? Rehacer()
     {
         if (!PuedeRehacer) return null;
-        _posicionActual++;
-        return _estados[_posicionActual];
+        return _estados[++_posicion];
     }
 
-    public void Bloquear()
-    {
-        _bloqueado = true;
-    }
-
-    public void Limpiar()
+    public void LimpiarYBloquear()
     {
         _estados.Clear();
-        _posicionActual = -1;
-        _bloqueado = false;
+        _posicion = -1;
+        EstaBloqueado = true;
     }
 }

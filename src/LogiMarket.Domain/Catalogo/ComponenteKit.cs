@@ -1,44 +1,44 @@
+using LogiMarket.Domain.Exceptions;
+
 namespace LogiMarket.Domain.Catalogo;
 
-/// <summary>
-/// Componente de un kit: referencia a un elemento del catálogo con cantidad.
-/// Almacena datos primitivos para persistencia y resuelve la referencia en tiempo de ejecución.
-/// </summary>
+// renglon de un kit: apunta a un producto o a otro kit, nunca a ambos
 public class ComponenteKit
 {
     public int Id { get; private set; }
     public int KitPadreId { get; private set; }
-    public string CodigoComponente { get; private set; } = null!;
-    public string TipoComponente { get; private set; } = null!;
+    public int? ProductoId { get; private set; }
+    public int? SubKitId { get; private set; }
     public int Cantidad { get; private set; }
+    public int Orden { get; private set; }
 
-    private IElementoCatalogo? _elementoResuelto;
+    public ProductoSimple? Producto { get; private set; }
+    public KitCompuesto? SubKit { get; private set; }
 
     public IElementoCatalogo Elemento
-        => _elementoResuelto ?? throw new Exceptions.DomainException(
-            $"Componente '{CodigoComponente}' no resuelto. Llame a ResolverElemento primero.");
+        => (IElementoCatalogo?)Producto ?? SubKit
+           ?? throw new DomainException($"El componente {Id} del kit no fue cargado junto con su elemento.");
+
+    public string CodigoComponente => Elemento.Codigo;
 
     private ComponenteKit() { }
 
-    public ComponenteKit(IElementoCatalogo elemento, int cantidad)
+    internal ComponenteKit(IElementoCatalogo elemento, int cantidad, int orden)
     {
-        if (elemento is null) throw new Exceptions.DomainException("El elemento no puede ser nulo.");
-        if (cantidad <= 0) throw new Exceptions.DomainException("La cantidad debe ser mayor a cero.");
+        if (cantidad <= 0) throw new DomainException("La cantidad debe ser mayor a cero.");
 
-        CodigoComponente = elemento.Codigo;
-        TipoComponente = elemento.EsKit ? "KIT" : "PRODUCTO";
+        switch (elemento)
+        {
+            case ProductoSimple producto:
+                Producto = producto;
+                break;
+            case KitCompuesto kit:
+                SubKit = kit;
+                break;
+            default:
+                throw new DomainException("Tipo de elemento de catálogo no soportado.");
+        }
         Cantidad = cantidad;
-        _elementoResuelto = elemento;
-    }
-
-    /// <summary>
-    /// Resuelve la referencia al elemento del catálogo (usado al rehidratar desde persistencia).
-    /// </summary>
-    public void ResolverElemento(IElementoCatalogo elemento)
-    {
-        if (elemento.Codigo != CodigoComponente)
-            throw new Exceptions.DomainException(
-                $"El código del elemento ({elemento.Codigo}) no coincide con el componente ({CodigoComponente}).");
-        _elementoResuelto = elemento;
+        Orden = orden;
     }
 }

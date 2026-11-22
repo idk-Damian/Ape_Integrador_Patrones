@@ -2,8 +2,9 @@ namespace LogiMarket.Domain.Enums;
 
 public enum TipoMovimiento
 {
-    Entrada = 0,
+    InventarioInicial = 0,
     SalidaVenta = 1,
-    SalidaAjuste = 2,
-    DevolucionEntrada = 3
+    ReingresoDevolucion = 2,
+    AjusteEntrada = 3,
+    AjusteSalida = 4
 }

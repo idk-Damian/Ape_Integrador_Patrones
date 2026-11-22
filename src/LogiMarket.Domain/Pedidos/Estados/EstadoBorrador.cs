@@ -1,6 +1,5 @@
 namespace LogiMarket.Domain.Pedidos.Estados;
 
-/// <summary>BORRADOR → puede Validar o Cancelar. Permite edición.</summary>
 public sealed class EstadoBorrador : EstadoBase
 {
     public static readonly EstadoBorrador Instancia = new();
