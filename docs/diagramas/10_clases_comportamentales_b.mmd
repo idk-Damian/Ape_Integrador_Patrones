@@ -1,0 +1,83 @@
+%% Patrones comportamentales (2/2): Observer, State, Strategy, Template Method, Visitor
+classDiagram
+    direction LR
+    class PublicadorEventos {
+        +Suscribir(IObservadorEventos)
+        +PublicarAsync(EventoNegocio)
+    }
+    class IObservadorEventos {
+        <<interface>>
+        +ManejarAsync(EventoNegocio)
+    }
+    class ProcesadorOutbox {
+        +ProcesarPendientesAsync() ResultadoOutbox
+    }
+    PublicadorEventos o-- IObservadorEventos
+    IObservadorEventos <|.. ObservadorNotificaciones
+    IObservadorEventos <|.. ObservadorAuditoria
+    IObservadorEventos <|.. ObservadorMetricas
+    ProcesadorOutbox --> PublicadorEventos
+    ProcesadorOutbox --> IEventoOutboxRepository
+
+    class IEstadoPedido {
+        <<interface>>
+        +Validar(pedido, fecha)
+        +Pagar(pedido, fecha)
+        +Despachar(pedido, fecha)
+        +Entregar(pedido, fecha)
+        +Cancelar(pedido, fecha)
+    }
+    class EstadoBase {
+        <<abstract>>
+        todas las acciones rechazan por defecto
+    }
+    IEstadoPedido <|.. EstadoBase
+    EstadoBase <|-- EstadoBorrador
+    EstadoBase <|-- EstadoValidado
+    EstadoBase <|-- EstadoPagado
+    EstadoBase <|-- EstadoDespachado
+    EstadoBase <|-- EstadoEntregado
+    EstadoBase <|-- EstadoCancelado
+    class Pedido {
+        -IEstadoPedido _estado
+        ~CambiarEstado(nuevo, fecha)
+    }
+    Pedido o-- IEstadoPedido
+
+    class IEstrategiaDescuento {
+        <<interface>>
+        +Nombre string
+        +Prioridad int
+        +Aplica(contexto) bool
+        +CalcularDescuento(subtotal) decimal
+    }
+    class CalculadoraDescuento {
+        +Calcular(contexto) ResultadoDescuento
+    }
+    IEstrategiaDescuento <|.. Mayorista15
+    IEstrategiaDescuento <|.. Vip10
+    IEstrategiaDescuento <|.. SinDescuento
+    CalculadoraDescuento o-- IEstrategiaDescuento : ordenadas por prioridad
+
+    class ProcesadorDevolucionBase {
+        <<abstract>>
+        +ProcesarAsync(solicitud) ResultadoDevolucion
+        -VerificarElegibilidadAsync()
+        #InspeccionarCondicion(solicitud, dias)*
+        #CalcularReembolso(pedido) decimal
+    }
+    ProcesadorDevolucionBase <|-- DevolucionPorDefecto : hasta 30 días
+    ProcesadorDevolucionBase <|-- DevolucionPorArrepentimiento : hasta 7 días, sin uso
+
+    class IVisitanteCatalogo {
+        <<interface>>
+        +VisitarProducto(ProductoSimple)
+        +VisitarKit(KitCompuesto)
+    }
+    class VisitanteCatalogoRecursivo {
+        <<abstract>>
+    }
+    IVisitanteCatalogo <|.. VisitanteCatalogoRecursivo
+    VisitanteCatalogoRecursivo <|-- VisitanteDesgloseFisico
+    VisitanteCatalogoRecursivo <|-- VisitantePesoLogistico
+    IElementoCatalogo ..> IVisitanteCatalogo : Aceptar()

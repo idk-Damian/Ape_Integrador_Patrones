@@ -1,0 +1,33 @@
+%% Estados del pedido (patron State: EstadoBorrador, EstadoValidado, EstadoPagado, EstadoDespachado, EstadoEntregado, EstadoCancelado)
+stateDiagram-v2
+    [*] --> BORRADOR : PedidoBuilder.Construir(fecha)
+    BORRADOR --> VALIDADO : Validar(fecha)<br/>cadena de validación correcta
+    BORRADOR --> CANCELADO : Cancelar(fecha)
+    VALIDADO --> PAGADO : Pagar(fecha)<br/>cobro aprobado + stock descontado<br/>+ Outbox en la misma transacción
+    VALIDADO --> CANCELADO : Cancelar(fecha)
+    PAGADO --> DESPACHADO : Despachar(fecha)<br/>solo BODEGA o ADMIN
+    DESPACHADO --> ENTREGADO : Entregar(fecha)
+    CANCELADO --> [*]
+    ENTREGADO --> [*]
+
+    note right of BORRADOR
+        Único estado editable.
+        Memento guarda hasta 5 fotos
+        (deshacer / rehacer).
+    end note
+    note right of PAGADO
+        No se cancela, no se edita
+        y no se vuelve a cobrar.
+        Al pagar se limpia y bloquea
+        el historial de ediciones.
+    end note
+    note right of ENTREGADO
+        Devolución total (Template Method):
+        se registra aparte, una sola vez,
+        con reintegro de stock y reembolso.
+        El pedido conserva el estado ENTREGADO.
+    end note
+    note left of CANCELADO
+        Cualquier otra acción lanza
+        DomainException desde EstadoBase.
+    end note

@@ -1,0 +1,78 @@
+%% Patrones creacionales: clases participantes
+classDiagram
+    direction LR
+    class CreadorNotificador {
+        <<abstract>>
+        +Canal string
+        +CrearNotificador() INotificador*
+        +NotificarAsync(cliente, asunto, mensaje, ref) Task~string~
+    }
+    class CreadorNotificadorEmail
+    class CreadorNotificadorSms
+    class INotificador {
+        <<interface>>
+        +Canal string
+        +EnviarAsync(cliente, asunto, mensaje, ref) Task
+    }
+    class NotificadorEmailSimulado
+    class NotificadorSmsSimulado
+    class SelectorCanalNotificacion {
+        +Obtener() CreadorNotificador
+    }
+    CreadorNotificador <|-- CreadorNotificadorEmail
+    CreadorNotificador <|-- CreadorNotificadorSms
+    INotificador <|.. NotificadorEmailSimulado
+    INotificador <|.. NotificadorSmsSimulado
+    CreadorNotificadorEmail ..> NotificadorEmailSimulado : crea
+    CreadorNotificadorSms ..> NotificadorSmsSimulado : crea
+    SelectorCanalNotificacion o-- CreadorNotificador
+
+    class IFabricaEntrega {
+        <<interface>>
+        +Tipo TipoEntrega
+        +CrearTarifa() ITarifaEntrega
+        +CrearPlazo() IPlazoEntrega
+        +CrearEtiqueta() IEtiquetaEntrega
+    }
+    class FabricaEntregaEstandar
+    class FabricaEntregaExpres
+    class ITarifaEntrega {
+        <<interface>>
+        +Familia TipoEntrega
+        +Calcular() decimal
+    }
+    class IPlazoEntrega {
+        <<interface>>
+        +Dias int
+        +EstimarEntrega(desde) DateTime
+    }
+    class IEtiquetaEntrega {
+        <<interface>>
+        +GenerarNumeroGuia(pedidoId, fecha) string
+    }
+    IFabricaEntrega <|.. FabricaEntregaEstandar
+    IFabricaEntrega <|.. FabricaEntregaExpres
+    IFabricaEntrega ..> ITarifaEntrega
+    IFabricaEntrega ..> IPlazoEntrega
+    IFabricaEntrega ..> IEtiquetaEntrega
+
+    class PedidoBuilder {
+        +ParaCliente(cliente) PedidoBuilder
+        +ConLinea(elemento, cantidad) PedidoBuilder
+        +ConEntrega(IFabricaEntrega) PedidoBuilder
+        +EnFecha(fecha) PedidoBuilder
+        +Construir() Pedido
+    }
+    class Pedido {
+        +ClonarComoBorrador(fecha) Pedido
+    }
+    PedidoBuilder ..> Pedido : construye válido
+    PedidoBuilder ..> IFabricaEntrega
+    Pedido ..> Pedido : Prototype (copia profunda)
+
+    class MetricasSesion {
+        <<singleton en DI>>
+        +PedidosPagados long
+        +RegistrarEvento(id, tipo) bool
+        +RegistrarNotificacion()
+    }

@@ -1,0 +1,158 @@
+%% Modelo relacional tomado de LogiMarketDbContextModelSnapshot (migraciones InitialCreate y AjustesDominioFase1)
+erDiagram
+    Usuarios {
+        int Id PK
+        string NombreUsuario UK
+        blob PasswordHash
+        blob Salt
+        string Rol
+        bool Activo
+    }
+    Clientes {
+        int Id PK
+        string Nombre "indice"
+        string Email UK
+        string Telefono
+        string Categoria
+        bool Activo
+    }
+    Productos {
+        int Id PK
+        string Codigo UK "SKU"
+        string Nombre "indice"
+        string Categoria
+        string Descripcion
+        decimal PrecioUnitario "CHECK > 0"
+        int Stock "CHECK >= 0"
+        decimal PesoKg "CHECK >= 0"
+        int Version "token de concurrencia"
+    }
+    Kits {
+        int Id PK
+        string Codigo UK
+        string Nombre
+    }
+    KitComponentes {
+        int Id PK
+        int KitPadreId FK
+        int ProductoId FK "nulo si es subkit"
+        int SubKitId FK "nulo si es producto"
+        int Cantidad "CHECK > 0"
+        int Orden
+    }
+    Pedidos {
+        int Id PK
+        int ClienteId FK
+        string CategoriaCliente
+        string EstadoNombre "indice"
+        string TipoEntrega
+        decimal Subtotal
+        decimal Descuento
+        string NombreDescuento
+        decimal TarifaEnvio
+        decimal Total
+        datetime FechaCreacion
+        datetime FechaModificacion
+        datetime FechaEntrega
+        int Version "token de concurrencia"
+    }
+    PedidoDetalles {
+        int Id PK
+        int PedidoId FK
+        string ElementoCodigo "UK con PedidoId"
+        string ElementoNombre
+        bool EsKit
+        int Cantidad "CHECK > 0"
+        decimal PrecioUnitario "instantanea"
+        int Orden
+    }
+    PedidoDetalleComponentes {
+        int Id PK
+        int LineaPedidoId FK
+        string ProductoCodigo
+        string ProductoNombre
+        int Cantidad
+        decimal PrecioUnitario "instantanea"
+        decimal PesoKg
+        int Orden
+    }
+    PedidoHistorialEstados {
+        int Id PK
+        int PedidoId FK
+        int Secuencia "UK con PedidoId"
+        string EstadoAnterior
+        string EstadoNuevo
+        datetime Fecha
+    }
+    Pagos {
+        int Id PK
+        int PedidoId FK "UK: un pago por pedido"
+        decimal Monto "CHECK > 0"
+        string Proveedor
+        string ReferenciaCobro UK
+        string ClaveIdempotencia UK
+        datetime Fecha
+    }
+    MovimientosInventario {
+        int Id PK
+        int ProductoId FK
+        int PedidoId FK "nulo en semilla"
+        string Tipo
+        int Cantidad "CHECK <> 0, con signo"
+        int StockResultante "CHECK >= 0"
+        string Motivo
+        string Referencia
+        datetime Fecha
+    }
+    Despachos {
+        int Id PK
+        int PedidoId FK "UK"
+        string NumeroGuia UK
+        string TipoEntrega
+        datetime FechaDespacho
+        datetime FechaEstimada
+        datetime FechaEntrega
+    }
+    Devoluciones {
+        int Id PK
+        int PedidoId FK "UK: devolucion unica"
+        string Motivo
+        int DiasDesdeEntrega
+        bool ProductoSinUso
+        decimal MontoReembolso "CHECK > 0"
+        string ReferenciaReembolso UK
+        datetime Fecha
+    }
+    EventosOutbox {
+        int Id PK
+        guid IdEvento UK
+        string TipoEvento
+        string Payload
+        datetime FechaCreacion
+        datetime FechaProcesado "indice"
+        int Intentos
+        string UltimoError
+    }
+    Auditorias {
+        int Id PK
+        string Categoria "indice"
+        string Accion
+        string Referencia
+        string Usuario
+        string Detalle
+        string Correlacion
+        datetime Fecha "indice"
+    }
+
+    Clientes ||--o{ Pedidos : "realiza"
+    Pedidos ||--|{ PedidoDetalles : "contiene"
+    PedidoDetalles ||--|{ PedidoDetalleComponentes : "instantanea del kit"
+    Pedidos ||--|{ PedidoHistorialEstados : "historial"
+    Pedidos ||--o| Pagos : "cobro"
+    Pedidos ||--o| Despachos : "despacho"
+    Pedidos ||--o| Devoluciones : "devolucion"
+    Pedidos ||--o{ MovimientosInventario : "referencia"
+    Productos ||--o{ MovimientosInventario : "mueve"
+    Kits ||--|{ KitComponentes : "compone"
+    Productos ||--o{ KitComponentes : "producto"
+    Kits ||--o{ KitComponentes : "subkit"

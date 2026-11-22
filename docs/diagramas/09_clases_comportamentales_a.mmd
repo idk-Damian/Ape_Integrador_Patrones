@@ -1,0 +1,85 @@
+%% Patrones comportamentales (1/2): Chain, Command, Interpreter, Iterator, Mediator, Memento
+classDiagram
+    direction LR
+    class ValidadorPedido {
+        <<abstract>>
+        +Nombre string
+        +Enlazar(siguiente) ValidadorPedido
+        +Validar(contexto) ResultadoValidacion
+        #Revisar(contexto) string*
+    }
+    ValidadorPedido <|-- ValidadorClienteActivo
+    ValidadorPedido <|-- ValidadorLineas
+    ValidadorPedido <|-- ValidadorStock
+    ValidadorPedido <|-- ValidadorAutorizacion
+    ValidadorPedido --> ValidadorPedido : siguiente
+
+    class IComando {
+        <<interface>>
+        +Nombre string
+        +Entrada string
+        +EjecutarAsync() ResultadoOperacion
+    }
+    class InvocadorComandos {
+        +Historial RegistroComando[]
+        +EjecutarAsync(IComando)
+    }
+    IComando <|.. ConfirmarPedidoCommand
+    IComando <|.. CancelarPedidoCommand
+    IComando <|.. DespacharPedidoCommand
+    IComando <|.. EntregarPedidoCommand
+    IComando <|.. ProcesarDevolucionCommand
+    InvocadorComandos ..> IComando
+    ConfirmarPedidoCommand --> ConfirmacionPedidoFacade : receptor
+
+    class IExpresionFiltro {
+        <<interface>>
+        +Evaluar(PedidoResumen) bool
+        +Describir() string
+    }
+    class ParserFiltro {
+        +Compilar(texto)$ IExpresionFiltro
+    }
+    IExpresionFiltro <|.. ExpresionEstado
+    IExpresionFiltro <|.. ExpresionTotalMinimo
+    IExpresionFiltro <|.. ExpresionCliente
+    IExpresionFiltro <|.. ExpresionY
+    IExpresionFiltro <|.. ExpresionO
+    ExpresionY o-- IExpresionFiltro : izq, der
+    ExpresionO o-- IExpresionFiltro : izq, der
+    ParserFiltro ..> Lexer
+    ParserFiltro ..> IExpresionFiltro : arma el árbol
+
+    class IteradorComponentesFisicos {
+        +MoveNext() bool
+        +Current ComponenteFisico
+        +Reset()
+    }
+    KitCompuesto ..> IteradorComponentesFisicos : CrearIterador()
+
+    class IMediadorPantallas {
+        <<interface>>
+        +Registrar(IColegaPantalla)
+        +NotificarAsync(emisor, cambio)
+    }
+    class IColegaPantalla {
+        <<interface>>
+        +Intereses CambioNegocio[]
+        +RefrescarAsync(cambio)
+    }
+    IMediadorPantallas <|.. FormularioPrincipalMediator
+    FormularioPrincipalMediator o-- IColegaPantalla
+    FormularioPrincipalMediator --> IDisparadorOutbox
+    IColegaPantalla <|.. VistaBase : WinForms
+
+    class HistorialPedido {
+        +Guardar(PedidoMemento)
+        +Deshacer() PedidoMemento
+        +Rehacer() PedidoMemento
+        +LimpiarYBloquear()
+    }
+    class PedidoMemento {
+        <<inmutable, máx. 5>>
+    }
+    Pedido *-- HistorialPedido : cuidador
+    HistorialPedido o-- PedidoMemento
