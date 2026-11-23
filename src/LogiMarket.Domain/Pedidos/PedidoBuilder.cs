@@ -63,7 +63,9 @@ public sealed class PedidoBuilder
         if (_clienteId is null) throw new DomainException("No se puede construir un pedido sin cliente.");
         if (_lineas.Count == 0) throw new DomainException("No se puede construir un pedido sin líneas.");
         if (_entrega is null) throw new DomainException("No se puede construir un pedido sin forma de entrega.");
+        // la fecha la pone quien conoce el reloj (Application); el dominio no la inventa
+        if (_fecha is null) throw new DomainException("No se puede construir un pedido sin fecha de registro.");
 
-        return new Pedido(_clienteId.Value, _categoria, _lineas, _entrega, _calculadora, _fecha ?? DateTime.UtcNow);
+        return new Pedido(_clienteId.Value, _categoria, _lineas, _entrega, _calculadora, _fecha.Value);
     }
 }

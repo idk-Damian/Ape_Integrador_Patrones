@@ -1,0 +1,73 @@
+INICIO 22/11/2026 11:39:55,48 
+10.0.201 [C:\Program Files\dotnet\sdk]
+10.0.400 [C:\Program Files\dotnet\sdk]
+
+Compilación correcta.
+    0 Advertencia(s)
+    0 Errores
+
+Tiempo transcurrido 00:00:04.39
+BUILD_EXIT=0 
+Serie de pruebas para C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\bin\Debug\net8.0\LogiMarket.Tests.dll (.NETCoreApp,Version=v8.0)
+1 archivos de prueba en total coincidieron con el patrón especificado.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.20)
+[xUnit.net 00:00:00.29]   Discovering: LogiMarket.Tests
+[xUnit.net 00:00:00.36]   Discovered:  LogiMarket.Tests
+[xUnit.net 00:00:00.36]   Starting:    LogiMarket.Tests
+  Correctas LogiMarket.Tests.Dominio.MementoTests.P29_SoloSeConservanCincoEstados [314 ms]
+  Correctas LogiMarket.Tests.Dominio.VisitorTests.P34_LaVisitaBajaPorElKitAnidado [312 ms]
+  Correctas LogiMarket.Tests.Dominio.IteratorTests.P27_RecorreKitTeletrabajoUnaVezPorSkuYTermina [316 ms]
+  Correctas LogiMarket.Tests.Dominio.PrototypeTests.P14_LaCopiaEsProfundaYNoAfectaALaPlantilla [316 ms]
+  Correctas LogiMarket.Tests.Dominio.StrategyTests.CasosOficiales_TotalesDeAnaLuisYCarmen [317 ms]
+  Correctas LogiMarket.Tests.Dominio.PrototypeTests.P14_SoloUnBorradorSirveDePlantilla [1 ms]
+  Correctas LogiMarket.Tests.Dominio.VisitorTests.P34_KitTeletrabajoPesaUnKiloYSeDesglosaEnTresSku [2 ms]
+  Correctas LogiMarket.Tests.Dominio.MementoTests.P29_AlPagarSeBloqueaElHistorial [2 ms]
+  Correctas LogiMarket.Tests.Dominio.MementoTests.P29_TresCambiosDosDeshacerYUnRehacer [2 ms]
+  Correctas LogiMarket.Tests.Dominio.CompositeTests.P18_KitAnidadoSeExpandeHastaLosSkuFinales [1 ms]
+  Correctas LogiMarket.Tests.Dominio.StrategyTests.P32_ClienteNormalSinVolumenNoTieneDescuento [5 ms]
+  Correctas LogiMarket.Tests.Dominio.CompositeTests.P18_KitNoPuedeContenerseDirectamente [< 1 ms]
+  Correctas LogiMarket.Tests.Dominio.BuilderTests.P13_LineaConCantidadCeroSeRechaza [< 1 ms]
+  Correctas LogiMarket.Tests.Dominio.StrategyTests.P32_CarmenConDiezUnidadesRecibeMayorista [< 1 ms]
+  Correctas LogiMarket.Tests.Dominio.StrategyTests.P32_PrioridadesRepetidasSeRechazan [< 1 ms]
+  Correctas LogiMarket.Tests.Dominio.StrategyTests.P32_AnaVipRecibeDiezPorCiento [< 1 ms]
+  Correctas LogiMarket.Tests.Dominio.StrategyTests.P32_SiCoincidenVipYMayoristaGanaMayoristaSinAcumular [< 1 ms]
+  Correctas LogiMarket.Tests.Dominio.StrategyTests.RedondeoMonetarioAlejaDeCero [< 1 ms]
+  Correctas LogiMarket.Tests.Dominio.StateTests.P31_CadaTransicionQuedaEnElHistorialDeEstados [3 ms]
+  Correctas LogiMarket.Tests.Dominio.StrategyTests.P32_NuevaPromocionSeAgregaSinEditarLaCalculadora [< 1 ms]
+  Correctas LogiMarket.Tests.Dominio.StateTests.P31_CancelarSoloDesdeBorradorOValidado [< 1 ms]
+  Correctas LogiMarket.Tests.Dominio.StateTests.P31_NoSeRetrocedeNiSeRepiteEstado [1 ms]
+  Correctas LogiMarket.Tests.Dominio.BuilderTests.P13_PedidoDeVariosRenglonesConKitYProducto [6 ms]
+  Correctas LogiMarket.Tests.Dominio.StateTests.P31_PagadoNoSeCancelaNiSeEdita [1 ms]
+  Correctas LogiMarket.Tests.Dominio.BuilderTests.P13_SinClienteNoSeConstruye [< 1 ms]
+  Correctas LogiMarket.Tests.Dominio.BuilderTests.P13_SinLineasNoSeConstruye [< 1 ms]
+  Correctas LogiMarket.Tests.Dominio.AbstractFactoryTests.P12_CadaFamiliaEntregaTarifaPlazoYGuiaCoherentes [12 ms]
+  Correctas LogiMarket.Tests.Dominio.StateTests.P31_CicloValidoCompleto [5 ms]
+  Correctas LogiMarket.Tests.Dominio.StateTests.P09_NoSeDespachaAntesDePagar [< 1 ms]
+  Correctas LogiMarket.Tests.Dominio.AbstractFactoryTests.P12_NoSePuedeDespacharConUnaFamiliaDistintaALaVendida [5 ms]
+  Correctas LogiMarket.Tests.Dominio.CompositeTests.P18_KitNoPuedeContenerseIndirectamente [23 ms]
+  Correctas LogiMarket.Tests.Dominio.CompositeTests.P18_PreciosDeKitsSeCalculanRecursivamente [< 1 ms]
+  Correctas LogiMarket.Tests.Riesgos.DefectosFase1Tests.R03_EstrategiaElegidaNoDebePerderseAlEditarElBorrador [2 s]
+  Correctas LogiMarket.Tests.Persistencia.PersistenciaTests.P01_MigracionesYSemillaSinDuplicados [2 s]
+  Correctas LogiMarket.Tests.Riesgos.DefectosFase1Tests.R06_PedidoSinFormaDeEntregaNoDebeConstruirse [343 ms]
+  Correctas LogiMarket.Tests.Riesgos.DefectosFase1Tests.R04_NoDebeCambiarseLaTarifaDeUnPedidoPagado [201 ms]
+  Correctas LogiMarket.Tests.Persistencia.PersistenciaTests.P07_ClaveDeIdempotenciaRepetidaSeRechazaPorUnicidad [409 ms]
+[xUnit.net 00:00:05.05]   Finished:    LogiMarket.Tests
+  Correctas LogiMarket.Tests.Riesgos.DefectosFase1Tests.R05_PrecioDeProductoDebeSerPositivo [216 ms]
+  Correctas LogiMarket.Tests.Persistencia.PersistenciaTests.P36_ConcurrenciaOptimistaEvitaSobreventa [220 ms]
+  Correctas LogiMarket.Tests.Riesgos.DefectosFase1Tests.R08_KitLeidoDeLaBaseDebeCalcularSuPrecio [375 ms]
+  Correctas LogiMarket.Tests.Persistencia.PersistenciaTests.P10_PedidoSeGuardaYSeRecuperaConLineasEHistorial [431 ms]
+  Correctas LogiMarket.Tests.Riesgos.DefectosFase1Tests.R09_UnitOfWorkNoDebeCerrarElContextoQueNoCreo [253 ms]
+  Correctas LogiMarket.Tests.Persistencia.PersistenciaTests.P10_CambioDePrecioPosteriorNoAlteraLaInstantanea [199 ms]
+  Correctas LogiMarket.Tests.Riesgos.DefectosFase1Tests.R07_ReponerStockTambienDebeSubirLaVersion [257 ms]
+  Correctas LogiMarket.Tests.Persistencia.PersistenciaTests.TransaccionRevertidaNoDejaCambios [248 ms]
+  Correctas LogiMarket.Tests.Riesgos.DefectosFase1Tests.R01_Iterador_NoDebeReportarCicloSiUnKitApareceEnDosRamas [219 ms]
+
+La serie de pruebas se ejecutó correctamente.
+Pruebas totales: 46
+     Correcto: 46
+ Tiempo total: 6,0895 Segundos
+ADVERTENCIA: Se sobrescribirá el archivo de resultados: C:\Users\USER\Desktop\ApePatrones\artifacts\resultados\pruebas.trx
+Archivo de resultados: C:\Users\USER\Desktop\ApePatrones\artifacts\resultados\pruebas.trx
+TEST_EXIT=0 
+FIN 
+FIN 

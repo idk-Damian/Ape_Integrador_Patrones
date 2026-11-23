@@ -1,0 +1,41 @@
+%% Patrones estructurales (1/2): Adapter, Decorator, Proxy y Facade en la cadena de cobro
+classDiagram
+    direction LR
+    class IPasarelaPago {
+        <<interface>>
+        +Proveedor string
+        +CobrarAsync(monto, clave) Task~ResultadoCobro~
+    }
+    class PagoAutorizadoProxy {
+        -IPasarelaPago _real
+        -IContextoUsuario _usuario
+    }
+    class AuditoriaPagoDecorator {
+        -IPasarelaPago _interna
+        -IBitacora _bitacora
+    }
+    class PasarelaLegadaAdapter {
+        -PasarelaLegadaSimulada _legado
+    }
+    class PasarelaLegadaSimulada {
+        +CobrarCentavos(long, string) string
+    }
+    class PasarelaAlternativaSimulada
+    IPasarelaPago <|.. PagoAutorizadoProxy
+    IPasarelaPago <|.. AuditoriaPagoDecorator
+    IPasarelaPago <|.. PasarelaLegadaAdapter
+    IPasarelaPago <|.. PasarelaAlternativaSimulada
+    PagoAutorizadoProxy o-- IPasarelaPago : Proxy → Decorator
+    AuditoriaPagoDecorator o-- IPasarelaPago : Decorator → proveedor
+    PasarelaLegadaAdapter --> PasarelaLegadaSimulada : Adapter
+
+    class ConfirmacionPedidoFacade {
+        +ConfirmarAsync(pedidoId, clave) ResultadoConfirmacion
+    }
+    ConfirmacionPedidoFacade --> IPasarelaPago
+    ConfirmacionPedidoFacade --> ServicioValidacionPedidos
+    ConfirmacionPedidoFacade --> ServicioInventario
+    ConfirmacionPedidoFacade --> IUnitOfWork
+    ConfirmacionPedidoFacade --> IPagoRepository
+    ConfirmacionPedidoFacade --> IEventoOutboxRepository
+

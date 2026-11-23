@@ -1,0 +1,21 @@
+﻿P37 - Outbox: falla el notificador y el evento se recupera al reiniciar el procesador
+
+Pedido #1 pagado; la transaccion dejo el evento en EventosOutbox.
+  EventosOutbox #1 PedidoPagado: intentos 0, procesado NO, error ''
+
+1) Procesador con el notificador caido: procesados 0, fallidos 1
+  PedidoPagado #1: pendiente (El servidor SMTP simulado no responde.)
+  EventosOutbox #1 PedidoPagado: intentos 1, procesado NO, error 'El servidor SMTP simulado no responde.'
+  auditorias de negocio 0, avisos enviados 0
+
+2) Procesador reiniciado (nuevo ServiceProvider): procesados 1, fallidos 0
+  PedidoPagado #1: procesado
+  EventosOutbox #1 PedidoPagado: intentos 2, procesado 2026-11-02 10:05:00, error ''
+  2026-11-02 10:05:00 [NOTIFICACION] <d1a2a719bb664194adce8b4ad7ea2dfa> EMAIL a ana@demo.local | Pedido #1 pagado | Recibimos su pago de 59,00 USD. Gracias por su compra.
+
+3) Segunda pasada: procesados 0, fallidos 0 (no se duplica)
+  pagos en base 1, auditorias de negocio 1, avisos enviados 1
+
+Bitacora OUTBOX del procesador original y del reiniciado:
+  2026-11-02 10:00:00 [OUTBOX] <d1a2a719bb664194adce8b4ad7ea2dfa> Evento PedidoPagado #1 falló: El servidor SMTP simulado no responde.
+  2026-11-02 10:05:00 [OUTBOX] <d1a2a719bb664194adce8b4ad7ea2dfa> Evento PedidoPagado #1 procesado.

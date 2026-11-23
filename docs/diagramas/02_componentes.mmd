@@ -1,0 +1,24 @@
+%% Componentes: los 5 proyectos y sus referencias de compilacion (.csproj)
+flowchart TB
+    subgraph SOL["LogiMarket360.sln"]
+        WF["LogiMarket.WinForms<br/>net8.0-windows<br/>Formularios, vistas, Program.cs (composition root)<br/>Microsoft.Extensions.DependencyInjection 8.0.1"]
+        APP["LogiMarket.Application<br/>net8.0<br/>Casos de uso, puertos, DTO, validación, Facade,<br/>Command, Observer, Mediator, Proxy, Interpreter<br/>DependencyInjection.Abstractions 8.0.2"]
+        DOM["LogiMarket.Domain<br/>net8.0 · sin referencias<br/>Entidades, invariantes, State, Composite,<br/>Strategy, Builder, Memento, Visitor, Iterator"]
+        INF["LogiMarket.Infrastructure<br/>net8.0<br/>EF Core 8 + SQLite, repositorios, migraciones, semilla,<br/>Adapter, Decorator, notificadores, bitácora, PBKDF2"]
+        TST["LogiMarket.Tests<br/>net8.0 · xUnit 2.9.3<br/>unitarias, integración con SQLite temporal"]
+    end
+
+    WF --> APP
+    WF --> DOM
+    WF -. "solo en Program.cs<br/>para registrar DI" .-> INF
+    APP --> DOM
+    INF --> APP
+    INF --> DOM
+    TST --> DOM
+    TST --> APP
+    TST --> INF
+
+    classDef nucleo fill:#e8f1fb,stroke:#2b6cb0
+    classDef externo fill:#f4f4f4,stroke:#666
+    class DOM,APP nucleo
+    class INF,WF,TST externo

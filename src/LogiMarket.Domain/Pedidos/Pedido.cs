@@ -71,28 +71,28 @@ public class Pedido
 
     // ---- transiciones (State) ----
 
-    public void Validar() => _estado.Validar(this);
-    public void Despachar() => _estado.Despachar(this);
-    public void Cancelar() => _estado.Cancelar(this);
+    public void Validar(DateTime fecha) => _estado.Validar(this, fecha);
+    public void Despachar(DateTime fecha) => _estado.Despachar(this, fecha);
+    public void Cancelar(DateTime fecha) => _estado.Cancelar(this, fecha);
 
-    public void Pagar()
+    public void Pagar(DateTime fecha)
     {
-        _estado.Pagar(this);
+        _estado.Pagar(this, fecha);
         _historial.LimpiarYBloquear();
     }
 
     public void Entregar(DateTime fechaEntrega)
     {
-        _estado.Entregar(this);
+        _estado.Entregar(this, fechaEntrega);
         FechaEntrega = fechaEntrega;
     }
 
-    internal void CambiarEstado(IEstadoPedido nuevo)
+    // FechaModificacion registra el ultimo cambio de estado; las ediciones del borrador no la tocan
+    internal void CambiarEstado(IEstadoPedido nuevo, DateTime fecha)
     {
-        var ahora = DateTime.UtcNow;
-        _cambiosEstado.Add(new CambioEstadoPedido(_cambiosEstado.Count + 1, _estado.Nombre, nuevo.Nombre, ahora));
+        _cambiosEstado.Add(new CambioEstadoPedido(_cambiosEstado.Count + 1, _estado.Nombre, nuevo.Nombre, fecha));
         _estado = nuevo;
-        FechaModificacion = ahora;
+        FechaModificacion = fecha;
         Version++;
     }
 
@@ -142,7 +142,6 @@ public class Pedido
         cambio();
         Numerar();
         Recalcular(calculadora);
-        FechaModificacion = DateTime.UtcNow;
         GuardarFoto();
     }
 
@@ -204,18 +203,16 @@ public class Pedido
         _lineas.Clear();
         _lineas.AddRange(foto.Lineas.Select(l => l.Clonar()));
         Recalcular(calculadora);
-        FechaModificacion = DateTime.UtcNow;
         return true;
     }
 
     // ---- Prototype ----
 
-    public Pedido ClonarComoBorrador()
+    public Pedido ClonarComoBorrador(DateTime fecha)
     {
         if (EstadoNombre != EstadoBorrador.Instancia.Nombre)
             throw new DomainException("Solo se puede usar como plantilla un pedido en BORRADOR.");
 
-        var ahora = DateTime.UtcNow;
         var copia = new Pedido
         {
             ClienteId = ClienteId,
@@ -226,10 +223,10 @@ public class Pedido
             Descuento = Descuento,
             NombreDescuento = NombreDescuento,
             Total = Total,
-            FechaCreacion = ahora
+            FechaCreacion = fecha
         };
         copia._lineas.AddRange(_lineas.Select(l => l.Clonar()));
-        copia._cambiosEstado.Add(new CambioEstadoPedido(1, null, copia.EstadoNombre, ahora));
+        copia._cambiosEstado.Add(new CambioEstadoPedido(1, null, copia.EstadoNombre, fecha));
         copia.GuardarFoto();
         return copia;
     }

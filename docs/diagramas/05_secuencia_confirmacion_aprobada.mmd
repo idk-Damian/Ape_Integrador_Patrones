@@ -1,0 +1,55 @@
+%% Secuencia 1: confirmacion aprobada (caso oficial de Ana: KIT_TELETRABAJO x1, ESTANDAR, total 59.00)
+sequenceDiagram
+    autonumber
+    actor V as VENTAS
+    participant UI as CobroView (WinForms)
+    participant INV as InvocadorComandos
+    participant CMD as ConfirmarPedidoCommand
+    participant F as ConfirmacionPedidoFacade
+    participant CH as ServicioValidacionPedidos<br/>(Chain)
+    participant UOW as IUnitOfWork<br/>(DbContext)
+    participant P as Pedido (State)
+    participant INVT as ServicioInventario
+    participant PX as PagoAutorizadoProxy
+    participant DEC as AuditoriaPagoDecorator
+    participant AD as PasarelaLegadaAdapter
+    participant LEG as PasarelaLegadaSimulada
+    participant MED as FormularioPrincipalMediator
+    participant OUT as ProcesadorOutbox + PublicadorEventos
+
+    V->>UI: Confirmar y cobrar (pedido 1, clave COB-1-…)
+    UI->>INV: EjecutarAsync(comando)
+    INV->>CMD: EjecutarAsync()
+    CMD->>F: ConfirmarAsync(1, clave)
+    F->>F: ¿clave ya usada? ¿pedido ya cobrado? → no
+    F->>CH: ValidarAsync(pedido, CobrarPedido)
+    CH-->>F: Válido: Cliente activo → Líneas → Stock → Autorización
+    F->>UOW: IniciarTransaccionAsync()
+    F->>P: Validar(ahora)  BORRADOR→VALIDADO
+    F->>INVT: DescontarPorVentaAsync(pedido, ahora)
+    Note over INVT: P01 8→7, P02 5→4, P03 20→19<br/>3 movimientos SalidaVenta, Version++
+    F->>UOW: GuardarCambiosAsync()  (concurrencia optimista)
+    F->>PX: CobrarAsync(59.00, clave)
+    PX->>PX: rol VENTAS permitido
+    PX->>DEC: CobrarAsync
+    DEC->>DEC: LOG INICIO <correlación>
+    DEC->>AD: CobrarAsync
+    AD->>LEG: CobrarCentavos(5900, clave)
+    LEG-->>AD: "OK#59;LEG-…"
+    AD-->>DEC: ResultadoCobro aprobado
+    DEC->>DEC: LOG FIN APROBADO <correlación>
+    DEC-->>PX: aprobado
+    PX-->>F: aprobado
+    F->>UOW: agregar Pago (UK clave, UK pedido)
+    F->>P: Pagar(ahora)  VALIDADO→PAGADO, bloquea Memento
+    F->>UOW: agregar EventoOutbox PedidoPagado
+    F->>UOW: GuardarCambiosAsync() + ConfirmarAsync()
+    F-->>CMD: ResultadoConfirmacion(éxito, 59.00)
+    CMD-->>INV: ResultadoOperacion
+    INV->>INV: registra comando, usuario y resultado
+    INV-->>UI: éxito
+    UI->>MED: NotificarAsync(PedidoConfirmado)
+    MED->>OUT: ProcesarPendientesAsync()
+    OUT->>OUT: Observer: notificación EMAIL, auditoría, métricas
+    OUT-->>MED: 1 procesado, 0 pendientes
+    MED->>MED: refresca Catálogo, Pedidos y Panel (no llama una vista a otra)

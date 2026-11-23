@@ -1,0 +1,14 @@
+﻿P21 - Flyweight: metadatos de SKU compartidos frente a un escenario equivalente sin Flyweight
+
+Condiciones de medicion:
+  runtime 8.0.20, Microsoft Windows 10.0.19045, proceso x64, configuracion Debug
+  5 SKU de la semilla, mismas filas y mismos datos en ambos escenarios, mismo hilo
+  GC.Collect antes de cada escenario y calentamiento previo de 10 filas; se mide GC.GetAllocatedBytesForCurrentThread
+  cada tamano se mide 5 veces; se informa la mediana
+
+Filas   | Metadatos con FW | Metadatos sin FW | Bytes con FW | Bytes sin FW | Ahorro | ReferenceEquals
+1000    |                5 |             1000 |       57.880 |      237.392 | 75.6 % | True
+10000   |                5 |            10000 |      561.880 |    2.368.592 | 76.3 % | True
+
+Lectura: con Flyweight solo existen tantos objetos de metadatos como SKU distintos; sin Flyweight hay uno por fila.
+Stock, cantidad y precio de venta se guardan por fila (estado extrinseco) en ambos escenarios.

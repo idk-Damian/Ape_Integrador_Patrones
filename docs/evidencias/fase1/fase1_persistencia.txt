@@ -1,0 +1,23 @@
+Verificacion de persistencia tras reinicio - 22/11/2026, copia limpia en %TEMP%\lm360_limpio
+Base creada desde cero por la app (datos\logimarket.db no existia).
+
+Sesion 1 (usuario ventas):
+- Carrito: Ana Torres (Vip), KIT_TELETRABAJO x1, Estandar
+- Totales en pantalla: subtotal 60,00; descuento -6,00 VIP; envio 5,00; total 59,00; unidades fisicas 3
+- Guardar borrador -> "Borrador guardado como pedido #1"
+- Confirmar y cobrar, clave COB-1-9F6D4E, proveedor LEGADO, aviso EMAIL -> COBRO APROBADO, ref LEG-AAB90BFD5A
+- Traza: INICIO cobro 59,00 -> PASARELA LEGADO CobrarCentavos(5900, COB-1-9F6D4E) -> OK -> FIN APROBADO
+
+Cierre total del proceso (ventana principal + Salir) y nuevo arranque.
+
+Sesion 2 (usuario consulta):
+- Pedidos: #1 Ana Torres, PAGADO, 59,00, Estandar
+- Linea: KIT_TELETRABAJO x1, 60,00, componentes P01 x1, P02 x1, P03 x1
+- Historial: 1 ->BORRADOR, 2 BORRADOR->VALIDADO, 3 VALIDADO->PAGADO
+- Stock: P01=7, P02=4, P03=19, P04=4, P05=30
+- Movimientos: SalidaVenta -1 para P01, P02, P03 con referencia PED-1
+- Auditoria: NEGOCIO / PedidoPagado
+- Outbox: #1 PedidoPagado, PROCESADO, intentos 1
+- Metricas de sesion en 0 (esperado: son de la sesion, la base es la fuente de verdad)
+
+Observacion: la grilla de Pedidos e Historial muestra 19:32/19:33 mientras auditoria y outbox muestran 14:33 (hora local UTC-5).

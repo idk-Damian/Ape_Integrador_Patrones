@@ -20,7 +20,7 @@ public class PersistenciaTests : IDisposable
     public async Task P01_MigracionesYSemillaSinDuplicados()
     {
         using (var ctx = _bd.NuevoContexto())
-            await new DatabaseSeeder(ctx, _bd.Hasher).SembrarAsync();
+            await new DatabaseSeeder(ctx, _bd.Hasher, _bd.Reloj).SembrarAsync();
 
         using var lectura = _bd.NuevoContexto();
         Assert.Empty(await lectura.Database.GetPendingMigrationsAsync());
@@ -47,7 +47,7 @@ public class PersistenciaTests : IDisposable
             var kit = await new KitRepository(ctx).ObtenerPorCodigoAsync("KIT_TELETRABAJO");
             var ana = await ctx.Clientes.SingleAsync(c => c.Email == "ana@demo.local");
             var pedido = Datos.Builder().ParaCliente(ana).ConLinea(kit!, 1).ConEntrega(new FabricaEntregaEstandar()).Construir();
-            pedido.Validar();
+            pedido.Validar(Datos.Hoy);
 
             await new PedidoRepository(ctx).AgregarAsync(pedido);
             await new UnitOfWork(ctx).GuardarCambiosAsync();

@@ -47,6 +47,7 @@ public class DefectosFase1Tests : IDisposable
             .ParaCliente(1, CategoriaCliente.Vip)
             .ConLinea(d.P01, 1)
             .ConEntrega(new FabricaEntregaEstandar())
+            .EnFecha(Datos.Hoy)
             .Construir();
 
         pedido.AgregarLinea(d.P02, 1, soloNormal);
@@ -58,8 +59,8 @@ public class DefectosFase1Tests : IDisposable
     public void R04_NoDebeCambiarseLaTarifaDeUnPedidoPagado()
     {
         var pedido = new Datos().Borrador();
-        pedido.Validar();
-        pedido.Pagar();
+        pedido.Validar(Datos.Hoy);
+        pedido.Pagar(Datos.Hoy);
 
         Assert.Throws<DomainException>(() => pedido.CambiarEntrega(new FabricaEntregaExpres(), Datos.Calculadora()));
         Assert.Equal(5.00m, pedido.TarifaEnvio);

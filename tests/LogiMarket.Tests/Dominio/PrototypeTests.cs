@@ -14,8 +14,8 @@ public class PrototypeTests
         var plantilla = Datos.Builder().ParaCliente(1, CategoriaCliente.Normal)
             .ConLinea(d.KitTeletrabajo, 1).ConEntrega(new FabricaEntregaEstandar()).Construir();
 
-        var copia1 = plantilla.ClonarComoBorrador();
-        var copia2 = plantilla.ClonarComoBorrador();
+        var copia1 = plantilla.ClonarComoBorrador(Datos.Hoy);
+        var copia2 = plantilla.ClonarComoBorrador(Datos.Hoy);
         copia1.ModificarCantidad("KIT_TELETRABAJO", 4, Datos.Calculadora());
 
         Assert.Equal(1, plantilla.Lineas[0].Cantidad);
@@ -32,7 +32,7 @@ public class PrototypeTests
     public void P14_SoloUnBorradorSirveDePlantilla()
     {
         var pedido = new Datos().Borrador();
-        pedido.Validar();
-        Assert.Throws<DomainException>(() => pedido.ClonarComoBorrador());
+        pedido.Validar(Datos.Hoy);
+        Assert.Throws<DomainException>(() => pedido.ClonarComoBorrador(Datos.Hoy));
     }
 }

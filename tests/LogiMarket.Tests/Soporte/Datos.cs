@@ -9,6 +9,9 @@ namespace LogiMarket.Tests.Soporte;
 // catalogo oficial de la guia armado en memoria para las pruebas de dominio
 internal sealed class Datos
 {
+    // fecha fija para las pruebas de dominio; el pedido ya no toma la hora del sistema
+    public static readonly DateTime Hoy = new(2026, 11, 2, 10, 0, 0);
+
     public ProductoSimple P01 { get; } = new("P01", "Mouse USB", 20.00m, 8, 0.20m);
     public ProductoSimple P02 { get; } = new("P02", "Teclado", 30.00m, 5, 0.70m);
     public ProductoSimple P03 { get; } = new("P03", "Memoria USB", 10.00m, 20, 0.10m);
@@ -31,7 +34,7 @@ internal sealed class Datos
     public static CalculadoraDescuento Calculadora()
         => new(new IEstrategiaDescuento[] { new Mayorista15(), new Vip10(), new SinDescuento() });
 
-    public static PedidoBuilder Builder() => new(Calculadora());
+    public static PedidoBuilder Builder() => new PedidoBuilder(Calculadora()).EnFecha(Hoy);
 
     public Pedido Borrador(CategoriaCliente categoria = CategoriaCliente.Normal)
         => Builder().ParaCliente(1, categoria).ConLinea(P01, 1).ConEntrega(new FabricaEntregaEstandar()).Construir();

@@ -1,0 +1,54 @@
+%% Patrones estructurales (2/2): Bridge, Composite y Flyweight
+classDiagram
+    direction TB
+    class Comprobante {
+        <<abstract>>
+        +Emitir() ResultadoSalida
+        #Componer() DocumentoTexto*
+    }
+    class ComprobanteVenta
+    class ComprobanteDevolucion
+    class ISalidaDocumento {
+        <<interface>>
+        +Emitir(DocumentoTexto) ResultadoSalida
+    }
+    class SalidaVistaPrevia
+    class SalidaArchivoTxt
+    Comprobante <|-- ComprobanteVenta
+    Comprobante <|-- ComprobanteDevolucion
+    Comprobante o-- ISalidaDocumento : Bridge
+    ISalidaDocumento <|.. SalidaVistaPrevia
+    ISalidaDocumento <|.. SalidaArchivoTxt
+
+    class IElementoCatalogo {
+        <<interface>>
+        +Codigo string
+        +PrecioUnitario decimal
+        +ObtenerComponentesFisicos(cantidad)
+        +Aceptar(IVisitanteCatalogo)
+    }
+    class ProductoSimple
+    class KitCompuesto {
+        +AgregarComponente(elemento, cantidad)
+        +CrearIterador() IteradorComponentesFisicos
+    }
+    class ComponenteKit
+    IElementoCatalogo <|.. ProductoSimple
+    IElementoCatalogo <|.. KitCompuesto
+    KitCompuesto *-- ComponenteKit : Composite
+    ComponenteKit --> IElementoCatalogo : producto o subkit
+
+    class CatalogoVisualFlyweightFactory {
+        +Obtener(codigo, nombre, categoria, descripcion) MetadatosSku
+        +InstanciasCreadas int
+    }
+    class MetadatosSku {
+        <<intrínseco, inmutable>>
+    }
+    class FilaCatalogoVisual {
+        +Stock int
+        +Cantidad int
+        +PrecioVenta decimal
+    }
+    CatalogoVisualFlyweightFactory o-- MetadatosSku : caché por SKU
+    FilaCatalogoVisual --> MetadatosSku : compartido

@@ -1,0 +1,41 @@
+﻿INICIO 2026-11-22T14:27:25
+== git status (vacio = sin cambios pendientes)
+== git log
+* dd6ef93 fix(ui): escalado por DPI, ventana maximizada y textos completos
+* d360c53 feat: interfaz WinForms con 12 pantallas, mediator y flyweight
+* 7cce112 feat(eventos): outbox con observer, notificaciones, devoluciones, comprobantes y filtros
+* 8fb6df2 feat(pedidos): cadena de validacion, fachada de confirmacion, logistica y comandos
+* cff0688 feat(pagos): sesion por rol y cadena de cobro Proxy -> Decorator -> Adapter
+* 2cbe5f1 refactor: corrige invariantes de la fase 1 y segrega puertos de persistencia
+* 22b2937 test: reproduce defectos detectados en la fase 1
+* ef51d35 fix(seed): align product weights with official catalog specification
+* bd4f512 feat: arquitectura base, dominio rico con 8 patrones GoF, persistencia EF Core SQLite y seeder
+* d6a8f26 Initial commit
+== sdks
+10.0.201 [C:\Program Files\dotnet\sdk]
+10.0.400 [C:\Program Files\dotnet\sdk]
+CLONE_EXIT=0
+== carpetas bin/obj/.vs en el clon: 0
+== archivos .db en el clon: 0
+  Determinando los proyectos que se van a restaurar...
+  Se ha restaurado C:\Users\USER\AppData\Local\Temp\lm360_limpio\src\LogiMarket.Application\LogiMarket.Application.csproj (en 3,6 s).
+  Se ha restaurado C:\Users\USER\AppData\Local\Temp\lm360_limpio\src\LogiMarket.Domain\LogiMarket.Domain.csproj (en 3,41 s).
+  Se ha restaurado C:\Users\USER\AppData\Local\Temp\lm360_limpio\src\LogiMarket.WinForms\LogiMarket.WinForms.csproj (en 4,14 s).
+  Se ha restaurado C:\Users\USER\AppData\Local\Temp\lm360_limpio\tests\LogiMarket.Tests\LogiMarket.Tests.csproj (en 4,22 s).
+  Se ha restaurado C:\Users\USER\AppData\Local\Temp\lm360_limpio\src\LogiMarket.Infrastructure\LogiMarket.Infrastructure.csproj (en 4,23 s).
+RESTORE_EXIT=0
+
+Compilaci├│n correcta.
+    0 Advertencia(s)
+    0 Errores
+
+Tiempo transcurrido 00:00:46.70
+BUILD_EXIT=0
+TEST_EXIT=0
+== datos existe antes del primer arranque: False
+ARRANQUE_1 ventana_acceso_en=18s salio=False
+ARRANQUE_1 archivos: logimarket.db=266240
+ARRANQUE_2 ventana_acceso_en=12s salio=False
+ARRANQUE_2 archivos: logimarket.db=266240
+EXE=C:\Users\USER\AppData\Local\Temp\lm360_limpio\src\LogiMarket.WinForms\bin\Debug\net8.0-windows\LogiMarket.WinForms.exe
+FIN 2026-11-22T14:29:53
