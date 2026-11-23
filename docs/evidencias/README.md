@@ -6,7 +6,7 @@ Todo lo que hay en esta carpeta salió de ejecuciones reales sobre el código de
 
 | Archivo | Contenido |
 |---|---|
-| `pruebas_consola.txt` | Salida de `dotnet test` con verbosidad normal: 116 pruebas, 116 correctas (22/11/2026 15:07) |
+| `pruebas_consola.txt` | Salida de `dotnet test` con verbosidad normal: 117 pruebas, 117 correctas (22/11/2026 21:29, commit `694601d`) |
 | `pruebas.trx` | El mismo resultado en formato TRX (se abre con Visual Studio) |
 | `matriz_P01_P38.md` | Matriz de los 38 casos de la guía: entrada, esperado, obtenido, evidencia y archivo/método |
 
@@ -30,11 +30,13 @@ dotnet test LogiMarket360.sln
 
 | Archivo | Contenido |
 |---|---|
-| `riesgos_actividad7.md` | Tabla de los riesgos R01–R10 (y R11–R13 sin prueba roja), con principio, refactorización, commits y prueba antes/después |
+| `riesgos_actividad7.md` | Tabla de los riesgos R01–R10 y R14 (y R11–R13 sin prueba roja), con principio, refactorización, commits y prueba antes/después |
 | `riesgos/R01-R09_antes.txt` | Pruebas sobre el commit `5efa8ee`: 34 pruebas, 8 con error |
 | `riesgos/R01-R09_despues.txt` | Pruebas sobre el commit `2b7a824`: 46 de 46 |
 | `riesgos/R10_antes.txt` | Pruebas sobre el commit `b4bfbdb`: 110 pruebas, 2 con error |
 | `riesgos/R10_despues.txt` | Pruebas después de `c6a54ff`: 116 de 116 |
+| `riesgos/R14_antes.txt` | Pruebas sobre el commit `322fe7c`: 117 pruebas, 1 con error |
+| `riesgos/R14_despues.txt` | Pruebas sobre el commit `694601d`: 117 de 117 |
 
 ## Verificación operativa (Actividad 9)
 
