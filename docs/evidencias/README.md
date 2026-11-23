@@ -6,7 +6,7 @@ Todo lo que hay en esta carpeta salió de ejecuciones reales sobre el código de
 
 | Archivo | Contenido |
 |---|---|
-| `pruebas_consola.txt` | Salida de `dotnet test` con verbosidad normal: 117 pruebas, 117 correctas (22/11/2026 21:29, commit `694601d`) |
+| `pruebas_consola.txt` | Salida de `dotnet test` con verbosidad normal: 117 pruebas, 117 correctas en 16,7 s (23/11/2026 18:22, código del commit `694601d`) |
 | `pruebas.trx` | El mismo resultado en formato TRX (se abre con Visual Studio) |
 | `matriz_P01_P38.md` | Matriz de los 38 casos de la guía: entrada, esperado, obtenido, evidencia y archivo/método |
 

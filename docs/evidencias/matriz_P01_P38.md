@@ -1,10 +1,10 @@
 # Matriz de aceptación P01–P38
 
-Ejecución de referencia: 22/11/2026, 15:07 (UTC-5), rama `feature/fase2-evidencias`, commit `1ff885f`.
+Ejecución de referencia: 23/11/2026, 18:22 (UTC-5), rama `feature/fase4-informe`, código del commit `694601d`.
 Comando: `dotnet test LogiMarket360.sln --logger "console;verbosity=normal" --logger "trx;LogFileName=pruebas.trx"`.
-Resultado global: **116 pruebas, 116 correctas, 0 con error** (`pruebas_consola.txt`, `pruebas.trx`).
+Resultado global: **117 pruebas, 117 correctas, 0 con error** en 16,7 s (`pruebas_consola.txt`, `pruebas.trx`).
 
-La columna *Obtenido* solo recoge valores que la prueba comprueba con `Assert` y que pasaron en esa ejecución. Las capturas de pantalla se agregan en el informe (Fase 4); aquí se indica el nombre previsto.
+La columna *Obtenido* solo recoge valores que la prueba comprueba con `Assert` y que pasaron en esa ejecución. Las capturas reales están en `docs/capturas/`; el informe las numera como «Captura N» en la Tabla 10.
 
 Rutas: `T/` = `tests/LogiMarket.Tests/`.
 
