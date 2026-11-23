@@ -1,0 +1,238 @@
+﻿Compilaci├│n iniciada a las 22/11/2026 21:28:41.
+     1>Proyecto "C:\Users\USER\Desktop\ApePatrones\LogiMarket360.sln" en el nodo 1 (Restore destinos).
+     1>ValidateSolutionConfiguration:
+         Compilando la configuraci├│n de soluciones "Debug|Any CPU".
+       _GetAllRestoreProjectPathItems:
+         Determinando los proyectos que se van a restaurar...
+       Restore:
+         La validaci├│n de la cadena de certificados X.509 utilizar├í el almac├®n de confianza predeterminado seleccionado por .NET para la firma de c├│digo.
+         La validaci├│n de la cadena de certificados X.509 utilizar├í el almac├®n de confianza predeterminado seleccionado por .NET para la marca de tiempo.
+         El archivo de recursos no ha cambiado, as├¡ que se omitir├í su escritura. Ruta de acceso: C:\Users\USER\Desktop\ApePatrones\src\LogiMarket.Application\obj\project.assets.json
+         El archivo de recursos no ha cambiado, as├¡ que se omitir├í su escritura. Ruta de acceso: C:\Users\USER\Desktop\ApePatrones\src\LogiMarket.Domain\obj\project.assets.json
+         El archivo de recursos no ha cambiado, as├¡ que se omitir├í su escritura. Ruta de acceso: C:\Users\USER\Desktop\ApePatrones\src\LogiMarket.Infrastructure\obj\project.assets.json
+         El archivo de recursos no ha cambiado, as├¡ que se omitir├í su escritura. Ruta de acceso: C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\obj\project.assets.json
+         El archivo de recursos no ha cambiado, as├¡ que se omitir├í su escritura. Ruta de acceso: C:\Users\USER\Desktop\ApePatrones\src\LogiMarket.WinForms\obj\project.assets.json
+         Se ha restaurado C:\Users\USER\Desktop\ApePatrones\src\LogiMarket.WinForms\LogiMarket.WinForms.csproj (en 95 ms).
+         Se ha restaurado C:\Users\USER\Desktop\ApePatrones\src\LogiMarket.Application\LogiMarket.Application.csproj (en 95 ms).
+         Se ha restaurado C:\Users\USER\Desktop\ApePatrones\src\LogiMarket.Domain\LogiMarket.Domain.csproj (en 95 ms).
+         Se ha restaurado C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\LogiMarket.Tests.csproj (en 97 ms).
+         Se ha restaurado C:\Users\USER\Desktop\ApePatrones\src\LogiMarket.Infrastructure\LogiMarket.Infrastructure.csproj (en 99 ms).
+         
+         Archivos de NuGet Config usados:
+             C:\Users\USER\AppData\Roaming\NuGet\NuGet.Config
+             C:\Program Files (x86)\NuGet\Config\Microsoft.VisualStudio.Offline.config
+         
+         Fuentes usadas:
+             https://api.nuget.org/v3/index.json
+             C:\Program Files (x86)\Microsoft SDKs\NuGetPackages\
+         Todos los proyectos est├ín actualizados para la restauraci├│n.
+     1>Compilaci├│n del proyecto terminada "C:\Users\USER\Desktop\ApePatrones\LogiMarket360.sln" (Restore destinos).
+   1:2>Proyecto "C:\Users\USER\Desktop\ApePatrones\LogiMarket360.sln" en el nodo 1 (VSTest destinos).
+     1>ValidateSolutionConfiguration:
+         Compilando la configuraci├│n de soluciones "Debug|Any CPU".
+   1:2>El proyecto "C:\Users\USER\Desktop\ApePatrones\LogiMarket360.sln" (1:2) est├í compilando "C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\LogiMarket.Tests.csproj" (4:6) en el nodo 5 (VSTest destinos).
+     4>BuildProject:
+         Compilaci├│n iniciada, espere...
+   4:6>El proyecto "C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\LogiMarket.Tests.csproj" (4:6) est├í compilando "C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\LogiMarket.Tests.csproj" (4:7) en el nodo 5 (destinos predeterminados).
+   4:7>El proyecto "C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\LogiMarket.Tests.csproj" (4:7) est├í compilando "C:\Users\USER\Desktop\ApePatrones\src\LogiMarket.Domain\LogiMarket.Domain.csproj" (2:12) en el nodo 1 (destinos predeterminados).
+     2>GenerateTargetFrameworkMonikerAttribute:
+       Se omitir├í el destino "GenerateTargetFrameworkMonikerAttribute" porque todos los archivos de salida est├ín actualizados respecto a los archivos de entrada.
+       CoreGenerateAssemblyInfo:
+       Se omitir├í el destino "CoreGenerateAssemblyInfo" porque todos los archivos de salida est├ín actualizados respecto a los archivos de entrada.
+       _GenerateSourceLinkFile:
+         El archivo de Source Link 'obj\Debug\net8.0\LogiMarket.Domain.sourcelink.json' est├í actualizado.
+       CoreCompile:
+       Se omitir├í el destino "CoreCompile" porque todos los archivos de salida est├ín actualizados respecto a los archivos de entrada.
+       GenerateBuildDependencyFile:
+       Se omitir├í el destino "GenerateBuildDependencyFile" porque todos los archivos de salida est├ín actualizados respecto a los archivos de entrada.
+       CopyFilesToOutputDirectory:
+         LogiMarket.Domain -> C:\Users\USER\Desktop\ApePatrones\src\LogiMarket.Domain\bin\Debug\net8.0\LogiMarket.Domain.dll
+     2>Compilaci├│n del proyecto terminada "C:\Users\USER\Desktop\ApePatrones\src\LogiMarket.Domain\LogiMarket.Domain.csproj" (destinos predeterminados).
+   4:7>El proyecto "C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\LogiMarket.Tests.csproj" (4:7) est├í compilando "C:\Users\USER\Desktop\ApePatrones\src\LogiMarket.Application\LogiMarket.Application.csproj" (5:11) en el nodo 2 (destinos predeterminados).
+     5>GenerateTargetFrameworkMonikerAttribute:
+       Se omitir├í el destino "GenerateTargetFrameworkMonikerAttribute" porque todos los archivos de salida est├ín actualizados respecto a los archivos de entrada.
+       CoreGenerateAssemblyInfo:
+       Se omitir├í el destino "CoreGenerateAssemblyInfo" porque todos los archivos de salida est├ín actualizados respecto a los archivos de entrada.
+       _GenerateSourceLinkFile:
+         El archivo de Source Link 'obj\Debug\net8.0\LogiMarket.Application.sourcelink.json' est├í actualizado.
+       CoreCompile:
+       Se omitir├í el destino "CoreCompile" porque todos los archivos de salida est├ín actualizados respecto a los archivos de entrada.
+       GenerateBuildDependencyFile:
+       Se omitir├í el destino "GenerateBuildDependencyFile" porque todos los archivos de salida est├ín actualizados respecto a los archivos de entrada.
+       CopyFilesToOutputDirectory:
+         LogiMarket.Application -> C:\Users\USER\Desktop\ApePatrones\src\LogiMarket.Application\bin\Debug\net8.0\LogiMarket.Application.dll
+     5>Compilaci├│n del proyecto terminada "C:\Users\USER\Desktop\ApePatrones\src\LogiMarket.Application\LogiMarket.Application.csproj" (destinos predeterminados).
+   4:7>El proyecto "C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\LogiMarket.Tests.csproj" (4:7) est├í compilando "C:\Users\USER\Desktop\ApePatrones\src\LogiMarket.Infrastructure\LogiMarket.Infrastructure.csproj" (3:10) en el nodo 3 (destinos predeterminados).
+     3>GenerateTargetFrameworkMonikerAttribute:
+       Se omitir├í el destino "GenerateTargetFrameworkMonikerAttribute" porque todos los archivos de salida est├ín actualizados respecto a los archivos de entrada.
+       CoreGenerateAssemblyInfo:
+       Se omitir├í el destino "CoreGenerateAssemblyInfo" porque todos los archivos de salida est├ín actualizados respecto a los archivos de entrada.
+       _GenerateSourceLinkFile:
+         El archivo de Source Link 'obj\Debug\net8.0\LogiMarket.Infrastructure.sourcelink.json' est├í actualizado.
+       CoreCompile:
+       Se omitir├í el destino "CoreCompile" porque todos los archivos de salida est├ín actualizados respecto a los archivos de entrada.
+       GenerateBuildDependencyFile:
+       Se omitir├í el destino "GenerateBuildDependencyFile" porque todos los archivos de salida est├ín actualizados respecto a los archivos de entrada.
+       GenerateBuildRuntimeConfigurationFiles:
+       Se omitir├í el destino "GenerateBuildRuntimeConfigurationFiles" porque todos los archivos de salida est├ín actualizados respecto a los archivos de entrada.
+       CopyFilesToOutputDirectory:
+         LogiMarket.Infrastructure -> C:\Users\USER\Desktop\ApePatrones\src\LogiMarket.Infrastructure\bin\Debug\net8.0\LogiMarket.Infrastructure.dll
+     3>Compilaci├│n del proyecto terminada "C:\Users\USER\Desktop\ApePatrones\src\LogiMarket.Infrastructure\LogiMarket.Infrastructure.csproj" (destinos predeterminados).
+     4>GenerateTargetFrameworkMonikerAttribute:
+       Se omitir├í el destino "GenerateTargetFrameworkMonikerAttribute" porque todos los archivos de salida est├ín actualizados respecto a los archivos de entrada.
+       CoreGenerateAssemblyInfo:
+       Se omitir├í el destino "CoreGenerateAssemblyInfo" porque todos los archivos de salida est├ín actualizados respecto a los archivos de entrada.
+       _GenerateSourceLinkFile:
+         El archivo de Source Link 'obj\Debug\net8.0\LogiMarket.Tests.sourcelink.json' est├í actualizado.
+       CoreCompile:
+       Se omitir├í el destino "CoreCompile" porque todos los archivos de salida est├ín actualizados respecto a los archivos de entrada.
+       _CopyOutOfDateSourceItemsToOutputDirectory:
+       Se omitir├í el destino "_CopyOutOfDateSourceItemsToOutputDirectory" porque todos los archivos de salida est├ín actualizados respecto a los archivos de entrada.
+       GenerateBuildDependencyFile:
+       Se omitir├í el destino "GenerateBuildDependencyFile" porque todos los archivos de salida est├ín actualizados respecto a los archivos de entrada.
+       GenerateBuildRuntimeConfigurationFiles:
+       Se omitir├í el destino "GenerateBuildRuntimeConfigurationFiles" porque todos los archivos de salida est├ín actualizados respecto a los archivos de entrada.
+       CopyFilesToOutputDirectory:
+         LogiMarket.Tests -> C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\bin\Debug\net8.0\LogiMarket.Tests.dll
+     4>Compilaci├│n del proyecto terminada "C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\LogiMarket.Tests.csproj" (destinos predeterminados).
+     4>BuildProject:
+         Se complet├│ la compilaci├│n.
+         
+Serie de pruebas para C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\bin\Debug\net8.0\LogiMarket.Tests.dll (.NETCoreApp,Version=v8.0)
+1 archivos de prueba en total coincidieron con el patr├│n especificado.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.20)
+[xUnit.net 00:00:00.62]   Discovering: LogiMarket.Tests
+[xUnit.net 00:00:00.78]   Discovered:  LogiMarket.Tests
+[xUnit.net 00:00:00.78]   Starting:    LogiMarket.Tests
+  Correctas LogiMarket.Tests.Dominio.BuilderTests.P13_LineaConCantidadCeroSeRechaza [227 ms]
+  Correctas LogiMarket.Tests.Dominio.CompositeTests.P18_KitAnidadoSeExpandeHastaLosSkuFinales [249 ms]
+  Correctas LogiMarket.Tests.Dominio.CompositeTests.P18_KitNoPuedeContenerseDirectamente [< 1 ms]
+  Correctas LogiMarket.Tests.Dominio.StateTests.P31_CadaTransicionQuedaEnElHistorialDeEstados [251 ms]
+  Correctas LogiMarket.Tests.Dominio.IteratorTests.P27_RecorreKitTeletrabajoUnaVezPorSkuYTermina [251 ms]
+  Correctas LogiMarket.Tests.Aplicacion.PagosTests.P22_ProxyDeniegaAntesDeLlegarAlDecoratorYAlProveedor(rol: Bodega) [260 ms]
+  Correctas LogiMarket.Tests.Dominio.StateTests.P31_CancelarSoloDesdeBorradorOValidado [1 ms]
+  Correctas LogiMarket.Tests.Aplicacion.PagosTests.P22_ProxyDeniegaAntesDeLlegarAlDecoratorYAlProveedor(rol: Consulta) [< 1 ms]
+  Correctas LogiMarket.Tests.Dominio.StateTests.P31_NoSeRetrocedeNiSeRepiteEstado [1 ms]
+  Correctas LogiMarket.Tests.Dominio.BuilderTests.P13_PedidoDeVariosRenglonesConKitYProducto [21 ms]
+  Correctas LogiMarket.Tests.Dominio.BuilderTests.P13_SinClienteNoSeConstruye [< 1 ms]
+  Correctas LogiMarket.Tests.Dominio.BuilderTests.P13_SinLineasNoSeConstruye [< 1 ms]
+  Correctas LogiMarket.Tests.Aplicacion.PagosTests.P38_LSP_MismasPrecondicionesResultadosEIdempotencia [8 ms]
+  Correctas LogiMarket.Tests.Aplicacion.PagosTests.P22_VentasYAdminSiPuedenCobrar(rol: Admin) [4 ms]
+  Correctas LogiMarket.Tests.Aplicacion.PagosTests.P22_VentasYAdminSiPuedenCobrar(rol: Ventas) [< 1 ms]
+  Correctas LogiMarket.Tests.Dominio.StateTests.P31_PagadoNoSeCancelaNiSeEdita [14 ms]
+  Correctas LogiMarket.Tests.Dominio.StateTests.P31_CicloValidoCompleto [6 ms]
+  Correctas LogiMarket.Tests.Dominio.StateTests.P09_NoSeDespachaAntesDePagar [< 1 ms]
+  Correctas LogiMarket.Tests.Aplicacion.PagosTests.P19_DecoratorRodeaElCobroAprobadoYElRechazado [12 ms]
+  Correctas LogiMarket.Tests.Aplicacion.PagosTests.P19_DecoratorRegistraErrorYNoTragaLaExcepcion [2 ms]
+  Correctas LogiMarket.Tests.Dominio.CompositeTests.P18_KitNoPuedeContenerseIndirectamente [34 ms]
+  Correctas LogiMarket.Tests.Dominio.CompositeTests.P18_PreciosDeKitsSeCalculanRecursivamente [< 1 ms]
+  Correctas LogiMarket.Tests.Aplicacion.PagosTests.P16_AmbosProveedoresCobranConElMismoContrato [2 ms]
+  Correctas LogiMarket.Tests.Aplicacion.PagosTests.P38_CapasSinReferenciasProhibidas [4 ms]
+  Correctas LogiMarket.Tests.Aplicacion.PagosTests.P38_ISP_PuertosSinOperacionesQueNoAplican [1 ms]
+  Correctas LogiMarket.Tests.Dominio.StrategyTests.CasosOficiales_TotalesDeAnaLuisYCarmen [20 ms]
+  Correctas LogiMarket.Tests.Dominio.PrototypeTests.P14_LaCopiaEsProfundaYNoAfectaALaPlantilla [3 ms]
+  Correctas LogiMarket.Tests.Dominio.PrototypeTests.P14_SoloUnBorradorSirveDePlantilla [< 1 ms]
+  Correctas LogiMarket.Tests.Dominio.StrategyTests.P32_ClienteNormalSinVolumenNoTieneDescuento [7 ms]
+  Correctas LogiMarket.Tests.Dominio.StrategyTests.P32_CarmenConDiezUnidadesRecibeMayorista [< 1 ms]
+  Correctas LogiMarket.Tests.Dominio.StrategyTests.P32_PrioridadesRepetidasSeRechazan [< 1 ms]
+  Correctas LogiMarket.Tests.Dominio.StrategyTests.P32_AnaVipRecibeDiezPorCiento [< 1 ms]
+  Correctas LogiMarket.Tests.Dominio.StrategyTests.P32_SiCoincidenVipYMayoristaGanaMayoristaSinAcumular [< 1 ms]
+  Correctas LogiMarket.Tests.Dominio.StrategyTests.RedondeoMonetarioAlejaDeCero [< 1 ms]
+  Correctas LogiMarket.Tests.Dominio.StrategyTests.P32_NuevaPromocionSeAgregaSinEditarLaCalculadora [< 1 ms]
+  Correctas LogiMarket.Tests.Dominio.VisitorTests.P34_LaVisitaBajaPorElKitAnidado [3 ms]
+  Correctas LogiMarket.Tests.Dominio.VisitorTests.P34_KitTeletrabajoPesaUnKiloYSeDesglosaEnTresSku [1 ms]
+  Correctas LogiMarket.Tests.Dominio.AbstractFactoryTests.P12_CadaFamiliaEntregaTarifaPlazoYGuiaCoherentes [11 ms]
+  Correctas LogiMarket.Tests.Dominio.AbstractFactoryTests.P12_NoSePuedeDespacharConUnaFamiliaDistintaALaVendida [5 ms]
+  Correctas LogiMarket.Tests.Riesgos.DefectosFase1Tests.R03_EstrategiaElegidaNoDebePerderseAlEditarElBorrador [4 s]
+  Correctas LogiMarket.Tests.Aplicacion.PresentacionTests.P21_MilFilasCompartenMetadatosPorSku [4 s]
+  Correctas LogiMarket.Tests.Riesgos.DefectosFase2Tests.R14_LaSemillaDebeUsarElRelojInyectado [4 s]
+  Correctas LogiMarket.Tests.Riesgos.DefectosFase1Tests.R06_PedidoSinFormaDeEntregaNoDebeConstruirse [504 ms]
+  Correctas LogiMarket.Tests.Aplicacion.FlujoTests.ConsultaNoPuedeCrearNiCobrar [4 s]
+  Correctas LogiMarket.Tests.Riesgos.DefectosFase1Tests.R04_NoDebeCambiarseLaTarifaDeUnPedidoPagado [517 ms]
+  Correctas LogiMarket.Tests.Aplicacion.EventosTests.P30_TransaccionFallidaNoDejaEventoDeExito [5 s]
+  Correctas LogiMarket.Tests.Aplicacion.PresentacionTests.P28_ConElDisparadorRealLasMetricasSubenDespuesDeConfirmar [1 s]
+  Correctas LogiMarket.Tests.Evidencias.EvidenciasTests.P19_SecuenciaDeLogsDelDecoratorEnLaCadenaReal [5 s]
+  Correctas LogiMarket.Tests.Riesgos.DefectosFase2Tests.R10_CadaTransicionGuardaLaFechaRecibida [1 s]
+  Correctas LogiMarket.Tests.Riesgos.DefectosFase1Tests.R05_PrecioDeProductoDebeSerPositivo [453 ms]
+  Correctas LogiMarket.Tests.Aplicacion.ConfirmacionTests.P20_FalloDeUnColaboradorNoDejaPersistenciaParcial [5 s]
+  Correctas LogiMarket.Tests.Aplicacion.DevolucionTests.P17_DosComprobantesPorDosMedios(medio: "VISTA_PREVIA") [2 s]
+  Correctas LogiMarket.Tests.Aplicacion.FlujoTests.P09_BodegaDespachaYEntregaSoloEnLaSecuenciaPermitida [1 s]
+  Correctas LogiMarket.Tests.Riesgos.DefectosFase1Tests.R08_KitLeidoDeLaBaseDebeCalcularSuPrecio [624 ms]
+  Correctas LogiMarket.Tests.Aplicacion.EventosTests.P11_CadaCreadorFabricaElNotificadorDeSuCanal [1 s]
+  Correctas LogiMarket.Tests.Riesgos.DefectosFase1Tests.R09_UnitOfWorkNoDebeCerrarElContextoQueNoCreo [553 ms]
+  Correctas LogiMarket.Tests.Aplicacion.PresentacionTests.Carrito_AnaCompletaConDeshacerYPlantilla [1 s]
+  Correctas LogiMarket.Tests.Evidencias.EvidenciasTests.P37_OutboxFallaYSeRecuperaTrasReiniciarElProcesador [1 s]
+  Correctas LogiMarket.Tests.Riesgos.DefectosFase1Tests.R07_ReponerStockTambienDebeSubirLaVersion [555 ms]
+  Correctas LogiMarket.Tests.Riesgos.DefectosFase2Tests.R10_DespachoYEntregaDebenQuedarConLaHoraDelReloj [1 s]
+  Correctas LogiMarket.Tests.Aplicacion.FlujoTests.P23_LaCadenaSeDetieneEnElPrimerErrorYAvanzaAlCorregirlo [1 s]
+  Correctas LogiMarket.Tests.Aplicacion.ConfirmacionTests.P07_OtraClaveSobreUnPedidoPagadoTambienSeRechaza [1 s]
+  Correctas LogiMarket.Tests.Riesgos.DefectosFase1Tests.R01_Iterador_NoDebeReportarCicloSiUnKitApareceEnDosRamas [467 ms]
+  Correctas LogiMarket.Tests.Aplicacion.PresentacionTests.Catalogo_SkuDuplicadoYCicloIndirectoSeRechazan [1 s]
+  Correctas LogiMarket.Tests.Aplicacion.DevolucionTests.P17_DosComprobantesPorDosMedios(medio: "ARCHIVO_TXT") [1 s]
+  Correctas LogiMarket.Tests.Evidencias.EvidenciasTests.P22_DenegacionDelProxyNoLlegaAlDecoratorNiAlProveedor [1 s]
+  Correctas LogiMarket.Tests.Aplicacion.EventosTests.P30_PedidoPagadoAvisaUnaVezALosTresSuscriptores [1 s]
+  Correctas LogiMarket.Tests.Persistencia.PersistenciaTests.P01_MigracionesYSemillaSinDuplicados [693 ms]
+  Correctas LogiMarket.Tests.Aplicacion.FlujoTests.ValidarPedidoCorrectoRecorreLosCuatroEslabones [1 s]
+  Correctas LogiMarket.Tests.Aplicacion.PresentacionTests.P28_CambiosSinEventosNoDisparanElOutbox [888 ms]
+  Correctas LogiMarket.Tests.Riesgos.DefectosFase2Tests.R10_PedidoDelCarritoDebeUsarElRelojInyectado [1 s]
+  Correctas LogiMarket.Tests.Evidencias.EvidenciasTests.P21_FlyweightComparadoConUnEscenarioEquivalente [1 s]
+  Correctas LogiMarket.Tests.Aplicacion.InterpreterTests.P26_SintaxisInvalidaDaUnErrorLegible(filtro: "PRECIO = 5", fragmento: "Campo desconocido") [7 ms]
+  Correctas LogiMarket.Tests.Aplicacion.InterpreterTests.P26_SintaxisInvalidaDaUnErrorLegible(filtro: "ESTADO = PAGADO; DROP TABLE Pedidos", fragmento: "no permitido") [< 1 ms]
+  Correctas LogiMarket.Tests.Aplicacion.InterpreterTests.P26_SintaxisInvalidaDaUnErrorLegible(filtro: "", fragmento: "vac├¡o") [< 1 ms]
+  Correctas LogiMarket.Tests.Aplicacion.InterpreterTests.P26_SintaxisInvalidaDaUnErrorLegible(filtro: "ESTADO = PERDIDO", fragmento: "no es un estado") [< 1 ms]
+  Correctas LogiMarket.Tests.Aplicacion.InterpreterTests.P26_SintaxisInvalidaDaUnErrorLegible(filtro: "TOTAL > 50", fragmento: ">=") [< 1 ms]
+  Correctas LogiMarket.Tests.Aplicacion.InterpreterTests.P26_SintaxisInvalidaDaUnErrorLegible(filtro: "TOTAL >= abc", fragmento: "n├║mero") [< 1 ms]
+  Correctas LogiMarket.Tests.Aplicacion.InterpreterTests.P26_SintaxisInvalidaDaUnErrorLegible(filtro: "ESTADO = PAGADO AND", fragmento: "termin├│") [< 1 ms]
+  Correctas LogiMarket.Tests.Aplicacion.InterpreterTests.P26_SintaxisInvalidaDaUnErrorLegible(filtro: "(ESTADO = PAGADO", fragmento: "')'") [< 1 ms]
+  Correctas LogiMarket.Tests.Persistencia.PersistenciaTests.P07_ClaveDeIdempotenciaRepetidaSeRechazaPorUnicidad [1 s]
+  Correctas LogiMarket.Tests.Aplicacion.ConfirmacionTests.P36_DosCobrosConcurrentesSobreLaUltimaUnidad [2 s]
+  Correctas LogiMarket.Tests.Aplicacion.FlujoTests.InicioDeSesionConHashYMensajeGenerico [1 s]
+  Correctas LogiMarket.Tests.Dominio.MementoTests.P29_SoloSeConservanCincoEstados [< 1 ms]
+  Correctas LogiMarket.Tests.Dominio.MementoTests.P29_AlPagarSeBloqueaElHistorial [1 ms]
+  Correctas LogiMarket.Tests.Aplicacion.PresentacionTests.P21_LaFabricaDevuelveLaMismaInstanciaParaElMismoSku [1 s]
+  Correctas LogiMarket.Tests.Dominio.MementoTests.P29_TresCambiosDosDeshacerYUnRehacer [4 ms]
+  Correctas LogiMarket.Tests.Aplicacion.DevolucionTests.P33_DefectoAlDia20SeAcepta [2 s]
+  Correctas LogiMarket.Tests.Aplicacion.EventosTests.P37_FallaElNotificadorYAlReintentarSeProcesaUnaSolaVez [2 s]
+  Correctas LogiMarket.Tests.Persistencia.PersistenciaTests.P36_ConcurrenciaOptimistaEvitaSobreventa [656 ms]
+  Correctas LogiMarket.Tests.Riesgos.DefectosFase2Tests.R10_ElBuilderNoInventaLaFecha [1 s]
+  Correctas LogiMarket.Tests.Aplicacion.ConfirmacionTests.P03_LuisNormalWebcamYAlfombrillaExpres [1 s]
+  Correctas LogiMarket.Tests.Aplicacion.InterpreterTests.P25_FiltroSobreDatosRealesDeLaBase [1 s]
+  Correctas LogiMarket.Tests.Aplicacion.InterpreterTests.P25_EstadoPagadoYTotalMinimo50 [3 ms]
+  Correctas LogiMarket.Tests.Aplicacion.InterpreterTests.P26_ArbolDeExpresionesRespetaLaPrecedencia [1 ms]
+  Correctas LogiMarket.Tests.Aplicacion.InterpreterTests.P26_AndLigaMasFuerteQueOrYLosParentesisCambianElResultado [2 ms]
+  Correctas LogiMarket.Tests.Persistencia.PersistenciaTests.P10_PedidoSeGuardaYSeRecuperaConLineasEHistorial [612 ms]
+  Correctas LogiMarket.Tests.Aplicacion.EventosTests.P15_MetricasSonLaMismaInstanciaYSoportanHilosConcurrentes [975 ms]
+  Correctas LogiMarket.Tests.Aplicacion.DevolucionTests.SoloSeDevuelvenPedidosEntregados [1 s]
+  Correctas LogiMarket.Tests.Persistencia.PersistenciaTests.P10_CambioDePrecioPosteriorNoAlteraLaInstantanea [426 ms]
+  Correctas LogiMarket.Tests.Aplicacion.PresentacionTests.Mantenimiento_RestablecerVuelveALaSemillaSoloComoAdmin [1 s]
+  Correctas LogiMarket.Tests.Aplicacion.ConfirmacionTests.P08_PedidoPagadoNoSeCancela [902 ms]
+  Correctas LogiMarket.Tests.Persistencia.PersistenciaTests.TransaccionRevertidaNoDejaCambios [465 ms]
+  Correctas LogiMarket.Tests.Aplicacion.EventosTests.P11_ElCanalSeEligeFueraDelFormularioYCadaCreadorEntregaSuNotificador [981 ms]
+  Correctas LogiMarket.Tests.Aplicacion.PresentacionTests.Catalogo_ConsultaNoPuedeModificar [704 ms]
+  Correctas LogiMarket.Tests.Aplicacion.DevolucionTests.P33_ArrepentimientoAlDia10SeRechazaSinTocarStockNiReembolsar [1 s]
+  Correctas LogiMarket.Tests.Aplicacion.ConfirmacionTests.P04_CarmenMayoristaDiezMemorias [895 ms]
+  Correctas LogiMarket.Tests.Aplicacion.PresentacionTests.Catalogo_NuevoKitAnidadoYDesgloseConVisitorEIterator [698 ms]
+  Correctas LogiMarket.Tests.Aplicacion.ConfirmacionTests.P07_MismaClaveDevuelveElResultadoOriginalSinCobrarDosVeces [795 ms]
+  Correctas LogiMarket.Tests.Aplicacion.DevolucionTests.P35_AnaDevuelvePorDefectoYRecibe54SinFlete [1 s]
+  Correctas LogiMarket.Tests.Aplicacion.PresentacionTests.Consultas_PanelYMovimientosDespuesDeUnaVenta [812 ms]
+  Correctas LogiMarket.Tests.Aplicacion.ConfirmacionTests.P05_SeisKitsTeletrabajoSeRechazanPorTeclados [942 ms]
+  Correctas LogiMarket.Tests.Aplicacion.DevolucionTests.ArrepentimientoConProductoUsadoSeRechaza [1 s]
+  Correctas LogiMarket.Tests.Aplicacion.PresentacionTests.P28_AlConfirmarElMediadorRefrescaCatalogoPedidosYMetricasSinAcoplarlas [1 s]
+  Correctas LogiMarket.Tests.Aplicacion.ConfirmacionTests.P24_ElMismoComandoSirveParaBotonYPrueba [2 s]
+  Correctas LogiMarket.Tests.Aplicacion.ConfirmacionTests.P02_AnaVipKitTeletrabajoEstandar [1 s]
+[xUnit.net 00:00:20.47]   Finished:    LogiMarket.Tests
+  Correctas LogiMarket.Tests.Aplicacion.ConfirmacionTests.P06_CobroRechazadoNoDejaCambios [1 s]
+Archivo de resultados: C:\Users\USER\Desktop\ApePatrones\artifacts\resultados_r14\pruebas.trx
+
+La serie de pruebas se ejecut├│ correctamente.
+Pruebas totales: 117
+     Correcto: 117
+ Tiempo total: 22,1514 Segundos
+     4>Compilaci├│n del proyecto terminada "C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\LogiMarket.Tests.csproj" (VSTest destinos).
+     1>Compilaci├│n del proyecto terminada "C:\Users\USER\Desktop\ApePatrones\LogiMarket360.sln" (VSTest destinos).
+
+Compilaci├│n correcta.
+    0 Advertencia(s)
+    0 Errores
+
+Tiempo transcurrido 00:00:29.50

@@ -20,7 +20,7 @@ public class PersistenciaTests : IDisposable
     public async Task P01_MigracionesYSemillaSinDuplicados()
     {
         using (var ctx = _bd.NuevoContexto())
-            await new DatabaseSeeder(ctx, _bd.Hasher).SembrarAsync();
+            await new DatabaseSeeder(ctx, _bd.Hasher, _bd.Reloj).SembrarAsync();
 
         using var lectura = _bd.NuevoContexto();
         Assert.Empty(await lectura.Database.GetPendingMigrationsAsync());

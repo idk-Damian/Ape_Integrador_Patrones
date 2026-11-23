@@ -1,3 +1,4 @@
+using LogiMarket.Application.Comun;
 using LogiMarket.Application.Interfaces;
 using LogiMarket.Domain.Catalogo;
 using LogiMarket.Domain.Clientes;
@@ -13,16 +14,19 @@ public sealed class DatabaseSeeder
 {
     private readonly LogiMarketDbContext _context;
     private readonly IPasswordHasher _hasher;
+    private readonly IReloj _reloj;
 
-    public DatabaseSeeder(LogiMarketDbContext context, IPasswordHasher hasher)
+    public DatabaseSeeder(LogiMarketDbContext context, IPasswordHasher hasher, IReloj reloj)
     {
         _context = context;
         _hasher = hasher;
+        _reloj = reloj;
     }
 
     public async Task SembrarAsync()
     {
-        var ahora = DateTime.UtcNow;
+        // misma hora que el resto de la aplicacion (R14)
+        var ahora = _reloj.Ahora;
 
         var p01 = await AsegurarProductoAsync("P01", "Mouse USB", 20.00m, 8, 0.20m, "Periféricos", "Mouse óptico con cable USB", ahora);
         var p02 = await AsegurarProductoAsync("P02", "Teclado", 30.00m, 5, 0.70m, "Periféricos", "Teclado estándar en español", ahora);
