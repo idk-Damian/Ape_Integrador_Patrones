@@ -89,6 +89,16 @@ Todo queda dentro de `datos/`, junto al ejecutable:
 - `comprobantes/*.txt`: comprobantes internos de venta y devolución. Son de demostración y no tienen valor tributario.
 - `errores.log`: errores inesperados, si los hubiera.
 
+## Empaquetar la entrega
+
+El ZIP de la APE 04 se arma con:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\empaquetar_entrega.ps1 -Verificar
+```
+
+El script toma solo los archivos versionados en git, deja fuera `bin/`, `obj/`, `.vs/`, `artifacts/`, `datos/`, bases `.db`, logs y archivos de credenciales, y crea `artifacts/entrega/APE04_LogiMarket360_LOZADA_PABLO.zip`. Después vuelve a abrir el ZIP, revisa que no se haya colado nada prohibido y escribe la lista de archivos en `artifacts/entrega/contenido_zip.txt`. Con `-Verificar` descomprime el ZIP en una carpeta temporal y corre `dotnet build` y `dotnet test` sobre esa copia.
+
 ## Integraciones simuladas
 
 El cobro, el reembolso, el correo y el SMS son simulados y no salen del equipo. Desde **Auditoría y demostración** se puede:
