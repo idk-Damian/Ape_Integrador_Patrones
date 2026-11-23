@@ -1,0 +1,190 @@
+INICIO 22/11/2026 11:24:19,59 
+10.0.201 [C:\Program Files\dotnet\sdk]
+10.0.400 [C:\Program Files\dotnet\sdk]
+
+Compilación correcta.
+    0 Advertencia(s)
+    0 Errores
+
+Tiempo transcurrido 00:00:15.23
+BUILD_EXIT=0 
+Serie de pruebas para C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\bin\Debug\net8.0\LogiMarket.Tests.dll (.NETCoreApp,Version=v8.0)
+1 archivos de prueba en total coincidieron con el patrón especificado.
+[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.20)
+[xUnit.net 00:00:01.08]   Discovering: LogiMarket.Tests
+[xUnit.net 00:00:01.16]   Discovered:  LogiMarket.Tests
+[xUnit.net 00:00:01.16]   Starting:    LogiMarket.Tests
+  Correctas LogiMarket.Tests.Patrones.StateTests.Despachar_AntesDePagar_LanzaExcepcion [481 ms]
+  Correctas LogiMarket.Tests.Patrones.CompositeTests.KitCompuesto_BloqueaReferenciaCircularDirecta [475 ms]
+  Correctas LogiMarket.Tests.Patrones.StateTests.Cancelar_PermitidoDesdeBorradorYValidado [77 ms]
+  Correctas LogiMarket.Tests.Patrones.StateTests.RetrocederEstados_Prohibido [1 ms]
+  Correctas LogiMarket.Tests.Patrones.VisitorTests.VisitanteDesgloseFisico_AgrupaCantidadesPorSku [563 ms]
+  Correctas LogiMarket.Tests.Patrones.IteratorTests.IteradorComponentesFisicos_RecorreKitsAnidadosPropagandoCantidades [563 ms]
+  Correctas LogiMarket.Tests.Patrones.CompositeTests.KitCompuesto_ExpandeASkuFinales_ConCantidadesPropagadas [80 ms]
+  Correctas LogiMarket.Tests.Patrones.CompositeTests.KitCompuesto_BloqueaReferenciaCircularIndirecta [< 1 ms]
+  Correctas LogiMarket.Tests.Patrones.StateTests.FlujoCompleto_TransicionesValidas [1 ms]
+  Correctas LogiMarket.Tests.Patrones.StateTests.Pagado_ProhibidoCancelarOEditar [1 ms]
+  Correctas LogiMarket.Tests.Patrones.PrototypeTests.ClonarComoBorrador_CopiaProfunda_ModificarClonNoAlteraOriginal [568 ms]
+  Correctas LogiMarket.Tests.Patrones.VisitorTests.VisitantePesoLogistico_KitTeletrabajo_SumaExactamenteUnKilogramo [4 ms]
+  Correctas LogiMarket.Tests.Patrones.BuilderTests.PedidoBuilder_ConstruyePedidoExitosamente [568 ms]
+  Correctas LogiMarket.Tests.Patrones.CompositeTests.KitCompuesto_CalculaPrecioRecursivamente_ConKitsAnidados [3 ms]
+  Correctas LogiMarket.Tests.Patrones.BuilderTests.PedidoBuilder_BloqueaSinCliente [2 ms]
+  Correctas LogiMarket.Tests.Patrones.StrategyTests.RedondeoMoneda_AwayFromZero_Correcto [3 ms]
+  Correctas LogiMarket.Tests.Patrones.StrategyTests.SinDescuento_AplicaParaClienteNormalConMenosDe10Unidades [< 1 ms]
+  Correctas LogiMarket.Tests.Patrones.BuilderTests.PedidoBuilder_BloqueaSinLineas [< 1 ms]
+  Correctas LogiMarket.Tests.Patrones.StrategyTests.Vip10_AplicaCuandoClienteVipYUnidadesMenorA10 [< 1 ms]
+  Correctas LogiMarket.Tests.Patrones.StrategyTests.Mayorista15_AplicaCuandoUnidadesMayorOIgualA10_PrioridadSobreVip [< 1 ms]
+  Correctas LogiMarket.Tests.Patrones.MementoTests.HistorialPedido_SoportaUndoYRedo [6 ms]
+  Correctas LogiMarket.Tests.Patrones.MementoTests.HistorialPedido_SeBloqueaAlConfirmarPago [< 1 ms]
+  Correctas LogiMarket.Tests.Patrones.PrototypeTests.ClonarComoBorrador_SoloPermitidoEnBorrador [23 ms]
+[xUnit.net 00:00:03.68]     LogiMarket.Tests.Riesgos.DefectosFase1Tests.R03_EstrategiaElegidaNoDebePerderseAlEditarElBorrador [FAIL]
+[xUnit.net 00:00:03.68]       Assert.Equal() Failure: Strings differ
+[xUnit.net 00:00:03.68]                  ↓ (pos 0)
+[xUnit.net 00:00:03.68]       Expected: "NORMAL"
+[xUnit.net 00:00:03.68]       Actual:   "VIP"
+[xUnit.net 00:00:03.68]                  ↑ (pos 0)
+[xUnit.net 00:00:03.68]       Stack Trace:
+[xUnit.net 00:00:03.68]         C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\Riesgos\DefectosFase1Tests.cs(71,0): at LogiMarket.Tests.Riesgos.DefectosFase1Tests.R03_EstrategiaElegidaNoDebePerderseAlEditarElBorrador()
+[xUnit.net 00:00:03.68]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:03.68]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:03.79]     LogiMarket.Tests.Riesgos.DefectosFase1Tests.R06_PedidoSinFormaDeEntregaNoDebeConstruirse [FAIL]
+[xUnit.net 00:00:03.79]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:03.79]       Expected: typeof(LogiMarket.Domain.Exceptions.DomainException)
+[xUnit.net 00:00:03.79]       Stack Trace:
+[xUnit.net 00:00:03.79]         C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\Riesgos\DefectosFase1Tests.cs(97,0): at LogiMarket.Tests.Riesgos.DefectosFase1Tests.R06_PedidoSinFormaDeEntregaNoDebeConstruirse()
+[xUnit.net 00:00:03.79]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:03.79]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:03.82]     LogiMarket.Tests.Riesgos.DefectosFase1Tests.R04_NoDebeCambiarseLaTarifaDeUnPedidoPagado [FAIL]
+[xUnit.net 00:00:03.82]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:03.82]       Expected: typeof(LogiMarket.Domain.Exceptions.DomainException)
+[xUnit.net 00:00:03.82]       Stack Trace:
+[xUnit.net 00:00:03.82]         C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\Riesgos\DefectosFase1Tests.cs(82,0): at LogiMarket.Tests.Riesgos.DefectosFase1Tests.R04_NoDebeCambiarseLaTarifaDeUnPedidoPagado()
+[xUnit.net 00:00:03.82]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:03.82]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:03.87]     LogiMarket.Tests.Riesgos.DefectosFase1Tests.R05_PrecioDeProductoDebeSerPositivo [FAIL]
+[xUnit.net 00:00:03.87]       Assert.Throws() Failure: No exception was thrown
+[xUnit.net 00:00:03.87]       Expected: typeof(LogiMarket.Domain.Exceptions.DomainException)
+[xUnit.net 00:00:03.87]       Stack Trace:
+[xUnit.net 00:00:03.87]         C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\Riesgos\DefectosFase1Tests.cs(88,0): at LogiMarket.Tests.Riesgos.DefectosFase1Tests.R05_PrecioDeProductoDebeSerPositivo()
+[xUnit.net 00:00:03.87]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:03.87]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Con error LogiMarket.Tests.Riesgos.DefectosFase1Tests.R03_EstrategiaElegidaNoDebePerderseAlEditarElBorrador [1 s]
+  Mensaje de error:
+   Assert.Equal() Failure: Strings differ
+           ↓ (pos 0)
+Expected: "NORMAL"
+Actual:   "VIP"
+           ↑ (pos 0)
+  Seguimiento de la pila:
+     at LogiMarket.Tests.Riesgos.DefectosFase1Tests.R03_EstrategiaElegidaNoDebePerderseAlEditarElBorrador() in C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\Riesgos\DefectosFase1Tests.cs:line 71
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Con error LogiMarket.Tests.Riesgos.DefectosFase1Tests.R06_PedidoSinFormaDeEntregaNoDebeConstruirse [113 ms]
+  Mensaje de error:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(LogiMarket.Domain.Exceptions.DomainException)
+  Seguimiento de la pila:
+     at LogiMarket.Tests.Riesgos.DefectosFase1Tests.R06_PedidoSinFormaDeEntregaNoDebeConstruirse() in C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\Riesgos\DefectosFase1Tests.cs:line 97
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Con error LogiMarket.Tests.Riesgos.DefectosFase1Tests.R04_NoDebeCambiarseLaTarifaDeUnPedidoPagado [27 ms]
+  Mensaje de error:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(LogiMarket.Domain.Exceptions.DomainException)
+  Seguimiento de la pila:
+     at LogiMarket.Tests.Riesgos.DefectosFase1Tests.R04_NoDebeCambiarseLaTarifaDeUnPedidoPagado() in C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\Riesgos\DefectosFase1Tests.cs:line 82
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Con error LogiMarket.Tests.Riesgos.DefectosFase1Tests.R05_PrecioDeProductoDebeSerPositivo [52 ms]
+  Mensaje de error:
+   Assert.Throws() Failure: No exception was thrown
+Expected: typeof(LogiMarket.Domain.Exceptions.DomainException)
+  Seguimiento de la pila:
+     at LogiMarket.Tests.Riesgos.DefectosFase1Tests.R05_PrecioDeProductoDebeSerPositivo() in C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\Riesgos\DefectosFase1Tests.cs:line 88
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:04.84]     LogiMarket.Tests.Riesgos.DefectosFase1Tests.R08_KitLeidoDeLaBaseDebeCalcularSuPrecio [FAIL]
+[xUnit.net 00:00:04.84]       LogiMarket.Domain.Exceptions.DomainException : Componente 'KIT_OFICINA' no resuelto. Llame a ResolverElemento primero.
+[xUnit.net 00:00:04.84]       Stack Trace:
+[xUnit.net 00:00:04.85]         C:\Users\USER\Desktop\ApePatrones\src\LogiMarket.Domain\Catalogo\ComponenteKit.cs(18,0): at LogiMarket.Domain.Catalogo.ComponenteKit.get_Elemento()
+[xUnit.net 00:00:04.85]         C:\Users\USER\Desktop\ApePatrones\src\LogiMarket.Domain\Catalogo\KitCompuesto.cs(28,0): at LogiMarket.Domain.Catalogo.KitCompuesto.get_PrecioUnitario()
+[xUnit.net 00:00:04.85]         C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\Riesgos\DefectosFase1Tests.cs(118,0): at LogiMarket.Tests.Riesgos.DefectosFase1Tests.R08_KitLeidoDeLaBaseDebeCalcularSuPrecio()
+[xUnit.net 00:00:04.85]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.89]     LogiMarket.Tests.Riesgos.DefectosFase1Tests.R09_UnitOfWorkNoDebeCerrarElContextoQueNoCreo [FAIL]
+[xUnit.net 00:00:04.89]       System.ObjectDisposedException : Cannot access a disposed context instance. A common cause of this error is disposing a context instance that was resolved from dependency injection and then later trying to use the same context instance elsewhere in your application. This may occur if you are calling 'Dispose' on the context instance, or wrapping it in a using statement. If you are using dependency injection, you should let the dependency injection container take care of disposing context instances.
+[xUnit.net 00:00:04.89]       Object name: 'LogiMarketDbContext'.
+[xUnit.net 00:00:04.89]       Stack Trace:
+[xUnit.net 00:00:04.89]            at Microsoft.EntityFrameworkCore.DbContext.CheckDisposed()
+[xUnit.net 00:00:04.89]            at Microsoft.EntityFrameworkCore.DbContext.get_DbContextDependencies()
+[xUnit.net 00:00:04.89]            at Microsoft.EntityFrameworkCore.DbContext.Set[TEntity]()
+[xUnit.net 00:00:04.89]         C:\Users\USER\Desktop\ApePatrones\src\LogiMarket.Infrastructure\Data\LogiMarketDbContext.cs(18,0): at LogiMarket.Infrastructure.Data.LogiMarketDbContext.get_Productos()
+[xUnit.net 00:00:04.89]         C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\Riesgos\DefectosFase1Tests.cs(128,0): at LogiMarket.Tests.Riesgos.DefectosFase1Tests.R09_UnitOfWorkNoDebeCerrarElContextoQueNoCreo()
+[xUnit.net 00:00:04.89]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:04.94]     LogiMarket.Tests.Riesgos.DefectosFase1Tests.R07_ReponerStockTambienDebeSubirLaVersion [FAIL]
+[xUnit.net 00:00:04.94]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:04.94]       Expected: 1
+[xUnit.net 00:00:04.94]       Actual:   0
+[xUnit.net 00:00:04.94]       Stack Trace:
+[xUnit.net 00:00:04.94]         C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\Riesgos\DefectosFase1Tests.cs(106,0): at LogiMarket.Tests.Riesgos.DefectosFase1Tests.R07_ReponerStockTambienDebeSubirLaVersion()
+[xUnit.net 00:00:04.94]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:04.94]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:05.00]     LogiMarket.Tests.Riesgos.DefectosFase1Tests.R01_Iterador_NoDebeReportarCicloSiUnKitApareceEnDosRamas [FAIL]
+[xUnit.net 00:00:05.00]       LogiMarket.Domain.Exceptions.DomainException : Ciclo infinito detectado al iterar el kit 'KIT_OFICINA'.
+[xUnit.net 00:00:05.00]       Stack Trace:
+[xUnit.net 00:00:05.00]         C:\Users\USER\Desktop\ApePatrones\src\LogiMarket.Domain\Catalogo\IteradorComponentesFisicos.cs(48,0): at LogiMarket.Domain.Catalogo.IteradorComponentesFisicos.MoveNext()
+[xUnit.net 00:00:05.00]            at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+[xUnit.net 00:00:05.00]            at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+[xUnit.net 00:00:05.00]         C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\Riesgos\DefectosFase1Tests.cs(54,0): at LogiMarket.Tests.Riesgos.DefectosFase1Tests.R01_Iterador_NoDebeReportarCicloSiUnKitApareceEnDosRamas()
+[xUnit.net 00:00:05.00]            at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+[xUnit.net 00:00:05.00]            at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+[xUnit.net 00:00:05.06]   Finished:    LogiMarket.Tests
+  Con error LogiMarket.Tests.Riesgos.DefectosFase1Tests.R08_KitLeidoDeLaBaseDebeCalcularSuPrecio [955 ms]
+  Mensaje de error:
+   LogiMarket.Domain.Exceptions.DomainException : Componente 'KIT_OFICINA' no resuelto. Llame a ResolverElemento primero.
+  Seguimiento de la pila:
+     at LogiMarket.Domain.Catalogo.ComponenteKit.get_Elemento() in C:\Users\USER\Desktop\ApePatrones\src\LogiMarket.Domain\Catalogo\ComponenteKit.cs:line 18
+   at LogiMarket.Domain.Catalogo.KitCompuesto.get_PrecioUnitario() in C:\Users\USER\Desktop\ApePatrones\src\LogiMarket.Domain\Catalogo\KitCompuesto.cs:line 28
+   at LogiMarket.Tests.Riesgos.DefectosFase1Tests.R08_KitLeidoDeLaBaseDebeCalcularSuPrecio() in C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\Riesgos\DefectosFase1Tests.cs:line 118
+--- End of stack trace from previous location ---
+  Con error LogiMarket.Tests.Riesgos.DefectosFase1Tests.R09_UnitOfWorkNoDebeCerrarElContextoQueNoCreo [36 ms]
+  Mensaje de error:
+   System.ObjectDisposedException : Cannot access a disposed context instance. A common cause of this error is disposing a context instance that was resolved from dependency injection and then later trying to use the same context instance elsewhere in your application. This may occur if you are calling 'Dispose' on the context instance, or wrapping it in a using statement. If you are using dependency injection, you should let the dependency injection container take care of disposing context instances.
+Object name: 'LogiMarketDbContext'.
+  Seguimiento de la pila:
+     at Microsoft.EntityFrameworkCore.DbContext.CheckDisposed()
+   at Microsoft.EntityFrameworkCore.DbContext.get_DbContextDependencies()
+   at Microsoft.EntityFrameworkCore.DbContext.Set[TEntity]()
+   at LogiMarket.Infrastructure.Data.LogiMarketDbContext.get_Productos() in C:\Users\USER\Desktop\ApePatrones\src\LogiMarket.Infrastructure\Data\LogiMarketDbContext.cs:line 18
+   at LogiMarket.Tests.Riesgos.DefectosFase1Tests.R09_UnitOfWorkNoDebeCerrarElContextoQueNoCreo() in C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\Riesgos\DefectosFase1Tests.cs:line 128
+--- End of stack trace from previous location ---
+  Correctas LogiMarket.Tests.Persistencia.PersistenceAndSeederTests.DatabaseSeeder_EsIdempotente_NoDuplicaRegistros [3 s]
+  Con error LogiMarket.Tests.Riesgos.DefectosFase1Tests.R07_ReponerStockTambienDebeSubirLaVersion [44 ms]
+  Mensaje de error:
+   Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0
+  Seguimiento de la pila:
+     at LogiMarket.Tests.Riesgos.DefectosFase1Tests.R07_ReponerStockTambienDebeSubirLaVersion() in C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\Riesgos\DefectosFase1Tests.cs:line 106
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Correctas LogiMarket.Tests.Persistencia.PersistenceAndSeederTests.ConcurrenciaOptimista_DetectaSobreventa [80 ms]
+  Con error LogiMarket.Tests.Riesgos.DefectosFase1Tests.R01_Iterador_NoDebeReportarCicloSiUnKitApareceEnDosRamas [65 ms]
+  Mensaje de error:
+   LogiMarket.Domain.Exceptions.DomainException : Ciclo infinito detectado al iterar el kit 'KIT_OFICINA'.
+  Seguimiento de la pila:
+     at LogiMarket.Domain.Catalogo.IteradorComponentesFisicos.MoveNext() in C:\Users\USER\Desktop\ApePatrones\src\LogiMarket.Domain\Catalogo\IteradorComponentesFisicos.cs:line 48
+   at System.Collections.Generic.List`1..ctor(IEnumerable`1 collection)
+   at System.Linq.Enumerable.ToList[TSource](IEnumerable`1 source)
+   at LogiMarket.Tests.Riesgos.DefectosFase1Tests.R01_Iterador_NoDebeReportarCicloSiUnKitApareceEnDosRamas() in C:\Users\USER\Desktop\ApePatrones\tests\LogiMarket.Tests\Riesgos\DefectosFase1Tests.cs:line 54
+   at System.RuntimeMethodHandle.InvokeMethod(Object target, Void** arguments, Signature sig, Boolean isConstructor)
+   at System.Reflection.MethodBaseInvoker.InvokeWithNoArgs(Object obj, BindingFlags invokeAttr)
+  Correctas LogiMarket.Tests.Persistencia.PersistenceAndSeederTests.UnitOfWork_TransaccionReal_CommitYRollback [74 ms]
+
+No se pudo ejecutar la serie de pruebas.
+Pruebas totales: 34
+     Correcto: 26
+     Incorrecto: 8
+ Tiempo total: 7,1131 Segundos
+Archivo de resultados: C:\Users\USER\Desktop\ApePatrones\artifacts\resultados\pruebas.trx
+TEST_EXIT=1 
+FIN 

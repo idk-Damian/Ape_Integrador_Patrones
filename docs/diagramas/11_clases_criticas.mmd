@@ -1,0 +1,92 @@
+classDiagram
+    direction LR
+    class IElementoCatalogo {
+        <<interface>>
+        +Codigo string
+        +PrecioUnitario decimal
+        +EsKit bool
+        +ObtenerComponentesFisicos(cantidadPadre) IEnumerable~ComponenteFisico~
+        +Aceptar(visitante)
+    }
+    class ProductoSimple {
+        +Stock int
+        +Version int
+        +DescontarStock(cantidad)
+        +AgregarStock(cantidad)
+    }
+    class KitCompuesto {
+        +AgregarComponente(elemento, cantidad)
+        +ContieneReferencia(codigo) bool
+    }
+    class ComponenteKit
+    class Pedido {
+        +EstadoNombre string
+        +Total decimal
+        +Version int
+        +AgregarLinea(elemento, cantidad, calculadora)
+        +Validar(fecha)
+        +Pagar(fecha)
+        +Despachar(fecha)
+        +Cancelar(fecha)
+        +Deshacer(calculadora) bool
+        +ClonarComoBorrador(fecha) Pedido
+    }
+    class LineaPedido {
+        +ElementoCodigo string
+        +Cantidad int
+        +Subtotal decimal
+    }
+    class LineaComponenteSnapshot
+    class IEstadoPedido {
+        <<interface>>
+    }
+    class CalculadoraDescuento {
+        +Calcular(contexto) ResultadoDescuento
+    }
+    class PedidoBuilder {
+        +Construir() Pedido
+    }
+    class ConfirmacionPedidoFacade {
+        +ConfirmarAsync(pedidoId, clave) ResultadoConfirmacion
+    }
+    class IPasarelaPago {
+        <<interface>>
+        +CobrarAsync(monto, clave) ResultadoCobro
+    }
+    class IUnitOfWork {
+        <<interface>>
+        +GuardarCambiosAsync()
+        +IniciarTransaccionAsync() ITransaccion
+    }
+    class IPedidoRepository {
+        <<interface>>
+        +ObtenerPorIdAsync(id) Pedido
+    }
+    class IPagoRepository {
+        <<interface>>
+        +ObtenerPorClaveIdempotenciaAsync(clave) Pago
+        +AgregarAsync(pago)
+    }
+    class ServicioInventario {
+        +DescontarPorVentaAsync(pedido, fecha)
+    }
+    class Pago
+    class EventoOutbox
+
+    IElementoCatalogo <|.. ProductoSimple
+    IElementoCatalogo <|.. KitCompuesto
+    KitCompuesto "1" *-- "1..*" ComponenteKit
+    ComponenteKit --> IElementoCatalogo
+    Pedido "1" *-- "1..*" LineaPedido
+    LineaPedido "1" *-- "1..*" LineaComponenteSnapshot
+    Pedido --> IEstadoPedido : estado actual
+    Pedido ..> CalculadoraDescuento
+    PedidoBuilder ..> Pedido : crea
+    ConfirmacionPedidoFacade --> IPedidoRepository
+    ConfirmacionPedidoFacade --> IPagoRepository
+    ConfirmacionPedidoFacade --> IUnitOfWork
+    ConfirmacionPedidoFacade --> IPasarelaPago
+    ConfirmacionPedidoFacade --> ServicioInventario
+    ConfirmacionPedidoFacade ..> Pago : registra
+    ConfirmacionPedidoFacade ..> EventoOutbox : agrega
+    ServicioInventario ..> ProductoSimple : descuenta stock

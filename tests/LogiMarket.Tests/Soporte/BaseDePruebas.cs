@@ -19,10 +19,12 @@ internal sealed class BaseDePruebas : IDisposable
 
         using var ctx = NuevoContexto();
         ctx.Database.Migrate();
-        if (sembrar) new DatabaseSeeder(ctx, Hasher).SembrarAsync().GetAwaiter().GetResult();
+        if (sembrar) new DatabaseSeeder(ctx, Hasher, Reloj).SembrarAsync().GetAwaiter().GetResult();
     }
 
     public Pbkdf2PasswordHasher Hasher { get; } = new();
+
+    public RelojControlado Reloj { get; } = new(new DateTime(2026, 11, 2, 10, 0, 0));
 
     public LogiMarketDbContext NuevoContexto() => new(_opciones);
 

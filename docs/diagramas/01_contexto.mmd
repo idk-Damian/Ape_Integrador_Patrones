@@ -1,0 +1,37 @@
+%% Diagrama de contexto: actores, sistema y colaboradores simulados
+flowchart LR
+    subgraph Actores
+        ADMIN([ADMIN<br/>todas las operaciones])
+        VENTAS([VENTAS<br/>clientes, pedidos,<br/>validación, cobro, devoluciones])
+        BODEGA([BODEGA<br/>despacho y entrega])
+        CONSULTA([CONSULTA<br/>solo lectura])
+    end
+
+    SIS[["LogiMarket 360<br/>aplicación de escritorio Windows Forms<br/>.NET 8 · Clean Architecture"]]
+
+    subgraph Simulados["Integraciones simuladas (no salen del equipo)"]
+        PL[Pasarela legada<br/>CobrarCentavos long, string]
+        PA[Pasarela alternativa]
+        RE[Reembolso simulado]
+        EM[Notificador EMAIL]
+        SMS[Notificador SMS]
+    end
+
+    subgraph Local["Almacenamiento local (carpeta datos/)"]
+        DB[(SQLite<br/>logimarket.db)]
+        TXT[/Comprobantes .txt/]
+        LOG[/Bitácora .log por categoría/]
+    end
+
+    ADMIN --> SIS
+    VENTAS --> SIS
+    BODEGA --> SIS
+    CONSULTA --> SIS
+    SIS -- "cobro vía Adapter" --> PL
+    SIS -- "cobro" --> PA
+    SIS -- "reembolso único" --> RE
+    SIS -- "avisos desde el Outbox" --> EM
+    SIS -- "avisos desde el Outbox" --> SMS
+    SIS -- "EF Core 8, transacciones" --> DB
+    SIS -- "Bridge: ArchivoTXT" --> TXT
+    SIS --> LOG

@@ -49,7 +49,7 @@ public sealed class ServicioLogistica
             var ahora = _reloj.Ahora;
             var fabrica = _entregas.Obtener(pedido.TipoEntrega);
 
-            pedido.Despachar();
+            pedido.Despachar(ahora);
             var despacho = Despacho.Registrar(pedido, fabrica, ahora);
             await _despachos.AgregarAsync(despacho);
             await _outbox.AgregarAsync(new EventoOutbox(EventoDespachoRegistrado,

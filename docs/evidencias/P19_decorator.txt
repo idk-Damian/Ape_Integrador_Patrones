@@ -1,0 +1,17 @@
+﻿P19 - Decorator de auditoria sobre la cadena real Proxy -> Decorator -> Adapter (DI de la aplicacion)
+
+1) Cobro aprobado: pedido #1 de Ana, proveedor LEGADO
+2026-11-02 10:00:00 [PAGO] <839ce86554ba> INICIO cobro 59,00 USD clave CLAVE-1 via LEGADO
+2026-11-02 10:00:00 [PAGO] PASARELA LEGADO CobrarCentavos(5900, CLAVE-1) -> OK;LEG-B7BD9584E3
+2026-11-02 10:00:00 [PAGO] <839ce86554ba> FIN APROBADO ref LEG-B7BD9584E3
+
+2) Cobro rechazado por la pasarela: pedido #2 de Luis -> Cobro rechazado por LEGADO: TARJETA_RECHAZADA
+2026-11-02 10:00:00 [PAGO] <ded6c6506529> INICIO cobro 102,00 USD clave P19-RECHAZO via LEGADO
+2026-11-02 10:00:00 [PAGO] PASARELA LEGADO CobrarCentavos(10200, P19-RECHAZO) -> ERR;TARJETA_RECHAZADA
+2026-11-02 10:00:00 [PAGO] <ded6c6506529> FIN RECHAZADO TARJETA_RECHAZADA
+
+3) Proveedor sin respuesta (excepcion): el decorador registra ERROR y no la oculta
+2026-11-02 10:00:00 [PAGO] <57ffc95dd198> INICIO cobro 15,00 USD clave P19-ERROR via SIN_RESPUESTA
+2026-11-02 10:00:00 [PAGO] <57ffc95dd198> ERROR TimeoutException: sin respuesta del banco
+
+Estado final: pedido #1 PAGADO, pedido #2 BORRADOR, pagos en base 1

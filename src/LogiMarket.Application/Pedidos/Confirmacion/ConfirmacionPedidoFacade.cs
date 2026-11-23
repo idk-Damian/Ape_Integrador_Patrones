@@ -72,7 +72,7 @@ public sealed class ConfirmacionPedidoFacade
         try
         {
             var ahora = _reloj.Ahora;
-            if (pedido.EstadoNombre == "BORRADOR") pedido.Validar();
+            if (pedido.EstadoNombre == "BORRADOR") pedido.Validar(ahora);
 
             await _inventario.DescontarPorVentaAsync(pedido, ahora);
             await _uow.GuardarCambiosAsync(); // si otro proceso vendio el mismo stock, falla aqui y no se cobra
@@ -85,7 +85,7 @@ public sealed class ConfirmacionPedidoFacade
             }
 
             await _pagos.AgregarAsync(new Pago(pedido.Id, pedido.Total, cobro.Proveedor, cobro.Referencia!, clave, ahora));
-            pedido.Pagar();
+            pedido.Pagar(ahora);
             await _outbox.AgregarAsync(new EventoOutbox(EventoPedidoPagado, CrearPayload(pedido, cobro), ahora));
             await _uow.GuardarCambiosAsync();
             await transaccion.ConfirmarAsync();

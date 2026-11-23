@@ -1,0 +1,44 @@
+%% Secuencia 2: operacion rechazada. Cobro rechazado por la pasarela (P06/P19) y, como alternativa, denegacion del Proxy (P22)
+sequenceDiagram
+    autonumber
+    actor U as Usuario
+    participant F as ConfirmacionPedidoFacade
+    participant CH as ServicioValidacionPedidos<br/>(Chain)
+    participant UOW as IUnitOfWork<br/>(transacción)
+    participant P as Pedido (State)
+    participant INVT as ServicioInventario
+    participant PX as PagoAutorizadoProxy
+    participant DEC as AuditoriaPagoDecorator
+    participant AD as PasarelaLegadaAdapter
+    participant BIT as IBitacora
+
+    U->>F: ConfirmarAsync(pedido 2 de Luis, clave)
+    F->>CH: ValidarAsync(pedido, CobrarPedido)
+    alt rol sin permiso usando la fachada (CONSULTA o BODEGA)
+        CH-->>F: falla en "Autorización y estado"
+        F-->>U: Falla: sin permiso para CobrarPedido<br/>sin transacción, sin pago, sin stock, sin evento
+    else validación correcta
+        CH-->>F: Válido
+        F->>UOW: IniciarTransaccionAsync()
+        F->>P: Validar(ahora)
+        F->>INVT: DescontarPorVentaAsync()
+        F->>UOW: GuardarCambiosAsync()
+        F->>PX: CobrarAsync(102.00, clave)
+        alt rol no autorizado al llegar al Proxy (segunda barrera, P22)
+            PX->>BIT: [SEGURIDAD] Cobro denegado
+            PX-->>F: AccesoDenegadoException
+            Note over DEC,AD: nunca se invocan:<br/>no hay LOG INICIO/FIN de cobro
+        else pasarela rechaza (FallarCobros = true)
+            PX->>DEC: CobrarAsync
+            DEC->>BIT: [PAGO] INICIO <correlación>
+            DEC->>AD: CobrarAsync
+            AD->>BIT: [PAGO] PASARELA CobrarCentavos(10200, clave) devuelve ERR#59;TARJETA_RECHAZADA
+            AD-->>DEC: ResultadoCobro rechazado
+            DEC->>BIT: [PAGO] FIN RECHAZADO <correlación>
+            DEC-->>PX: rechazado
+            PX-->>F: rechazado
+        end
+        F->>UOW: RevertirAsync() + DescartarCambios()
+        Note over UOW: el pedido sigue en BORRADOR,<br/>stock P04 = 4, 0 pagos, 0 eventos Outbox
+        F-->>U: Falla: Cobro rechazado por LEGADO: TARJETA_RECHAZADA
+    end

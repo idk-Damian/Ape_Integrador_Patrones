@@ -11,9 +11,9 @@ public class StateTests
     {
         var pedido = new Datos().Borrador();
 
-        pedido.Validar();
-        pedido.Pagar();
-        pedido.Despachar();
+        pedido.Validar(Datos.Hoy);
+        pedido.Pagar(Datos.Hoy);
+        pedido.Despachar(Datos.Hoy);
         pedido.Entregar(new DateTime(2026, 11, 1));
 
         Assert.Equal("ENTREGADO", pedido.EstadoNombre);
@@ -25,10 +25,10 @@ public class StateTests
     {
         var d = new Datos();
         var a = d.Borrador();
-        a.Cancelar();
+        a.Cancelar(Datos.Hoy);
         var b = d.Borrador();
-        b.Validar();
-        b.Cancelar();
+        b.Validar(Datos.Hoy);
+        b.Cancelar(Datos.Hoy);
 
         Assert.Equal("CANCELADO", a.EstadoNombre);
         Assert.Equal("CANCELADO", b.EstadoNombre);
@@ -39,10 +39,10 @@ public class StateTests
     {
         var d = new Datos();
         var pedido = d.Borrador();
-        pedido.Validar();
-        pedido.Pagar();
+        pedido.Validar(Datos.Hoy);
+        pedido.Pagar(Datos.Hoy);
 
-        Assert.Throws<DomainException>(() => pedido.Cancelar());
+        Assert.Throws<DomainException>(() => pedido.Cancelar(Datos.Hoy));
         Assert.Throws<DomainException>(() => pedido.AgregarLinea(d.P02, 1, Datos.Calculadora()));
         Assert.Throws<DomainException>(() => pedido.ModificarCantidad("P01", 5, Datos.Calculadora()));
         Assert.Equal("PAGADO", pedido.EstadoNombre);
@@ -53,9 +53,9 @@ public class StateTests
     public void P09_NoSeDespachaAntesDePagar()
     {
         var pedido = new Datos().Borrador();
-        pedido.Validar();
+        pedido.Validar(Datos.Hoy);
 
-        Assert.Throws<DomainException>(() => pedido.Despachar());
+        Assert.Throws<DomainException>(() => pedido.Despachar(Datos.Hoy));
         Assert.Equal("VALIDADO", pedido.EstadoNombre);
     }
 
@@ -63,20 +63,20 @@ public class StateTests
     public void P31_NoSeRetrocedeNiSeRepiteEstado()
     {
         var pedido = new Datos().Borrador();
-        pedido.Validar();
-        pedido.Pagar();
+        pedido.Validar(Datos.Hoy);
+        pedido.Pagar(Datos.Hoy);
 
-        Assert.Throws<DomainException>(() => pedido.Validar());
-        Assert.Throws<DomainException>(() => pedido.Pagar());
+        Assert.Throws<DomainException>(() => pedido.Validar(Datos.Hoy));
+        Assert.Throws<DomainException>(() => pedido.Pagar(Datos.Hoy));
     }
 
     [Fact]
     public void P31_CadaTransicionQuedaEnElHistorialDeEstados()
     {
         var pedido = new Datos().Borrador();
-        pedido.Validar();
-        pedido.Pagar();
-        pedido.Despachar();
+        pedido.Validar(Datos.Hoy);
+        pedido.Pagar(Datos.Hoy);
+        pedido.Despachar(Datos.Hoy);
 
         Assert.Equal(new[] { "BORRADOR", "VALIDADO", "PAGADO", "DESPACHADO" }, pedido.CambiosEstado.Select(c => c.EstadoNuevo));
         Assert.Null(pedido.CambiosEstado[0].EstadoAnterior);

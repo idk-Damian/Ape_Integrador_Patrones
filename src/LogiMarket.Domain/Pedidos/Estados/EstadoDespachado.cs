@@ -6,6 +6,6 @@ public sealed class EstadoDespachado : EstadoBase
     public override string Nombre => "DESPACHADO";
     public override bool PuedeEditar => false;
 
-    public override void Entregar(Pedido pedido)
-        => pedido.CambiarEstado(EstadoEntregado.Instancia);
+    public override void Entregar(Pedido pedido, DateTime fecha)
+        => pedido.CambiarEstado(EstadoEntregado.Instancia, fecha);
 }
