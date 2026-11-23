@@ -6,13 +6,16 @@ using LogiMarket.Domain.Entregas;
 using LogiMarket.Domain.Enums;
 using LogiMarket.Domain.Exceptions;
 using LogiMarket.Domain.Pedidos;
+using LogiMarket.Infrastructure.Data;
 using LogiMarket.Tests.Soporte;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace LogiMarket.Tests.Riesgos;
 
 // R10: se vio en la pantalla de pedidos una hora distinta a la de auditoria y outbox.
 // El pedido tomaba la hora UTC del sistema en vez del reloj inyectado (IReloj).
+// R14: lo mismo pasaba con la semilla: el inventario inicial salia con fecha del dia siguiente.
 public class DefectosFase2Tests : IDisposable
 {
     private readonly Entorno _e = new();
@@ -88,6 +91,16 @@ public class DefectosFase2Tests : IDisposable
 
         Assert.Equal(new[] { Datos.Hoy, Datos.Hoy, pago, despacho }, pedido.CambiosEstado.Select(c => c.Fecha));
         Assert.Equal(despacho, pedido.FechaModificacion);
+    }
+
+    [Fact]
+    public async Task R14_LaSemillaDebeUsarElRelojInyectado()
+    {
+        var fechas = await _e.EnAlcanceAsync(sp => sp.GetRequiredService<LogiMarketDbContext>()
+            .MovimientosInventario.Where(m => m.Referencia == "SEED").Select(m => m.Fecha).ToListAsync());
+
+        Assert.Equal(5, fechas.Count);
+        Assert.All(fechas, f => Assert.Equal(_e.Reloj.Ahora, f));
     }
 
     private async Task<DetallePedido> DetalleAsync(int id)
